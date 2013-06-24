@@ -156,6 +156,7 @@ void bg_ffmpeg_codec_destroy(bg_ffmpeg_codec_context_t * ctx);
 void bg_ffmpeg_codec_set_packet_sink(bg_ffmpeg_codec_context_t * ctx,
                                      gavl_packet_sink_t * psink);
 
+void bg_ffmpeg_codec_flush(bg_ffmpeg_codec_context_t * ctx);
 
 /* ffmpeg_common.c */
 

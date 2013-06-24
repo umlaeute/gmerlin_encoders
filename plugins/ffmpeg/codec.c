@@ -34,7 +34,7 @@
 
 #define FLAG_INITIALIZED (1<<0)
 #define FLAG_ERROR       (1<<1)
-
+#define FLAG_FLUSHED     (1<<2)
 
 struct bg_ffmpeg_codec_context_s
   {
@@ -779,34 +779,43 @@ void bg_ffmpeg_codec_set_packet_sink(bg_ffmpeg_codec_context_t * ctx,
   ctx->psink = psink;
   }
 
-void bg_ffmpeg_codec_destroy(bg_ffmpeg_codec_context_t * ctx)
+void bg_ffmpeg_codec_flush(bg_ffmpeg_codec_context_t * ctx)
   {
   int result;
 
   /* Flush */
+  if(!(ctx->flags & FLAG_INITIALIZED))
+    return;
 
-  if(ctx->flags & FLAG_INITIALIZED)
+  if(ctx->type == AVMEDIA_TYPE_VIDEO)
     {
-    if(ctx->type == AVMEDIA_TYPE_VIDEO)
+    while(1)
       {
-      while(1)
-        {
-        result = flush_video(ctx, NULL);
-        if(result <= 0)
-          break;
-        }
-      }
-    else // Audio
-      {
-      while(1)
-        {
-        // fprintf(stderr, "Flush audio %d\n", ctx->aframe->valid_samples);
-        result = flush_audio(ctx);
-        if(result <= 0)
-          break;
-        }
+      result = flush_video(ctx, NULL);
+      if(result <= 0)
+        break;
       }
     }
+  else // Audio
+    {
+    while(1)
+      {
+      // fprintf(stderr, "Flush audio %d\n", ctx->aframe->valid_samples);
+      result = flush_audio(ctx);
+      if(result <= 0)
+        break;
+      }
+    }
+  
+  ctx->flags |= FLAG_FLUSHED;
+  }
+
+void bg_ffmpeg_codec_destroy(bg_ffmpeg_codec_context_t * ctx)
+  {
+  int result;
+
+  if(!(ctx->flags & FLAG_FLUSHED))
+    bg_ffmpeg_codec_flush(ctx);
   
   /* Close */
 

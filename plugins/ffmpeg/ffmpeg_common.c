@@ -755,6 +755,26 @@ int bg_ffmpeg_close(void * data, int do_delete)
 
   // Flush the streams
 
+  for(i = 0; i < priv->num_audio_streams; i++)
+    {
+    bg_ffmpeg_audio_stream_t * st = &priv->audio_streams[i];
+
+    if(!(st->com.flags & STREAM_IS_COMPRESSED))
+      bg_ffmpeg_codec_flush(st->com.codec);
+    }
+  for(i = 0; i < priv->num_video_streams; i++)
+    {
+    bg_ffmpeg_video_stream_t * st = &priv->video_streams[i];
+    if(!(st->com.flags & STREAM_IS_COMPRESSED))
+      bg_ffmpeg_codec_flush(st->com.codec);
+    }
+  
+  if(priv->initialized)
+    {
+    av_write_trailer(priv->ctx);
+    avio_close(priv->ctx->pb);
+    }
+
   // Close the encoders
 
   for(i = 0; i < priv->num_audio_streams; i++)
@@ -777,12 +797,6 @@ int bg_ffmpeg_close(void * data, int do_delete)
     close_text_encoder(priv, st);
     if(st->com.psink)
       gavl_packet_sink_destroy(st->com.psink);
-    }
-  
-  if(priv->initialized)
-    {
-    av_write_trailer(priv->ctx);
-    avio_close(priv->ctx->pb);
     }
   
   if(do_delete)
@@ -842,6 +856,8 @@ int bg_ffmpeg_writes_compressed_video(void * priv,
 static void copy_extradata(AVCodecContext * avctx,
                            const gavl_compression_info_t * ci)
   {
+  fprintf(stderr, "Copying extradata %d bytes\n", ci->global_header_len);
+  
   if(ci->global_header_len)
     {
     avctx->extradata_size = ci->global_header_len;
