@@ -856,7 +856,7 @@ int bg_ffmpeg_writes_compressed_video(void * priv,
 static void copy_extradata(AVCodecContext * avctx,
                            const gavl_compression_info_t * ci)
   {
-  fprintf(stderr, "Copying extradata %d bytes\n", ci->global_header_len);
+  //  fprintf(stderr, "Copying extradata %d bytes\n", ci->global_header_len);
   
   if(ci->global_header_len)
     {
