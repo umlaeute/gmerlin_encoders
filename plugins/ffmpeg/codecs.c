@@ -1522,6 +1522,7 @@ codec_ids[] =
     { GAVL_CODEC_ID_DIRAC,     CODEC_ID_DIRAC      }, //!< Complete DIRAC frames, sequence end code appended to last packet
     { GAVL_CODEC_ID_DV,        CODEC_ID_DVVIDEO    }, //!< DV (several variants)
     { GAVL_CODEC_ID_VP8,       CODEC_ID_VP8        }, //!< VP8 (as in webm)
+    { GAVL_CODEC_ID_DIV3,      CODEC_ID_MSMPEG4V3  }, //!< Old style Divx
     { GAVL_CODEC_ID_NONE,      CODEC_ID_NONE       },
   };
 
