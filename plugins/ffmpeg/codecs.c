@@ -62,6 +62,26 @@
                    "576", "640", NULL } \
   },
 
+/*
+ *  bit_rate can also be set to 1 (open), 2 (variable), 3 (lossless)
+ */
+
+#define ENCODE_PARAM_DTS                 \
+  {                                      \
+    .name =      "ff_bit_rate_str",        \
+    .long_name = TRS("Bit rate (kbps)"),        \
+    .type =      BG_PARAMETER_STRINGLIST, \
+    .val_default = { .val_str = "1536" },       \
+    .multi_names = (char const *[]){ "32", "56", \
+                                     "64", "96", "112", "128", \
+                                     "192", "224", "256", "320", "384", \
+                                     "448", "512", "576", "640", "768", \
+                                     "896", "1024", "1152", "1280", "1344", \
+                                     "1408", "1411200", "1472", "1536", "1920", \
+                                     "2048", "3072", "3840", \
+                                     NULL }                           \
+  },
+
 #define ENCODE_PARAM_WMA \
   {                                      \
     .name =      "ff_bit_rate_str",        \
@@ -528,6 +548,11 @@ static const bg_parameter_info_t parameters_ac3[] = {
   { /* End of parameters */ }
 };
 
+static const bg_parameter_info_t parameters_dca[] = {
+  ENCODE_PARAM_DTS
+  { /* End of parameters */ }
+};
+
 static const bg_parameter_info_t parameters_mp2[] = {
   ENCODE_PARAM_MP2
   { /* End of parameters */ }
@@ -586,6 +611,12 @@ static const ffmpeg_codec_info_t audio_codecs[] =
       .long_name = TRS("MPEG audio layer 2"),
       .id        = CODEC_ID_MP2,
       .parameters = parameters_mp2,
+    },
+    {
+      .name      = "dca",
+      .long_name = TRS("DTS"),
+      .id        = CODEC_ID_DTS,
+      .parameters = parameters_dca,
     },
     {
       .name      = "wma1",
@@ -1508,6 +1539,7 @@ codec_ids[] =
     { GAVL_CODEC_ID_AAC,    CODEC_ID_AAC       }, //!< AAC as stored in quicktime/mp4
     { GAVL_CODEC_ID_VORBIS, CODEC_ID_VORBIS    }, //!< Vorbis (segmented extradata and packets)
     { GAVL_CODEC_ID_AAC,    CODEC_ID_AAC       }, //!< AAC
+    { GAVL_CODEC_ID_DTS,    CODEC_ID_DTS       }, //!<
     
     /* Video */
     { GAVL_CODEC_ID_JPEG,      CODEC_ID_MJPEG      }, //!< JPEG image
