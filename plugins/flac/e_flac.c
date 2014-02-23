@@ -46,8 +46,6 @@ typedef struct
   
   char * filename;
 
-  FILE * out;
-  
   gavl_audio_format_t format;
   
   /* Configuration stuff */
@@ -84,12 +82,17 @@ typedef struct
   
   gavl_metadata_t m_stream;
   const gavl_metadata_t * m_global;
+
+  int write_seektable;
   
+  gavf_io_t * io;
+
+  int streaming;
   } flac_t;
 
 static int write_data(flac_t * f, const uint8_t * data, int len)
   {
-  if(fwrite(data, 1, len, f->out) < len)
+  if(gavf_io_write_data(f->io, data, len) < len)
     return 0;
   f->bytes_written += len;
   return 1;
@@ -232,7 +235,7 @@ static int streaminfo_callback(void * data, uint8_t * si, int len)
     {
     /* Set or clear the "last metadata packet" flag */
 
-    if(flac->use_seektable || flac->use_vorbis_comment)
+    if(flac->write_seektable || flac->use_vorbis_comment)
       si[4] &= 0x7f;
     else
       si[4] |= 0x80;
@@ -243,10 +246,9 @@ static int streaminfo_callback(void * data, uint8_t * si, int len)
 
     if(flac->use_vorbis_comment)
       {
-      write_comment(flac,
-                    !flac->use_seektable);
+      write_comment(flac, !flac->write_seektable);
       }
-    if(flac->use_seektable)
+    if(flac->write_seektable)
       {
       flac->seektable_start = flac->bytes_written;
       write_seektable(flac->seektable,
@@ -254,38 +256,38 @@ static int streaminfo_callback(void * data, uint8_t * si, int len)
                       flac, 1);
       }
     }
-  else
+  else if(!flac->streaming)
     {
-    fseek(flac->out, 0, SEEK_SET);
+    gavf_io_seek(flac->io, 0, SEEK_SET);
     if(!write_data(flac, si, len))
       return 0;
     }
   return 1;
   }
 
-static int open_flac(void * data, const char * filename,
-                     const gavl_metadata_t * m,
-                     const gavl_chapter_list_t * chapter_list)
+static int open_io_flac(void * data, gavf_io_t * io,
+                        const gavl_metadata_t * m,
+                        const gavl_chapter_list_t * chapter_list)
   {
   int result = 1;
-  flac_t * flac;
-  
-  flac = data;
+  flac_t * flac = data;
   flac->enc = bg_flac_create();
+  flac->io = io;
 
+  if(!gavf_io_can_seek(flac->io))
+    flac->streaming = 1;
+  
   bg_flac_set_callbacks(flac->enc,
                         streaminfo_callback, flac);
   
-  flac->filename = bg_filename_ensure_extension(filename, "flac");
-
-  if(!bg_encoder_cb_create_output_file(flac->cb, flac->filename))
-    return 0;
-
-  flac->out = fopen(flac->filename, "wb");
-  
   /* Create seektable */
 
-  if(flac->use_seektable)
+  flac->write_seektable = flac->use_seektable;
+  
+  if(flac->streaming)
+    flac->write_seektable = 0;
+  
+  if(flac->write_seektable)
     {
     int i;
     flac->seektable = calloc(flac->num_seektable_entries, sizeof(*flac->seektable));
@@ -296,6 +298,33 @@ static int open_flac(void * data, const char * filename,
   flac->m_global = m;
   
   return result;
+  
+  }
+
+static int open_flac(void * data, const char * filename,
+                     const gavl_metadata_t * m,
+                     const gavl_chapter_list_t * chapter_list)
+  {
+  gavf_io_t * io;
+  
+  flac_t * flac = data;
+
+  if(!strcmp(filename, "-"))
+    {
+    io = gavf_io_create_file(stdout, 1, 0, 0);
+    }
+  else
+    {
+    FILE * out;
+    flac->filename = bg_filename_ensure_extension(filename, "flac");
+    if(!bg_encoder_cb_create_output_file(flac->cb, flac->filename))
+      return 0;
+    out = fopen(flac->filename, "wb");
+    io = gavf_io_create_file(stdout, 1, 1, 1);
+    }
+
+  return open_io_flac(data, io, m, chapter_list);
+  
   }
 
 static int add_audio_stream_flac(void * data,
@@ -315,6 +344,9 @@ static int add_audio_stream_flac(void * data,
 
 static void append_packet(flac_t * f, int samples)
   {
+  if(f->streaming)
+    return;
+  
   if(f->frame_table_len + 1 > f->frame_table_alloc)
     {
     f->frame_table_alloc += 10000;
@@ -432,16 +464,16 @@ static void build_seek_table(flac_t * flac)
 
 static void finalize(flac_t * flac)
   {
-  if(!flac->out)
+  if(!flac->io)
     return;
   
   /* Update stream info */
   
   /* Seek table */
-  if(flac->seektable) // Build seek table
+  if(flac->write_seektable) // Build seek table
     {
     build_seek_table(flac);
-    fseek(flac->out, flac->seektable_start, SEEK_SET);
+    gavf_io_seek(flac->io, flac->seektable_start, SEEK_SET);
     write_seektable(flac->seektable,
                     flac->num_seektable_entries,
                     flac, 1);
@@ -461,24 +493,27 @@ static int close_flac(void * data, int do_delete)
     }
 
   /* Finalize output file */
-  if(flac->out)
+  if(flac->io)
     {
-    if(do_delete)
+    if(do_delete && flac->filename)
       {
-      fclose(flac->out);
-      flac->out = NULL;
+      gavf_io_destroy(flac->io);
+      flac->io = NULL;
       remove(flac->filename);
       }
     else
       {
       finalize(flac);
-      fclose(flac->out);
-      flac->out = NULL;
+      gavf_io_destroy(flac->io);
+      flac->io = NULL;
       }
     }
 
-  free(flac->filename);
-  flac->filename = NULL;
+  if(flac->filename)
+    {
+    free(flac->filename);
+    flac->filename = NULL;
+    }
   
   if(flac->seektable)
     {
@@ -582,6 +617,7 @@ const bg_encoder_plugin_t the_plugin =
     .set_callbacks =       set_callbacks_flac,
     
     .open =                open_flac,
+    .open_io =                open_io_flac,
     
     .get_audio_parameters =    get_audio_parameters_flac,
 
