@@ -224,52 +224,70 @@ static void set_chapters(AVFormatContext * ctx,
 #endif
   }
 
-int bg_ffmpeg_open(void * data, const char * filename,
-                   const gavl_metadata_t * metadata,
-                   const gavl_chapter_list_t * chapter_list)
+static int ffmpeg_open(void * data, const char * filename,
+                       gavf_io_t * io,
+                       const gavl_metadata_t * metadata,
+                       const gavl_chapter_list_t * chapter_list)
   {
   ffmpeg_priv_t * priv;
   AVOutputFormat *fmt;
-  char * tmp_string;
   
   priv = data;
   if(!priv->format)
     return 0;
-
+  
   /* Initialize format context */
   fmt = guess_format(priv->format->short_name, NULL, NULL);
   if(!fmt)
     return 0;
   priv->ctx = avformat_alloc_context();
 
-  if(!strcmp(filename, "-"))
+  if(filename)
     {
-    if(!(priv->format->flags & FLAG_PIPE))
+    if(!strcmp(filename, "-"))
+      {
+      if(!(priv->format->flags & FLAG_PIPE))
+        {
+        bg_log(BG_LOG_ERROR, LOG_DOMAIN, "%s cannot be written to a pipe",
+               priv->format->name);
+        return 0;
+        }
+      strncpy(priv->ctx->filename,
+              "pipe:", sizeof(priv->ctx->filename));
+      }
+    else
+      {
+      char * tmp_string =
+        bg_filename_ensure_extension(filename,
+                                     priv->format->extension);
+
+      if(!bg_encoder_cb_create_output_file(priv->cb, tmp_string))
+        {
+        free(tmp_string);
+        return 0;
+        }
+  
+      strncpy(priv->ctx->filename,
+              tmp_string, sizeof(priv->ctx->filename));
+    
+      free(tmp_string);
+      }
+    }
+  else if(io)
+    {
+    if(!(priv->format->flags & FLAG_PIPE) &&
+       !gavf_io_can_seek(io))
       {
       bg_log(BG_LOG_ERROR, LOG_DOMAIN, "%s cannot be written to a pipe",
              priv->format->name);
       return 0;
       }
-    snprintf(priv->ctx->filename,
-             sizeof(priv->ctx->filename), "pipe:");
+    priv->io = io;
+    priv->ctx->flags |= AVFMT_FLAG_CUSTOM_IO;
     }
   else
-    {
-    tmp_string =
-      bg_filename_ensure_extension(filename,
-                                   priv->format->extension);
-
-    if(!bg_encoder_cb_create_output_file(priv->cb, tmp_string))
-      {
-      free(tmp_string);
-      return 0;
-      }
+    return 0;
   
-    snprintf(priv->ctx->filename,
-             sizeof(priv->ctx->filename), "%s", tmp_string);
-  
-    free(tmp_string);
-    }
   priv->ctx->max_delay = (int)(0.7 * (float)AV_TIME_BASE);
   priv->ctx->oformat = fmt;
     
@@ -281,6 +299,21 @@ int bg_ffmpeg_open(void * data, const char * filename,
   
   return 1;
   }
+
+int bg_ffmpeg_open(void * data, const char * filename,
+                   const gavl_metadata_t * metadata,
+                   const gavl_chapter_list_t * chapter_list)
+  {
+  return ffmpeg_open(data, filename, NULL, metadata, chapter_list);
+  }
+
+int bg_ffmpeg_open_io(void * data, gavf_io_t * io,
+                      const gavl_metadata_t * metadata,
+                      const gavl_chapter_list_t * chapter_list)
+  {
+  return ffmpeg_open(data, NULL, io, metadata, chapter_list);
+  }
+
 
 int bg_ffmpeg_add_audio_stream(void * data,
                                const gavl_metadata_t * m,
@@ -631,6 +664,18 @@ static int open_video_encoder(ffmpeg_priv_t * priv,
   return 1;
   }
 
+#define IO_BUFFER_SIZE 2048 // Too large values increase the latency
+
+static int io_write(void * opaque, uint8_t * buf, int size)
+  {
+  return gavf_io_write_data(opaque, buf, size);
+  }
+
+static int64_t io_seek(void * opaque, int64_t off, int whence)
+  {
+  return gavf_io_seek(opaque, off, whence);
+  }
+
 int bg_ffmpeg_start(void * data)
   {
   ffmpeg_priv_t * priv;
@@ -667,8 +712,19 @@ int bg_ffmpeg_start(void * data)
                               &priv->text_streams[i]);
 
     }
-  
-  if(avio_open(&priv->ctx->pb, priv->ctx->filename, AVIO_FLAG_WRITE) < 0)
+
+  if(priv->io)
+    {
+    priv->io_buffer = av_malloc(IO_BUFFER_SIZE);
+    priv->ctx->pb = avio_alloc_context(priv->io_buffer,
+                                       IO_BUFFER_SIZE,
+                                       1, // write_flag
+                                       priv->io,
+                                       NULL,
+                                       io_write,
+                                       gavf_io_can_seek(priv->io) ? io_seek : NULL);
+    }
+  else if(avio_open(&priv->ctx->pb, priv->ctx->filename, AVIO_FLAG_WRITE) < 0)
     return 0;
   
 #if LIBAVFORMAT_VERSION_MAJOR < 54
@@ -772,7 +828,11 @@ int bg_ffmpeg_close(void * data, int do_delete)
   if(priv->initialized)
     {
     av_write_trailer(priv->ctx);
-    avio_close(priv->ctx->pb);
+    
+    if(priv->io)
+      av_free(priv->ctx->pb);
+    else
+      avio_close(priv->ctx->pb);
     }
 
   // Close the encoders
@@ -799,14 +859,14 @@ int bg_ffmpeg_close(void * data, int do_delete)
       gavl_packet_sink_destroy(st->com.psink);
     }
   
-  if(do_delete)
+  if(do_delete && !priv->io)
     remove(priv->ctx->filename);
+
+  if(priv->io_buffer)
+    av_free(priv->io_buffer);
   
   avformat_free_context(priv->ctx);
-
-
   priv->ctx = NULL;
- 
   
   return 1;
   }

@@ -219,7 +219,16 @@ open_oggvideo(void * data, const char * file,
             const gavl_metadata_t * metadata,
             const gavl_chapter_list_t * chapter_list)
   {
-  return bg_ogg_encoder_open(data, file, metadata, chapter_list,
+  return bg_ogg_encoder_open(data, file, NULL, metadata, chapter_list,
+                             "ogv");
+  }
+
+static int
+open_io_oggvideo(void * data, gavf_io_t * io,
+                 const gavl_metadata_t * metadata,
+                 const gavl_chapter_list_t * chapter_list)
+  {
+  return bg_ogg_encoder_open(data, NULL, io, metadata, chapter_list,
                              "ogv");
   }
 
@@ -280,6 +289,7 @@ const bg_encoder_plugin_t the_plugin =
     .writes_compressed_video = writes_compressed_video_oggvideo,
     
     .open =                open_oggvideo,
+    .open_io =                open_io_oggvideo,
     
     .get_audio_parameters =    get_audio_parameters_oggvideo,
     .get_video_parameters =    get_video_parameters_oggvideo,

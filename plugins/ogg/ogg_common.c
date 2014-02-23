@@ -61,8 +61,12 @@ void bg_ogg_encoder_destroy(void * data)
   {
   int i;
   bg_ogg_encoder_t * e = data;
-  if(e->write_callback_data)
+  
+  if(e->io)
     bg_ogg_encoder_close(e, 1);
+
+  if(e->io_priv)
+    gavf_io_destroy(e->io_priv);
   
   if(e->audio_streams)
     {
@@ -95,6 +99,7 @@ void bg_ogg_encoder_set_callbacks(void * data, bg_encoder_callbacks_t * cb)
   e->cb = cb;
   }
 
+#if 0
 static int write_file(void * priv, const uint8_t * data, int len)
   {
   return fwrite(data,1,len,priv);
@@ -109,9 +114,11 @@ static void close_stdout(void * priv)
   {
   fflush(priv);
   }
+#endif
 
 int
 bg_ogg_encoder_open(void * data, const char * file,
+                    gavf_io_t * io,
                     const gavl_metadata_t * metadata,
                     const gavl_chapter_list_t * chapter_list,
                     const char * ext)
@@ -123,30 +130,35 @@ bg_ogg_encoder_open(void * data, const char * file,
     if(!strcmp(file, "-"))
       {
       /* stdout */
-      e->write_callback_data = stdout;
-      e->close_callback = close_stdout;
+      e->io_priv = gavf_io_create_file(stdout, 1, 0, 0);
       }
     else
       {
+      FILE * f;
+      
       e->filename = bg_filename_ensure_extension(file, ext);
-    
+      
       if(!bg_encoder_cb_create_output_file(e->cb, e->filename))
         return 0;
-    
-      if(!(e->write_callback_data = fopen(e->filename, "w")))
+      
+      if(!(f = fopen(e->filename, "w")))
         {
         bg_log(BG_LOG_ERROR, LOG_DOMAIN, "Cannot open file %s: %s",
                file, strerror(errno));
         return 0;
         }
-      e->close_callback = close_file;
+      e->io_priv = gavf_io_create_file(f, 1, 1, 1);
       }
-    
-    e->write_callback = write_file;
+    e->io = e->io_priv;
     }
-  else if(e->open_callback)
+  else if(io)
     {
-    if(!e->open_callback(e->write_callback_data))
+    e->io = io;
+    }
+  
+  if(e->open_callback)
+    {
+    if(!e->open_callback(e->open_callback_data))
       return 0;
     }
   
@@ -170,11 +182,11 @@ static int bg_ogg_stream_flush_page(bg_ogg_stream_t * s, int force)
     {
     //    fprintf(stderr, "Writing page %d %d %d\n", ogg_page_serialno(&og),
     //            og.header_len, og.body_len);
-
-    if((s->enc->write_callback(s->enc->write_callback_data,
-                               og.header,og.header_len) < og.header_len) ||
-       (s->enc->write_callback(s->enc->write_callback_data,
-                               og.body,og.body_len) < og.body_len))
+    
+    if((gavf_io_write_data(s->enc->io,
+                           og.header,og.header_len) < og.header_len) ||
+       (gavf_io_write_data(s->enc->io,
+                           og.body,og.body_len) < og.body_len))
       return -1;
     else
       return 1;
@@ -554,7 +566,7 @@ int bg_ogg_encoder_close(void * data, int do_delete)
   int i;
   bg_ogg_encoder_t * e = data;
 
-  if(!e->write_callback_data)
+  if(!e->io)
     return 1;
   
   for(i = 0; i < e->num_audio_streams; i++)
@@ -603,9 +615,13 @@ int bg_ogg_encoder_close(void * data, int do_delete)
       s->psink_out = NULL;
       }
     }
+
+  if(e->io_priv)
+    gavf_io_destroy(e->io_priv);
   
-  e->close_callback(e->write_callback_data);
-  e->write_callback_data = NULL;
+  e->io_priv = NULL;
+  e->io = NULL;
+
   if(do_delete && e->filename)
     remove(e->filename);
   return ret;

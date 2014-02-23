@@ -43,6 +43,10 @@ extern const bg_ogg_codec_t bg_vorbis_codec;
 extern const bg_ogg_codec_t bg_speex_codec;
 #endif
 
+#ifdef HAVE_OPUS
+extern const bg_ogg_codec_t bg_opus_codec;
+#endif
+
 #ifdef HAVE_FLAC
 extern const bg_ogg_codec_t bg_flacogg_codec;
 #endif
@@ -50,6 +54,9 @@ extern const bg_ogg_codec_t bg_flacogg_codec;
 static bg_ogg_codec_t const * const audio_codecs[] =
   {
     &bg_vorbis_codec,
+#ifdef HAVE_OPUS
+    &bg_opus_codec,
+#endif
 #ifdef HAVE_SPEEX
     &bg_speex_codec,
 #endif
@@ -134,16 +141,21 @@ static void update_metadata(void * data,
                             const gavl_metadata_t * m)
   {
   bg_ogg_encoder_t * enc = data;
-  bg_shout_update_metadata(enc->write_callback_data, m);
+  bg_shout_update_metadata(enc->open_callback_data, m);
   }
 
 static void * create_b_ogg()
   {
   bg_ogg_encoder_t * ret = bg_ogg_encoder_create();
-  ret->write_callback_data = bg_shout_create(SHOUT_FORMAT_OGG);
+  ret->open_callback_data = bg_shout_create(SHOUT_FORMAT_OGG);
   ret->open_callback = open_callback;
-  ret->write_callback = write_callback;
-  ret->close_callback = close_callback;
+
+  ret->io_priv = gavf_io_create(NULL,
+                                write_callback,
+                                NULL,
+                                close_callback,
+                                NULL,
+                                ret->open_callback_data);
   return ret;
   }
 
@@ -156,7 +168,7 @@ static void set_parameter_b_ogg(void * data, const char * name,
                                 const bg_parameter_value_t * val)
   {
   bg_ogg_encoder_t * enc = data;
-  bg_shout_set_parameter(enc->write_callback_data, name, val);
+  bg_shout_set_parameter(enc->open_callback_data, name, val);
   }
 
 static int
@@ -165,11 +177,11 @@ open_b_ogg(void * data, const char * file,
            const gavl_chapter_list_t * chapter_list)
   {
   bg_ogg_encoder_t * enc = data;
-  if(!bg_ogg_encoder_open(enc, NULL, metadata, chapter_list,
+  if(!bg_ogg_encoder_open(enc, NULL, enc->io_priv, metadata, chapter_list,
                           NULL))
     return 0;
   if(metadata)
-    bg_shout_update_metadata(enc->write_callback_data, metadata);
+    bg_shout_update_metadata(enc->open_callback_data, metadata);
   return 1;
   }
 

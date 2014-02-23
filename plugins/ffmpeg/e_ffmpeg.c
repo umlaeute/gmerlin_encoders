@@ -242,7 +242,8 @@ const bg_encoder_plugin_t the_plugin =
     .set_callbacks =        bg_ffmpeg_set_callbacks,
     
     .open =                 bg_ffmpeg_open,
-
+    .open_io =              bg_ffmpeg_open_io,
+    
     .writes_compressed_audio = bg_ffmpeg_writes_compressed_audio,
     .writes_compressed_video = bg_ffmpeg_writes_compressed_video,
     

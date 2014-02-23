@@ -812,8 +812,7 @@ void bg_ffmpeg_codec_flush(bg_ffmpeg_codec_context_t * ctx)
 
 void bg_ffmpeg_codec_destroy(bg_ffmpeg_codec_context_t * ctx)
   {
-  int result;
-
+  
   if(!(ctx->flags & FLAG_FLUSHED))
     bg_ffmpeg_codec_flush(ctx);
   

@@ -56,7 +56,16 @@ open_flacogg(void * data, const char * file,
              const gavl_metadata_t * metadata,
              const gavl_chapter_list_t * chapter_list)
   {
-  return bg_ogg_encoder_open(data, file, metadata, chapter_list,
+  return bg_ogg_encoder_open(data, file, NULL, metadata, chapter_list,
+                             "ogg");
+  }
+
+static int
+open_io_flacogg(void * data, gavf_io_t * io,
+                const gavl_metadata_t * metadata,
+                const gavl_chapter_list_t * chapter_list)
+  {
+  return bg_ogg_encoder_open(data, NULL, io, metadata, chapter_list,
                              "ogg");
   }
 
@@ -85,6 +94,7 @@ const bg_encoder_plugin_t the_plugin =
     .set_callbacks =       bg_ogg_encoder_set_callbacks,
     
     .open =                open_flacogg,
+    .open_io =                open_io_flacogg,
     
     .get_audio_parameters =    get_audio_parameters_flacogg,
 

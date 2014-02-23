@@ -78,6 +78,7 @@ const bg_encoder_plugin_t the_plugin =
     .set_callbacks =        bg_ffmpeg_set_callbacks,
     
     .open =                 bg_ffmpeg_open,
+    .open_io =                 bg_ffmpeg_open_io,
     
     
     .add_video_stream =     bg_ffmpeg_add_video_stream,

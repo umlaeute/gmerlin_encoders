@@ -143,11 +143,13 @@ struct bg_ogg_encoder_s
 
   bg_encoder_callbacks_t * cb;
 
-  void * write_callback_data;
-  int (*write_callback)(void * priv, const uint8_t * data, int len);
-  void (*close_callback)(void * priv);
-  int (*open_callback)(void * priv);
+  gavf_io_t * io_priv;
+  gavf_io_t * io;
   
+  //  int (*write_callback)(void * priv, const uint8_t * data, int len);
+  //  void (*close_callback)(void * priv);
+  int (*open_callback)(void * priv);
+  void * open_callback_data;
   };
 
 void * bg_ogg_encoder_create(void);
@@ -156,6 +158,7 @@ void bg_ogg_encoder_set_callbacks(void *, bg_encoder_callbacks_t * cb);
 
 
 int bg_ogg_encoder_open(void *, const char * file,
+                        gavf_io_t * io,
                         const gavl_metadata_t * metadata,
                         const gavl_chapter_list_t * chapter_list,
                         const char * ext);

@@ -95,7 +95,7 @@ static const bg_parameter_info_t parameters[] =
       .long_name =   TRS("Object type"),
       .type =        BG_PARAMETER_STRINGLIST,
       .val_default = { .val_str =  "mpeg4_main" },
-      .multi_names = (char const *[]){ "mpeg2_main",
+      .multi_names = (char const *[]){ "mpeg4_lc",
                               "mpeg2_lc",
                               "mpeg4_main",
                               "mpeg4_lc",

@@ -227,8 +227,6 @@ static int
 writes_compressed_audio_lame(void * data, const gavl_audio_format_t * format,
                              const gavl_compression_info_t * ci)
   {
-  lame_priv_t * lame = data;
-
   if(ci->id != GAVL_CODEC_ID_MP3)
     return 0;
 #if 0  
