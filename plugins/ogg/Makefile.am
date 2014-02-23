@@ -142,9 +142,9 @@ $(top_builddir)/lib/libgmerlin_encoders.la \
 $(bgflac_libs)
 
 
-b_ogg_la_CFLAGS = @THEORAENC_CFLAGS@ @THEORADEC_LIBS@ @VORBIS_CFLAGS@ @SPEEX_CFLAGS@  $(AM_CFLAGS)
-b_ogg_la_SOURCES = b_ogg.c vorbis.c $(speex_sources) theora.c ogg_common.c
-b_ogg_la_LIBADD = @GMERLIN_DEP_LIBS@ $(top_builddir)/lib/libgmerlin_encoders.la @VORBISENC_LIBS@ @VORBIS_LIBS@ @THEORAENC_LIBS@ @THEORADEC_LIBS@ @SPEEX_LIBS@ $(bgshout_libs)
+b_ogg_la_CFLAGS = @THEORAENC_CFLAGS@ @THEORADEC_LIBS@ @VORBIS_CFLAGS@ @OPUS_CFLAGS@ @SPEEX_CFLAGS@  $(AM_CFLAGS)
+b_ogg_la_SOURCES = b_ogg.c vorbis.c $(speex_sources) $(opus_sources) theora.c ogg_common.c
+b_ogg_la_LIBADD = @GMERLIN_DEP_LIBS@ $(top_builddir)/lib/libgmerlin_encoders.la @VORBISENC_LIBS@ @VORBIS_LIBS@ @THEORAENC_LIBS@ @THEORADEC_LIBS@ @SPEEX_LIBS@ @OPUS_LIBS@ $(bgshout_libs)
 
 e_speex_la_CFLAGS = @SPEEX_CFLAGS@ $(AM_CFLAGS)
 e_speex_la_SOURCES = e_speex.c speex.c ogg_common.c
