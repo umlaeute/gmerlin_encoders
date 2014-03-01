@@ -28,7 +28,7 @@
 
 #define CODEC_NAME "c_ffmpeg_jpeg"
 #define CODEC_LONG_NAME TRS("JPEG")
-#define CODEC_ID CODEC_ID_MJPEG
+#define CODEC_ID AV_CODEC_ID_MJPEG
 #define COMPRESSION GAVL_CODEC_ID_JPEG
 
 #define CODEC_DESC TRS("libavcodec JPEG encoder")

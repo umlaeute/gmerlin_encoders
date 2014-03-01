@@ -28,7 +28,7 @@
 
 #define CODEC_NAME "c_ffmpeg_vp8"
 #define CODEC_LONG_NAME TRS("VP8")
-#define CODEC_ID CODEC_ID_VP8
+#define CODEC_ID AV_CODEC_ID_VP8
 #define COMPRESSION GAVL_CODEC_ID_VP8
 
 #define CODEC_DESC TRS("libavcodec VP8 encoder (based on libvpx)")

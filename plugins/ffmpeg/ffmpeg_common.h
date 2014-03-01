@@ -42,7 +42,7 @@ typedef struct
   {
   char * name;
   char * long_name;
-  enum CodecID id;
+  enum AVCodecID id;
   const bg_parameter_info_t * parameters;
 
   int flags;
@@ -58,8 +58,8 @@ typedef struct
   int max_audio_streams;
   int max_video_streams;
   
-  const enum CodecID * audio_codecs;
-  const enum CodecID * video_codecs;
+  const enum AVCodecID * audio_codecs;
+  const enum AVCodecID * video_codecs;
   
   int flags;
   
@@ -82,22 +82,22 @@ bg_ffmpeg_set_codec_parameter(AVCodecContext * ctx,
                               const char * name,
                               const bg_parameter_value_t * val);
 
-enum CodecID
+enum AVCodecID
 bg_ffmpeg_find_audio_encoder(const ffmpeg_format_info_t * format,
                              const char * name);
 
-enum CodecID
+enum AVCodecID
 bg_ffmpeg_find_video_encoder(const ffmpeg_format_info_t * format,
                              const char * name);
 
 const char *
-bg_ffmpeg_get_codec_name(enum CodecID id);
+bg_ffmpeg_get_codec_name(enum AVCodecID id);
 
 const bg_parameter_info_t *
-bg_ffmpeg_get_codec_parameters(enum CodecID id, int type);
+bg_ffmpeg_get_codec_parameters(enum AVCodecID id, int type);
 
 const ffmpeg_codec_info_t *
-bg_ffmpeg_get_codec_info(enum CodecID id, int type);
+bg_ffmpeg_get_codec_info(enum AVCodecID id, int type);
 
 
 /*
@@ -124,7 +124,7 @@ void bg_ffmpeg_set_audio_format(AVCodecContext * avctx,
 
 bg_ffmpeg_codec_context_t * bg_ffmpeg_codec_create(int type,
                                                    AVCodecContext * avctx,
-                                                   enum CodecID id,
+                                                   enum AVCodecID id,
                                                    const ffmpeg_format_info_t * format);
 
 const bg_parameter_info_t * bg_ffmpeg_codec_get_parameters(bg_ffmpeg_codec_context_t * ctx);
@@ -323,8 +323,8 @@ void bg_ffmpeg_choose_pixelformat(const enum PixelFormat * supported,
 gavl_sample_format_t bg_sample_format_ffmpeg_2_gavl(enum AVSampleFormat p,
                                                     gavl_interleave_mode_t * il);
 
-enum CodecID bg_codec_id_gavl_2_ffmpeg(gavl_codec_id_t gavl);
-gavl_codec_id_t bg_codec_id_ffmpeg_2_gavl(enum CodecID ffmpeg);
+enum AVCodecID bg_codec_id_gavl_2_ffmpeg(gavl_codec_id_t gavl);
+gavl_codec_id_t bg_codec_id_ffmpeg_2_gavl(enum AVCodecID ffmpeg);
 
 uint64_t
 bg_ffmpeg_get_channel_layout(gavl_audio_format_t * format);

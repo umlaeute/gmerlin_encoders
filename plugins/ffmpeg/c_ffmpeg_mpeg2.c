@@ -28,7 +28,7 @@
 
 #define CODEC_NAME "c_ffmpeg_mpeg2"
 #define CODEC_LONG_NAME TRS("MPEG-2")
-#define CODEC_ID CODEC_ID_MPEG2VIDEO
+#define CODEC_ID AV_CODEC_ID_MPEG2VIDEO
 #define COMPRESSION GAVL_CODEC_ID_MPEG2
 
 #define CODEC_DESC TRS("libavcodec MPEG-2 encoder")

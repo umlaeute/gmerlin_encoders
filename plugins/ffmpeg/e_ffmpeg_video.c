@@ -32,8 +32,8 @@ static const ffmpeg_format_info_t formats[] =
       .short_name = "mpeg1video",
       .extension =  "m1v",
       .max_video_streams = 1,
-      .video_codecs = (enum CodecID[]){  CODEC_ID_MPEG1VIDEO,
-                                       CODEC_ID_NONE },
+      .video_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MPEG1VIDEO,
+                                           AV_CODEC_ID_NONE },
       .flags = FLAG_CONSTANT_FRAMERATE | FLAG_PIPE,
     },
     {
@@ -41,8 +41,8 @@ static const ffmpeg_format_info_t formats[] =
       .short_name = "mpeg2video",
       .extension =  "m2v",
       .max_video_streams = 1,
-      .video_codecs = (enum CodecID[]){  CODEC_ID_MPEG2VIDEO,
-                                       CODEC_ID_NONE },
+      .video_codecs = (enum AVCodecID[]){  AV_CODEC_ID_MPEG2VIDEO,
+                                         AV_CODEC_ID_NONE },
       .flags = FLAG_CONSTANT_FRAMERATE | FLAG_PIPE,
     },
     { /* End of formats */ }

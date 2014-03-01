@@ -28,7 +28,7 @@
 
 #define CODEC_NAME "c_ffmpeg_x264"
 #define CODEC_LONG_NAME TRS("H.264")
-#define CODEC_ID CODEC_ID_H264
+#define CODEC_ID AV_CODEC_ID_H264
 #define COMPRESSION GAVL_CODEC_ID_H264
 
 #define CODEC_DESC TRS("libavcodec H.264 encoder")

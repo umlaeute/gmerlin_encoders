@@ -62,7 +62,7 @@ struct bg_ffmpeg_codec_context_s
   /* Only non-null within the format writer */
   const ffmpeg_format_info_t * format;
 
-  enum CodecID id;
+  enum AVCodecID id;
 
   int flags;
   
@@ -105,7 +105,7 @@ get_pixelformat_converter(bg_ffmpeg_codec_context_t * ctx, enum PixelFormat fmt,
 
 static int find_encoder(bg_ffmpeg_codec_context_t * ctx)
   {
-  if(ctx->id == CODEC_ID_NONE)
+  if(ctx->id == AV_CODEC_ID_NONE)
     return 0;
 
   if(ctx->codec)
@@ -127,12 +127,12 @@ static int find_encoder(bg_ffmpeg_codec_context_t * ctx)
 /*
  *  Create a codec context.
  *  If avctx is NULL, it will be created and destroyed.
- *  If id is CODEC_ID_NONE, a "codec" parameter will be supported
+ *  If id is AV_CODEC_ID_NONE, a "codec" parameter will be supported
  */
 
 bg_ffmpeg_codec_context_t * bg_ffmpeg_codec_create(int type,
                                                    AVCodecContext * avctx,
-                                                   enum CodecID id,
+                                                   enum AVCodecID id,
                                                    const ffmpeg_format_info_t * format)
   {
   bg_ffmpeg_codec_context_t * ret;
@@ -191,7 +191,7 @@ void bg_ffmpeg_codec_set_parameter(bg_ffmpeg_codec_context_t * ctx,
       ctx->id = bg_ffmpeg_find_video_encoder(ctx->format, v->val_str);
     else
       ctx->id = bg_ffmpeg_find_audio_encoder(ctx->format, v->val_str);
-    if(ctx->id == CODEC_ID_NONE)
+    if(ctx->id == AV_CODEC_ID_NONE)
       {
       bg_log(BG_LOG_ERROR, LOG_DOMAIN,
              "Codec %s is not available in libavcodec or not supported in the container",
@@ -383,20 +383,20 @@ gavl_audio_sink_t * bg_ffmpeg_codec_open_audio(bg_ffmpeg_codec_context_t * ctx,
   /* Set codec specific stuff */
   switch(ctx->avctx->codec_id)
     {
-    case CODEC_ID_PCM_S16BE:
-    case CODEC_ID_PCM_S16LE:
+    case AV_CODEC_ID_PCM_S16BE:
+    case AV_CODEC_ID_PCM_S16LE:
       ctx->avctx->bit_rate =
         ctx->afmt.samplerate * ctx->afmt.num_channels * 16;
       break;
-    case CODEC_ID_PCM_S8:
-    case CODEC_ID_PCM_U8:
-    case CODEC_ID_PCM_ALAW:
-    case CODEC_ID_PCM_MULAW:
+    case AV_CODEC_ID_PCM_S8:
+    case AV_CODEC_ID_PCM_U8:
+    case AV_CODEC_ID_PCM_ALAW:
+    case AV_CODEC_ID_PCM_MULAW:
       ctx->avctx->bit_rate =
         ctx->afmt.samplerate * ctx->afmt.num_channels * 8;
       break;
-    case CODEC_ID_AAC:
-    case CODEC_ID_VORBIS:
+    case AV_CODEC_ID_AAC:
+    case AV_CODEC_ID_VORBIS:
       if(!ctx->avctx->bit_rate)
         ctx->avctx->flags |= CODEC_FLAG_QSCALE;
       break;
@@ -462,8 +462,8 @@ gavl_audio_sink_t * bg_ffmpeg_codec_open_audio(bg_ffmpeg_codec_context_t * ctx,
     {
     switch(ctx->avctx->codec_id)
       {
-      case CODEC_ID_MP2:
-      case CODEC_ID_AC3:
+      case AV_CODEC_ID_MP2:
+      case AV_CODEC_ID_AC3:
         ci->bitrate = ctx->avctx->bit_rate;
         break;
       default:
@@ -534,7 +534,7 @@ static int flush_video(bg_ffmpeg_codec_context_t * ctx,
       ctx->gp.pts *= ctx->vfmt.frame_duration;
     
     /* Detect VP8 alternate reference frames */
-    if((ctx->id == CODEC_ID_VP8) &&
+    if((ctx->id == AV_CODEC_ID_VP8) &&
        !(ctx->gp.data[0] & 0x10))
       ctx->gp.flags |= GAVL_PACKET_NOOUTPUT; 
     else

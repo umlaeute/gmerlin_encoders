@@ -336,7 +336,7 @@ int bg_ffmpeg_add_audio_stream(void * data,
   st->com.stream = avformat_new_stream(priv->ctx, NULL);
   st->com.codec = bg_ffmpeg_codec_create(AVMEDIA_TYPE_AUDIO,
                                          st->com.stream->codec,
-                                         CODEC_ID_NONE,
+                                         AV_CODEC_ID_NONE,
                                          priv->format);
   
   /* Set language */
@@ -370,7 +370,7 @@ int bg_ffmpeg_add_video_stream(void * data,
   st->com.stream = avformat_new_stream(priv->ctx, NULL);
   st->com.codec = bg_ffmpeg_codec_create(AVMEDIA_TYPE_VIDEO,
                                          st->com.stream->codec,
-                                         CODEC_ID_NONE,
+                                         AV_CODEC_ID_NONE,
                                          priv->format);
   st->com.ffmpeg = priv;
   st->dts = GAVL_TIME_UNDEFINED;
@@ -441,7 +441,7 @@ int bg_ffmpeg_add_text_stream(void * data,
     av_dict_set(&st->com.stream->metadata, "language", lang, 0);
 
   st->com.stream->codec->codec_type = AVMEDIA_TYPE_SUBTITLE;
-  st->com.stream->codec->codec_id = CODEC_ID_TEXT;
+  st->com.stream->codec->codec_id = AV_CODEC_ID_TEXT;
 
   st->com.stream->codec->time_base.num = 1;
   st->com.stream->codec->time_base.den = *timescale;
@@ -876,13 +876,13 @@ int bg_ffmpeg_writes_compressed_audio(void * priv,
                                       const gavl_compression_info_t * info)
   {
   int i;
-  enum CodecID ffmpeg_id;
+  enum AVCodecID ffmpeg_id;
   ffmpeg_priv_t * f = priv;
   
   ffmpeg_id = bg_codec_id_gavl_2_ffmpeg(info->id);
   
   i = 0;
-  while(f->format->audio_codecs[i] != CODEC_ID_NONE)
+  while(f->format->audio_codecs[i] != AV_CODEC_ID_NONE)
     {
     if(f->format->audio_codecs[i] == ffmpeg_id)
       return 1;
@@ -897,13 +897,13 @@ int bg_ffmpeg_writes_compressed_video(void * priv,
                                       const gavl_compression_info_t * info)
   {
   int i;
-  enum CodecID ffmpeg_id;
+  enum AVCodecID ffmpeg_id;
   ffmpeg_priv_t * f = priv;
 
   ffmpeg_id = bg_codec_id_gavl_2_ffmpeg(info->id);
 
   i = 0;
-  while(f->format->video_codecs[i] != CODEC_ID_NONE)
+  while(f->format->video_codecs[i] != AV_CODEC_ID_NONE)
     {
     if(f->format->video_codecs[i] == ffmpeg_id)
       return 1;

@@ -28,7 +28,7 @@
 
 #define CODEC_NAME "c_ffmpeg_mpeg1"
 #define CODEC_LONG_NAME TRS("MPEG-1")
-#define CODEC_ID CODEC_ID_MPEG1VIDEO
+#define CODEC_ID AV_CODEC_ID_MPEG1VIDEO
 #define COMPRESSION GAVL_CODEC_ID_MPEG1
 
 #define CODEC_DESC TRS("libavcodec MPEG-1 encoder")

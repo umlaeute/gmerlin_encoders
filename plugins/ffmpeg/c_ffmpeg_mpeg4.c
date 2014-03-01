@@ -28,7 +28,7 @@
 
 #define CODEC_NAME "c_ffmpeg_mpeg4"
 #define CODEC_LONG_NAME TRS("MPEG-4")
-#define CODEC_ID CODEC_ID_MPEG4
+#define CODEC_ID AV_CODEC_ID_MPEG4
 #define COMPRESSION GAVL_CODEC_ID_MPEG4_ASP
 
 #define CODEC_DESC TRS("libavcodec MPEG-4 encoder")
