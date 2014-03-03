@@ -320,7 +320,7 @@ static int open_flac(void * data, const char * filename,
     if(!bg_encoder_cb_create_output_file(flac->cb, flac->filename))
       return 0;
     out = fopen(flac->filename, "wb");
-    io = gavf_io_create_file(stdout, 1, 1, 1);
+    io = gavf_io_create_file(out, 1, 1, 1);
     }
 
   return open_io_flac(data, io, m, chapter_list);
