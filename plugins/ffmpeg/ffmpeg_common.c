@@ -507,7 +507,7 @@ write_video_packet_func(void * priv, gavl_packet_t * packet)
   bg_ffmpeg_video_stream_t * st = priv;
   ffmpeg_priv_t * f = st->com.ffmpeg;
   
-//  fprintf(stderr, "write video packet\n");
+  //  fprintf(stderr, "write video packet\n");
   //  gavl_packet_dump(packet);
   
   if(packet->pts == GAVL_TIME_UNDEFINED)
@@ -517,7 +517,10 @@ write_video_packet_func(void * priv, gavl_packet_t * packet)
   pkt.data = packet->data;
   pkt.size = packet->data_len;
 
-  pkt.pts= rescale_video_timestamp(st, packet->pts);
+  pkt.pts = rescale_video_timestamp(st, packet->pts);
+
+  //  fprintf(stderr, "PTS: %"PRId64"\n", pkt.pts);
+
   pkt.duration = rescale_video_timestamp(st, packet->duration);
   
   if(st->com.ci.flags & GAVL_COMPRESSION_HAS_B_FRAMES)
@@ -554,7 +557,9 @@ write_audio_packet_func(void * data, gavl_packet_t * packet)
   bg_ffmpeg_audio_stream_t * st = data;
   f = st->com.ffmpeg;
 
-//  fprintf(stderr, "write_audio_packet\n"); 
+  //  fprintf(stderr, "write_audio_packet\n"); 
+  //  gavl_packet_dump(packet);
+
   if(packet->pts == GAVL_TIME_UNDEFINED)
     return 1; // Drop undecodable packet
   
@@ -657,8 +662,8 @@ static int open_video_encoder(ffmpeg_priv_t * priv,
   st->com.stream->sample_aspect_ratio.num = st->com.stream->codec->sample_aspect_ratio.num;
   st->com.stream->sample_aspect_ratio.den = st->com.stream->codec->sample_aspect_ratio.den;
 
-  fprintf(stderr, "Opened video encoder\n");
-  gavl_compression_info_dump(&st->com.ci);
+  //  fprintf(stderr, "Opened video encoder\n");
+  //  gavl_compression_info_dump(&st->com.ci);
   
   st->com.flags |= STREAM_ENCODER_INITIALIZED;
   return 1;
