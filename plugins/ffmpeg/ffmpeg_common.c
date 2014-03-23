@@ -31,8 +31,10 @@
 
 #include <gavl/metatags.h>
 
-
 #define LOG_DOMAIN "ffmpeg"
+
+#define DUMP_AUDIO_PACKETS
+#define DUMP_VIDEO_PACKETS
 
 static bg_parameter_info_t *
 create_format_parameters(const ffmpeg_format_info_t * formats)
@@ -506,9 +508,11 @@ write_video_packet_func(void * priv, gavl_packet_t * packet)
   AVPacket pkt;
   bg_ffmpeg_video_stream_t * st = priv;
   ffmpeg_priv_t * f = st->com.ffmpeg;
-  
-  //  fprintf(stderr, "write video packet\n");
-  //  gavl_packet_dump(packet);
+
+#ifdef DUMP_VIDEO_PACKETS  
+  bg_dprintf("write_video_packet\n");
+  gavl_packet_dump(packet);
+#endif
   
   if(packet->pts == GAVL_TIME_UNDEFINED)
     return 1; // Drop undecodable packet
@@ -557,9 +561,11 @@ write_audio_packet_func(void * data, gavl_packet_t * packet)
   bg_ffmpeg_audio_stream_t * st = data;
   f = st->com.ffmpeg;
 
-  //  fprintf(stderr, "write_audio_packet\n"); 
-  //  gavl_packet_dump(packet);
-
+#ifdef DUMP_AUDIO_PACKETS  
+  bg_dprintf("write_audio_packet\n");
+  gavl_packet_dump(packet);
+#endif
+  
   if(packet->pts == GAVL_TIME_UNDEFINED)
     return 1; // Drop undecodable packet
   
