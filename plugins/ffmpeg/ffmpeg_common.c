@@ -33,8 +33,8 @@
 
 #define LOG_DOMAIN "ffmpeg"
 
-#define DUMP_AUDIO_PACKETS
-#define DUMP_VIDEO_PACKETS
+// #define DUMP_AUDIO_PACKETS
+// #define DUMP_VIDEO_PACKETS
 
 static bg_parameter_info_t *
 create_format_parameters(const ffmpeg_format_info_t * formats)
@@ -526,7 +526,7 @@ write_video_packet_func(void * priv, gavl_packet_t * packet)
   //  fprintf(stderr, "PTS: %"PRId64"\n", pkt.pts);
 
   pkt.duration = rescale_video_timestamp(st, packet->duration);
-  
+
   if(st->com.ci.flags & GAVL_COMPRESSION_HAS_B_FRAMES)
     {
     if(st->dts == GAVL_TIME_UNDEFINED)

@@ -151,6 +151,7 @@ static const ffmpeg_format_info_t formats[] =
                                           AV_CODEC_ID_AC3,
                                           AV_CODEC_ID_VORBIS,
                                           AV_CODEC_ID_DTS,
+                                          AV_CODEC_ID_AAC,
                                           AV_CODEC_ID_NONE },
       
       .video_codecs = (enum AVCodecID[]){ AV_CODEC_ID_H264,
