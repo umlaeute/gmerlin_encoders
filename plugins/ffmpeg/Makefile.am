@@ -1,6 +1,6 @@
 gmerlin_plugindir = @gmerlin_plugindir@
 
-INCLUDES = -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/include
 
 AM_LDFLAGS = @GMERLIN_PLUGIN_LDFLAGS@ -avoid-version -module
 AM_CFLAGS = @GMERLIN_DEP_CFLAGS@ @AVFORMAT_CFLAGS@ @AVCODEC_CFLAGS@ -DLOCALE_DIR=\"$(localedir)\"
