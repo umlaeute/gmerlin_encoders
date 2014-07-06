@@ -161,7 +161,7 @@ dnl
 dnl CFLAGS
 dnl
 
-LQT_OPT_CFLAGS($host_cpu, ["-O3 -fomit-frame-pointer -ffast-math"])
+LQT_OPT_CFLAGS(["-O3 -fomit-frame-pointer -ffast-math"])
 
 CFLAGS="$CFLAGS -D_REENTRANT -D_FILE_OFFSET_BITS=64 $OPT_CFLAGS $GMERLIN_CFLAGS"
 
