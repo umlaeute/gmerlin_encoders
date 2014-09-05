@@ -319,7 +319,12 @@ static int open_flac(void * data, const char * filename,
     flac->filename = bg_filename_ensure_extension(filename, "flac");
     if(!bg_encoder_cb_create_output_file(flac->cb, flac->filename))
       return 0;
-    out = fopen(flac->filename, "wb");
+    
+    if(!(out = fopen(flac->filename, "wb")))
+      {
+      bg_log(BG_LOG_ERROR, LOG_DOMAIN, "Cannot open %s: %s",
+             flac->filename, strerror(errno));
+      }
     io = gavf_io_create_file(out, 1, 1, 1);
     }
 
