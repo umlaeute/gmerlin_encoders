@@ -35,6 +35,7 @@
 
 // #define DUMP_AUDIO_PACKETS
 // #define DUMP_VIDEO_PACKETS
+// #define DUMP_TEXT_PACKETS
 
 static bg_parameter_info_t *
 create_format_parameters(const ffmpeg_format_info_t * formats)
@@ -394,6 +395,12 @@ write_text_packet_func(void * data, gavl_packet_t * p)
   bg_ffmpeg_text_stream_t * st = data;
 
   ffmpeg_priv_t * priv = st->com.ffmpeg;
+
+#ifdef DUMP_TEXT_PACKETS  
+  bg_dprintf("write_text_packet\n");
+  gavl_packet_dump(p);
+#endif
+
   
   av_init_packet(&pkt);
   
