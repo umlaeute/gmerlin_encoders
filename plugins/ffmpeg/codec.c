@@ -587,11 +587,11 @@ write_video_func(void * data, gavl_video_frame_t * frame)
     bg_log(BG_LOG_ERROR, LOG_DOMAIN, "PTS cache full");
     return GAVL_SINK_ERROR;
     }
-  ctx->frame->pts = frame->timestamp;
 
   if(ctx->convert_frame)
     ctx->convert_frame(ctx, frame);
-  
+
+  ctx->frame->pts = frame->timestamp;
   if(ctx->vfmt.framerate_mode == GAVL_FRAMERATE_CONSTANT)
     ctx->frame->pts /= ctx->vfmt.frame_duration;
   
@@ -601,7 +601,10 @@ write_video_func(void * data, gavl_video_frame_t * frame)
   ctx->frame->linesize[0] = frame->strides[0];
   ctx->frame->linesize[1] = frame->strides[1];
   ctx->frame->linesize[2] = frame->strides[2];
-  
+ 
+//  ctx->frame->width  = ctx->vfmt.image_width;
+//  ctx->frame->height = ctx->vfmt.image_height;
+ 
   flush_video(ctx, ctx->frame);
 
   if(ctx->flags & FLAG_ERROR)
@@ -767,7 +770,11 @@ gavl_video_sink_t * bg_ffmpeg_codec_open_video(bg_ffmpeg_codec_context_t * ctx,
       }
     }
 
-  
+  ctx->frame->width  = ctx->vfmt.image_width;
+  ctx->frame->height = ctx->vfmt.image_height;
+ 
+  ctx->frame->format = ctx->avctx->pix_fmt;
+ 
   ctx->flags |= FLAG_INITIALIZED;
   
   return ctx->vsink;

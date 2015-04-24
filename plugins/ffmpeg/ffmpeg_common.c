@@ -454,6 +454,10 @@ int bg_ffmpeg_add_text_stream(void * data,
 
   st->com.stream->codec->time_base.num = 1;
   st->com.stream->codec->time_base.den = *timescale;
+
+  st->com.stream->time_base.num = st->com.stream->codec->time_base.num;
+  st->com.stream->time_base.den = st->com.stream->codec->time_base.den;
+
   st->com.ffmpeg = priv;
   
   priv->num_text_streams++;
@@ -650,6 +654,8 @@ static void set_framerate(bg_ffmpeg_video_stream_t * st)
     st->com.stream->codec->time_base.den = st->format.timescale;
     st->com.stream->codec->time_base.num = 1;
     }
+  st->com.stream->time_base.num = st->com.stream->codec->time_base.num;
+  st->com.stream->time_base.den = st->com.stream->codec->time_base.den;
   }
 
 static int open_video_encoder(ffmpeg_priv_t * priv,
@@ -674,6 +680,10 @@ static int open_video_encoder(ffmpeg_priv_t * priv,
 
   st->com.stream->sample_aspect_ratio.num = st->com.stream->codec->sample_aspect_ratio.num;
   st->com.stream->sample_aspect_ratio.den = st->com.stream->codec->sample_aspect_ratio.den;
+
+  st->com.stream->time_base.num = st->com.stream->codec->time_base.num;
+  st->com.stream->time_base.den = st->com.stream->codec->time_base.den;
+
 
   //  fprintf(stderr, "Opened video encoder\n");
   //  gavl_compression_info_dump(&st->com.ci);
@@ -969,6 +979,10 @@ bg_ffmpeg_add_audio_stream_compressed(void * priv,
 
   st->com.stream->codec->time_base.num = 1;
   st->com.stream->codec->time_base.den = st->format.samplerate;
+
+  st->com.stream->time_base.num = st->com.stream->codec->time_base.num;
+  st->com.stream->time_base.den = st->com.stream->codec->time_base.den;
+
   if(st->com.ci.bitrate)
     {
     st->com.stream->codec->bit_rate = st->com.ci.bitrate;
