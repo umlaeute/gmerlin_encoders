@@ -34,7 +34,7 @@
 #define LOG_DOMAIN "ffmpeg"
 
 // #define DUMP_AUDIO_PACKETS
-#define DUMP_VIDEO_PACKETS
+// #define DUMP_VIDEO_PACKETS
 // #define DUMP_TEXT_PACKETS
 
 static bg_parameter_info_t *
@@ -195,10 +195,13 @@ static void set_metadata(ffmpeg_priv_t * priv,
   }
 
 static void set_chapters(AVFormatContext * ctx,
-                         const gavl_chapter_list_t * chapter_list)
+                         const gavl_chapter_list_t * chapter_list,
+                         const gavl_metadata_t * m)
   {
 #if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(51,5,0)
   int i;
+  gavl_time_t dur;
+  
   if(!chapter_list || !chapter_list->num_chapters)
     return;
   
@@ -214,7 +217,11 @@ static void set_chapters(AVFormatContext * ctx,
     ctx->chapters[i]->start = chapter_list->chapters[i].time;
     if(i < chapter_list->num_chapters - 1)
       ctx->chapters[i]->end = chapter_list->chapters[i+1].time;
-    
+    else
+      {
+      if(gavl_metadata_get_long(m, GAVL_META_APPROX_DURATION, &dur))
+        ctx->chapters[i]->end = gavl_time_scale(chapter_list->timescale, dur);
+      }
     if(chapter_list->chapters[i].name)
       av_dict_set(&ctx->chapters[i]->metadata,
                   "title", chapter_list->chapters[i].name, 0);
@@ -298,7 +305,9 @@ static int ffmpeg_open(void * data, const char * filename,
 
   if(metadata)
     set_metadata(priv, metadata);
-  set_chapters(priv->ctx, chapter_list);
+
+  if(metadata && chapter_list)
+    set_chapters(priv->ctx, chapter_list, metadata);
   
   return 1;
   }

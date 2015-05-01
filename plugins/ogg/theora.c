@@ -340,7 +340,6 @@ static gavl_sink_status_t
 write_video_frame_theora(void * data, gavl_video_frame_t * frame)
   {
   theora_t * theora;
-  int result;
   int i;
   ogg_packet op;
   gavl_packet_t gp;
@@ -386,7 +385,7 @@ write_video_frame_theora(void * data, gavl_video_frame_t * frame)
     }
 #endif
   
-  result = th_encode_ycbcr_in(theora->ts, theora->buf);
+  th_encode_ycbcr_in(theora->ts, theora->buf);
 
 #ifdef THEORA_1_1
   /* Output pass data */
