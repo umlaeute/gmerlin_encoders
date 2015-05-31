@@ -125,6 +125,11 @@ void bg_ogg_packet_from_gavl(bg_ogg_stream_t * s,
                              gavl_packet_t * src,
                              ogg_packet * dst);
 
+/* Chaining support */
+void bg_ogg_stream_reset(bg_ogg_stream_t * s, long serialno);
+
+void bg_ogg_encoder_update_metadata(void * priv, const gavl_metadata_t * new_metadata);
+
 struct bg_ogg_encoder_s
   {
   int num_audio_streams;

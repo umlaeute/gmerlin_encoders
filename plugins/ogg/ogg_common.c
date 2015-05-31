@@ -426,16 +426,6 @@ int bg_ogg_encoder_set_video_pass(void * data, int stream,
   return 1;
   }
 
-#if 0
-static gavl_sink_status_t
-write_packet_func(void * data, gavl_packet_t*p)
-  {
-  bg_ogg_stream_t * s = data;
-  return s->codec->write_packet(s->codec_priv, p) ? GAVL_SINK_OK :
-    GAVL_SINK_ERROR;
-  }
-#endif
-
 static int start_audio(bg_ogg_encoder_t * e, int stream)
   {
   bg_ogg_stream_t * s = &e->audio_streams[stream];
@@ -558,6 +548,40 @@ bg_ogg_encoder_get_video_packet_sink(void * data, int stream)
   {
   bg_ogg_encoder_t * e = data;
   return e->video_streams[stream].psink_out;
+  }
+
+void bg_ogg_encoder_update_metadata(void * data, const gavl_metadata_t * new_metadata)
+  {
+  int i;
+
+  bg_ogg_encoder_t * e = data;
+  
+  e->serialno = rand();
+  gavl_metadata_merge2(&e->metadata, new_metadata);
+  
+  for(i = 0; i < e->num_audio_streams; i++)
+    {
+    bg_ogg_stream_t * s = &e->audio_streams[i];
+    bg_ogg_stream_reset(s, e->serialno++);
+    }
+  for(i = 0; i < e->num_video_streams; i++)
+    {
+    bg_ogg_stream_t * s = &e->video_streams[i];
+    bg_ogg_stream_reset(s, e->serialno++);
+    }
+  
+  /* Re-write header packets */
+  for(i = 0; i < e->num_audio_streams; i++)
+    {
+    bg_ogg_stream_t * s = &e->audio_streams[i];
+    bg_ogg_stream_flush(s, 1);
+    }
+  for(i = 0; i < e->num_video_streams; i++)
+    {
+    bg_ogg_stream_t * s = &e->video_streams[i];
+    bg_ogg_stream_flush(s, 1);
+    }
+  
   }
 
 int bg_ogg_encoder_close(void * data, int do_delete)
@@ -779,4 +803,14 @@ void bg_ogg_set_vorbis_channel_setup(gavl_audio_format_t * format)
       format->channel_locations[7] =  GAVL_CHID_LFE;
       break;
     }
+  }
+
+void bg_ogg_stream_reset(bg_ogg_stream_t * s, long serialno)
+  {
+  flush_stream(s);
+  s->packetno = 0;
+  s->num_headers = 0;
+  ogg_stream_clear(&s->os);
+  ogg_stream_init(&s->os, serialno);
+  
   }
