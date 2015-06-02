@@ -132,6 +132,8 @@ void bg_ogg_encoder_update_metadata(void * priv, const gavl_metadata_t * new_met
 
 struct bg_ogg_encoder_s
   {
+  int started;
+  
   int num_audio_streams;
   int num_video_streams;
   

@@ -51,6 +51,18 @@ add_audio_stream_flacogg(void * data,
   return ret->index;
   }
 
+static int add_audio_stream_compressed_flacogg(void * data,
+                                               const gavl_metadata_t * m,
+                                               const gavl_audio_format_t * format,
+                                               const gavl_compression_info_t * ci)
+  {
+  bg_ogg_stream_t * s;
+  s = bg_ogg_encoder_add_audio_stream_compressed(data, m, format, ci);
+  bg_ogg_encoder_init_stream(data, s, &bg_flacogg_codec);
+  return s->index;
+  }
+
+
 static int
 open_flacogg(void * data, const char * file,
              const gavl_metadata_t * metadata,
@@ -69,6 +81,15 @@ open_io_flacogg(void * data, gavf_io_t * io,
                              "ogg");
   }
 
+static int writes_compressed_audio_flacogg(void* data,
+                                        const gavl_audio_format_t * format,
+                                        const gavl_compression_info_t * ci)
+  {
+  if(ci->id == GAVL_CODEC_ID_FLAC)
+    return 1;
+  else
+    return 0;
+  }
 
 const bg_encoder_plugin_t the_plugin =
   {
@@ -92,6 +113,7 @@ const bg_encoder_plugin_t the_plugin =
     .max_video_streams =   0,
     
     .set_callbacks =       bg_ogg_encoder_set_callbacks,
+    .writes_compressed_audio = writes_compressed_audio_flacogg,
     
     .open =                open_flacogg,
     .open_io =                open_io_flacogg,
@@ -99,13 +121,16 @@ const bg_encoder_plugin_t the_plugin =
     .get_audio_parameters =    get_audio_parameters_flacogg,
 
     .add_audio_stream =        add_audio_stream_flacogg,
+    .add_audio_stream_compressed =        add_audio_stream_compressed_flacogg,
     
     .set_audio_parameter =     bg_ogg_encoder_set_audio_parameter,
 
+    .get_audio_sink =        bg_ogg_encoder_get_audio_sink,
+    .get_audio_packet_sink = bg_ogg_encoder_get_audio_packet_sink,
+
     .start =                  bg_ogg_encoder_start,
 
-    .get_audio_sink =        bg_ogg_encoder_get_audio_sink,
-    
+    .update_metadata  =  bg_ogg_encoder_update_metadata,
     .close =               bg_ogg_encoder_close,
   };
 

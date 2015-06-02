@@ -19,6 +19,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * *****************************************************************/
 
+#include <config.h>
+
+
 #include <string.h>
 
 
@@ -28,6 +31,10 @@
 #include <gavl/numptr.h>
 
 #include <vorbiscomment.h>
+
+#include <gmerlin/translation.h>
+#include <gmerlin/log.h>
+#define LOG_DOMAIN "vorbiscomment"
 
 static const struct
   {
@@ -63,6 +70,7 @@ int bg_vorbis_comment_bytes(const gavl_metadata_t * m_stream,
   if(!str)
     {
     /* Vendor string missing */
+    bg_log(BG_LOG_ERROR, LOG_DOMAIN, "Couldn't build vorbis comment, vendor string missing");
     return 0;
     }
 

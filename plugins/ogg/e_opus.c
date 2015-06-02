@@ -128,6 +128,8 @@ const bg_encoder_plugin_t the_plugin =
 
     .get_audio_sink =        bg_ogg_encoder_get_audio_sink,
     .get_audio_packet_sink = bg_ogg_encoder_get_audio_packet_sink,
+
+    .update_metadata  =  bg_ogg_encoder_update_metadata,
     
     .close =               bg_ogg_encoder_close,
   };
