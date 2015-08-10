@@ -55,7 +55,13 @@ tags[] =
     { /* End */ }
   };
 
-
+static const char * get_vendor(const gavl_metadata_t * m)
+  {
+  const char * ret = gavl_metadata_get(m, GAVL_META_SOFTWARE);
+  if(!ret)
+    ret = PACKAGE"-"VERSION;
+  return ret;
+  }
   
 int bg_vorbis_comment_bytes(const gavl_metadata_t * m_stream,
                             const gavl_metadata_t * m_global,
@@ -66,7 +72,7 @@ int bg_vorbis_comment_bytes(const gavl_metadata_t * m_stream,
   int i = 0;
 
   /* Vendor string */
-  str = gavl_metadata_get(m_stream, GAVL_META_SOFTWARE);
+  str = get_vendor(m_stream);
   if(!str)
     {
     /* Vendor string missing */
@@ -115,7 +121,7 @@ int bg_vorbis_comment_write(uint8_t * buf,
 
   /* Vendor string */
   
-  str = gavl_metadata_get(m_stream, GAVL_META_SOFTWARE);
+  str = get_vendor(m_stream);
   if(!str)
     {
     /* Vendor string missing */
