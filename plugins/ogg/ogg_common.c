@@ -730,7 +730,7 @@ bg_ogg_create_comment_packet(const uint8_t * prefix,
   bg_vorbis_comment_write(op->packet + prefix_len,
                           m_stream, m_global, framing);
 
-  bg_log(BG_LOG_DEBUG, LOG_DOMAIN, "bg_ogg_create_comment_packet %d", m_global->num_tags);
+  // bg_log(BG_LOG_DEBUG, LOG_DOMAIN, "bg_ogg_create_comment_packet %d", m_global->num_tags);
   }
 
 void bg_ogg_free_comment_packet(ogg_packet * op)
