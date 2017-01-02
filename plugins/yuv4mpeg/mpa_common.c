@@ -41,24 +41,24 @@ static const bg_parameter_info_t parameters[] =
       .name =        "bitrate",
       .long_name =   TRS("Bitrate (kbps)"),
       .type =        BG_PARAMETER_INT,
-      .val_default = { .val_i =     224 },
-      .val_min =     { .val_i =      32 },
-      .val_max =     { .val_i =     448 },
+      .val_default = GAVL_VALUE_INIT_INT(224),
+      .val_min =     GAVL_VALUE_INIT_INT(32),
+      .val_max =     GAVL_VALUE_INIT_INT(448),
     },
     {
       .name =        "layer",
       .long_name =   TRS("Layer (1 or 2)"),
       .type =        BG_PARAMETER_INT,
-      .val_default = { .val_i =       2 },
-      .val_min =     { .val_i =       1 },
-      .val_max =     { .val_i =       2 },
+      .val_default = GAVL_VALUE_INIT_INT(2),
+      .val_min =     GAVL_VALUE_INIT_INT(1),
+      .val_max =     GAVL_VALUE_INIT_INT(2),
       .help_string = TRS("Audio layer"),
     },
     {
       .name =        "vcd",
       .long_name =   TRS("VCD Compatible"),
       .type =        BG_PARAMETER_CHECKBUTTON,
-      .val_default = { .val_i =       1 },
+      .val_default = GAVL_VALUE_INIT_INT(1),
       .help_string = TRS("Make VCD compliant output. This forces layer II, 224 kbps and 44.1 KHz stereo"),
     },
     { /* End of parameters */ }
@@ -81,11 +81,11 @@ void bg_mpa_set_parameter(void * data, const char * name,
     }
   
   if(!strcmp(name, "bitrate"))
-    com->bitrate = val->val_i;
+    com->bitrate = val->v.i;
   else if(!strcmp(name, "vcd"))
-    com->vcd = val->val_i;
+    com->vcd = val->v.i;
   else if(!strcmp(name, "layer"))
-    com->layer = val->val_i;
+    com->layer = val->v.i;
   }
 
 static char * bg_mpa_make_commandline(bg_mpa_common_t * com,

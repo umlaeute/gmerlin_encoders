@@ -131,16 +131,16 @@ static const bg_parameter_info_t audio_parameters[] =
       .name =      "bits",
       .long_name = TRS("Bits"),
       .type =      BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str = "16" },
+      .val_default = GAVL_VALUE_INIT_STRING("16"),
       .multi_names = (char const *[]){ "8", "12", "16", "20", "24", NULL },
     },
     {
       .name =        "compression_level",
       .long_name =   TRS("Compression Level"),
       .type =        BG_PARAMETER_SLIDER_INT,
-      .val_min =     { .val_i = 0 },
-      .val_max =     { .val_i = 8 },
-      .val_default = { .val_i = 5 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(8),
+      .val_default = GAVL_VALUE_INIT_INT(5),
       .help_string = TRS("0: Fastest encoding, biggest files\n\
 8: Slowest encoding, smallest files")
     },
@@ -164,11 +164,11 @@ void bg_flac_set_parameter(void * data, const char * name,
     }
   else if(!strcmp(name, "compression_level"))
     {
-    flac->clevel = val->val_i;
+    flac->clevel = val->v.i;
     }
   else if(!strcmp(name, "bits"))
     {
-    flac->bits_per_sample = atoi(val->val_str);
+    flac->bits_per_sample = atoi(val->v.str);
     }
   
   //  fprintf(stderr, "set_audio_parameter_flac %s\n", name);

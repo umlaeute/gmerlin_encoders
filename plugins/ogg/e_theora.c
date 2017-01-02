@@ -140,7 +140,7 @@ set_audio_parameter_theora(void * data, int stream,
     
     while(audio_codecs[i])
       {
-      if(!strcmp(audio_codecs[i]->name, val->val_str))
+      if(!strcmp(audio_codecs[i]->name, val->v.str))
         {
         bg_ogg_encoder_init_stream(data, enc->audio_streams + stream, audio_codecs[i]);
         break;

@@ -66,8 +66,8 @@ create_format_parameters(const ffmpeg_format_info_t * formats)
       gavl_strrep(ret[0].multi_labels_nc[i], formats[i].name);
     }
   bg_parameter_info_set_const_ptrs(&ret[0]);
-  ret[0].val_default.val_str =
-    gavl_strrep(ret[0].val_default.val_str, formats[0].short_name);
+
+  gavl_value_set_string(&ret[0].val_default, formats[0].short_name);
   return ret;
   }
 
@@ -153,7 +153,7 @@ void bg_ffmpeg_set_parameter(void * data, const char * name,
     i = 0;
     while(priv->formats[i].name)
       {
-      if(!strcmp(priv->formats[i].short_name, v->val_str))
+      if(!strcmp(priv->formats[i].short_name, v->v.str))
         {
         priv->format = &priv->formats[i];
         break;

@@ -94,7 +94,7 @@ static const bg_parameter_info_t parameters[] =
       .name =        "object_type",
       .long_name =   TRS("Object type"),
       .type =        BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str =  "mpeg4_main" },
+      .val_default = GAVL_VALUE_INIT_STRING("mpeg4_main"),
       .multi_names = (char const *[]){ "mpeg4_lc",
                               "mpeg2_lc",
                               "mpeg4_main",
@@ -112,17 +112,17 @@ static const bg_parameter_info_t parameters[] =
       .name =        "bitrate",
       .long_name =   TRS("Bitrate (kbps)"),
       .type =        BG_PARAMETER_INT,
-      .val_min =     { .val_i = 0    },
-      .val_max =     { .val_i = 1000 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(1000),
       .help_string = TRS("Average bitrate (0: VBR based on quality)"),
     },
     {
       .name =        "quality",
       .long_name =   TRS("Quality"),
       .type =        BG_PARAMETER_SLIDER_INT,
-      .val_min =     { .val_i = 10 },
-      .val_max =     { .val_i = 500 },
-      .val_default = { .val_i = 100 },
+      .val_min =     GAVL_VALUE_INIT_INT(10),
+      .val_max =     GAVL_VALUE_INIT_INT(500),
+      .val_default = GAVL_VALUE_INIT_INT(100),
       .help_string = TRS("Quantizer quality"),
     },
     {
@@ -134,7 +134,7 @@ static const bg_parameter_info_t parameters[] =
       .name =        "block_types",
       .long_name =   TRS("Block types"),
       .type =        BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str =  "Both" },
+      .val_default = GAVL_VALUE_INIT_STRING("Both"),
       .multi_names = (char const *[]){ "Both",
                               "No short",
                               "No long",
@@ -148,13 +148,13 @@ static const bg_parameter_info_t parameters[] =
       .name =        "tns",
       .type =        BG_PARAMETER_CHECKBUTTON,
       .long_name =   TRS("Use temporal noise shaping"),
-      .val_default = { .val_i = 0 }
+      .val_default = GAVL_VALUE_INIT_INT(0)
     },
     {
       .name =        "no_midside",
       .long_name =   TRS("Don\'t use mid/side coding"),
       .type =        BG_PARAMETER_CHECKBUTTON,
-      .val_default = { .val_i = 0 }
+      .val_default = GAVL_VALUE_INIT_INT(0)
     },
     { /* End of parameters */ }
   };
@@ -173,27 +173,27 @@ void bg_faac_set_parameter(bg_faac_t * ctx, const char * name,
     }
   else if(!strcmp(name, "object_type"))
     {
-    if(!strcmp(v->val_str, "mpeg2_main"))
+    if(!strcmp(v->v.str, "mpeg2_main"))
       {
       ctx->mpegVersion = MPEG2;
       ctx->aacObjectType = MAIN;
       }
-    else if(!strcmp(v->val_str, "mpeg2_lc"))
+    else if(!strcmp(v->v.str, "mpeg2_lc"))
       {
       ctx->mpegVersion = MPEG2;
       ctx->aacObjectType = LOW;
       }
-    else if(!strcmp(v->val_str, "mpeg4_main"))
+    else if(!strcmp(v->v.str, "mpeg4_main"))
       {
       ctx->mpegVersion = MPEG4;
       ctx->aacObjectType = MAIN;
       }
-    else if(!strcmp(v->val_str, "mpeg4_lc"))
+    else if(!strcmp(v->v.str, "mpeg4_lc"))
       {
       ctx->mpegVersion = MPEG4;
       ctx->aacObjectType = LOW;
       }
-    else if(!strcmp(v->val_str, "mpeg4_ltp"))
+    else if(!strcmp(v->v.str, "mpeg4_ltp"))
       {
       ctx->mpegVersion = MPEG4;
       ctx->aacObjectType = LTP;
@@ -201,34 +201,34 @@ void bg_faac_set_parameter(bg_faac_t * ctx, const char * name,
     }
   else if(!strcmp(name, "bitrate"))
     {
-    ctx->bitRate = v->val_i * 1000;
+    ctx->bitRate = v->v.i * 1000;
     }
   else if(!strcmp(name, "quality"))
     {
-    ctx->quantqual = v->val_i;
+    ctx->quantqual = v->v.i;
     }
   else if(!strcmp(name, "block_types"))
     {
-    if(!strcmp(v->val_str, "Both"))
+    if(!strcmp(v->v.str, "Both"))
       {
       ctx->shortctl = SHORTCTL_NORMAL;
       }
-    else if(!strcmp(v->val_str, "No short"))
+    else if(!strcmp(v->v.str, "No short"))
       {
       ctx->shortctl = SHORTCTL_NOSHORT;
       }
-    else if(!strcmp(v->val_str, "No long"))
+    else if(!strcmp(v->v.str, "No long"))
       {
       ctx->shortctl = SHORTCTL_NOLONG;
       }
     }
   else if(!strcmp(name, "tns"))
     {
-    ctx->useTns = v->val_i;
+    ctx->useTns = v->v.i;
     }
   else if(!strcmp(name, "no_midside"))
     {
-    ctx->allowMidside = !v->val_i;
+    ctx->allowMidside = !v->v.i;
     }
 
   }

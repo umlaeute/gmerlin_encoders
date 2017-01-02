@@ -57,7 +57,7 @@ static const bg_parameter_info_t parameters[] =
       .name =        "format",
       .long_name =   TRS("Format"),
       .type =        BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str = "mpeg1" },
+      .val_default = GAVL_VALUE_INIT_STRING("mpeg1"),
       .multi_names =  (char const *[]){ "mpeg1",
                                         "mpeg2",
                                         "vcd", "svcd", "dvd", NULL },
@@ -74,7 +74,7 @@ static const bg_parameter_info_t parameters[] =
       .name =        "bitrate_mode",
       .long_name =   TRS("Bitrate Mode"),
       .type =        BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str = "auto" },
+      .val_default = GAVL_VALUE_INIT_STRING("auto"),
       .multi_names =  (char const *[]){ "auto", "vbr", "cbr",NULL  },
       .multi_labels = (char const *[]){ TRS("Auto"),
                                         TRS("Variable"),
@@ -88,9 +88,9 @@ is ignored"),
       .name =        "bitrate",
       .long_name =   TRS("Bitrate (kbps)"),
       .type =        BG_PARAMETER_INT,
-      .val_default = { .val_i =    1150 },
-      .val_min =     { .val_i =     200 },
-      .val_max =     { .val_i =   99999 },
+      .val_default = GAVL_VALUE_INIT_INT(1150),
+      .val_min =     GAVL_VALUE_INIT_INT(200),
+      .val_max =     GAVL_VALUE_INIT_INT(99999),
       .help_string = TRS("Video bitrate in kbps. For VBR, it's the maximum bitrate. If the format requires a \
 fixed bitrate (e.g. VCD) this option is ignored"),
     },
@@ -98,16 +98,16 @@ fixed bitrate (e.g. VCD) this option is ignored"),
       .name =        "quantization",
       .long_name =   TRS("Quantization"),
       .type =        BG_PARAMETER_INT,
-      .val_default = { .val_i =       8 },
-      .val_min =     { .val_i =       1 },
-      .val_max =     { .val_i =      31 },
+      .val_default = GAVL_VALUE_INIT_INT(8),
+      .val_min =     GAVL_VALUE_INIT_INT(1),
+      .val_max =     GAVL_VALUE_INIT_INT(31),
       .help_string = TRS("Minimum quantization for VBR. Lower numbers mean higher quality. For CBR, this option is ignored."),
     },
     {
       .name =        "quant_matrix",
       .long_name =   TRS("Quantization matrices"),
       .type =        BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str = "default" },
+      .val_default = GAVL_VALUE_INIT_STRING("default"),
       .multi_names = (char const *[]){ "default", "kvcd", "tmpgenc",
                               "hi-res", NULL },
       .multi_labels = (char const *[]){ TRS("Default"), TRS("KVCD"),
@@ -118,9 +118,9 @@ fixed bitrate (e.g. VCD) this option is ignored"),
       .name =        "bframes",
       .long_name =   TRS("Number of B-Frames"),
       .type =        BG_PARAMETER_INT,
-      .val_default = { .val_i = 0 },
-      .val_min =     { .val_i = 0 },
-      .val_max =     { .val_i = 2 },
+      .val_default = GAVL_VALUE_INIT_INT(0),
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(2),
       .help_string = TRS("Specify the number of B-frames between 2 P/I frames. More B-frames slow down encoding and \
 increase memory usage, but might give better compression results. For VCD, this option is ignored, since \
 the VCD standard requires 2 B-frames, no matter if you like them or not."),
@@ -144,7 +144,7 @@ const bg_parameter_info_t * bg_mpv_get_parameters()
 
 /* Must pass a bg_mpv_common_t for parameters */
 
-#define SET_ENUM(str, dst, v) if(!strcmp(val->val_str, str)) dst = v
+#define SET_ENUM(str, dst, v) if(!strcmp(val->v.str, str)) dst = v
 
 void bg_mpv_set_parameter(void * data, const char * name, const bg_parameter_value_t * val)
   {
@@ -173,18 +173,18 @@ void bg_mpv_set_parameter(void * data, const char * name, const bg_parameter_val
     }
 
   else if(!strcmp(name, "bitrate"))
-    com->bitrate = val->val_i;
+    com->bitrate = val->v.i;
 
   else if(!strcmp(name, "quantization"))
-    com->quantization = val->val_i;
+    com->quantization = val->v.i;
 
   else if(!strcmp(name, "bframes"))
-    com->bframes = val->val_i;
+    com->bframes = val->v.i;
 
   else if(!strcmp(name, "user_options"))
-    com->user_options = gavl_strrep(com->user_options, val->val_str);
+    com->user_options = gavl_strrep(com->user_options, val->v.str);
   else if(!strcmp(name, "quant_matrix"))
-    com->quant_matrix = gavl_strrep(com->quant_matrix, val->val_str);
+    com->quant_matrix = gavl_strrep(com->quant_matrix, val->v.str);
   }
 
 #undef SET_ENUM

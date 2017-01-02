@@ -49,7 +49,7 @@ static const bg_parameter_info_t audio_parameters[] =
       .name =        "bitrate_mode",
       .long_name =   TRS("Bitrate mode"),
       .type =        BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str = "CBR" },
+      .val_default = GAVL_VALUE_INIT_STRING("CBR"),
       .multi_names = (char const *[]){ "CBR",
                               "ABR",
                               "VBR",
@@ -64,7 +64,7 @@ static const bg_parameter_info_t audio_parameters[] =
       .name =        "stereo_mode",
       .long_name =   TRS("Stereo mode"),
       .type =        BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str = "Auto" },
+      .val_default = GAVL_VALUE_INIT_STRING("Auto"),
       .multi_names = (char const *[]){ "Stereo",
                               "Joint stereo",
                               "Auto",
@@ -81,9 +81,9 @@ Auto (recommended): Select one of the above depending on quality or bitrate sett
       .name =        "quality",
       .long_name =   TRS("Encoding speed"),
       .type =        BG_PARAMETER_SLIDER_INT,
-      .val_min =     { .val_i = 0 },
-      .val_max =     { .val_i = 9 },
-      .val_default = { .val_i = 2 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(9),
+      .val_default = GAVL_VALUE_INIT_INT(2),
       .help_string = TRS("0: Slowest encoding, best quality\n\
 9: Fastest encoding, worst quality")
     },
@@ -91,9 +91,9 @@ Auto (recommended): Select one of the above depending on quality or bitrate sett
       .name =        "cbr_bitrate",
       .long_name =   TRS("Bitrate (kbps)"),
       .type =        BG_PARAMETER_INT,
-      .val_min =     { .val_i = 8 },
-      .val_max =     { .val_i = 320 },
-      .val_default = { .val_i = 128 },
+      .val_min =     GAVL_VALUE_INIT_INT(8),
+      .val_max =     GAVL_VALUE_INIT_INT(320),
+      .val_default = GAVL_VALUE_INIT_INT(128),
       .help_string = TRS("Bitrate in kbps. If your selection is no \
 valid mp3 bitrate, we'll choose the closest value.")
     },
@@ -102,27 +102,27 @@ valid mp3 bitrate, we'll choose the closest value.")
       .name =        "vbr_quality",
       .long_name =   TRS("VBR Quality"),
       .type =        BG_PARAMETER_SLIDER_INT,
-      .val_min =     { .val_i = 0 },
-      .val_max =     { .val_i = 9 },
-      .val_default = { .val_i = 4 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(9),
+      .val_default = GAVL_VALUE_INIT_INT(4),
       .help_string = TRS("VBR Quality level. 0: best, 9: worst")
     },
     {
       .name =        "abr_bitrate",
       .long_name =   TRS("ABR overall bitrate (kbps)"),
       .type =        BG_PARAMETER_INT,
-      .val_min =     { .val_i = 8 },
-      .val_max =     { .val_i = 320 },
-      .val_default = { .val_i = 128 },
+      .val_min =     GAVL_VALUE_INIT_INT(8),
+      .val_max =     GAVL_VALUE_INIT_INT(320),
+      .val_default = GAVL_VALUE_INIT_INT(128),
       .help_string = TRS("Average bitrate for ABR mode")
     },
     {
       .name =        "abr_min_bitrate",
       .long_name =   TRS("ABR min bitrate (kbps)"),
       .type =        BG_PARAMETER_INT,
-      .val_min =     { .val_i = 0 },
-      .val_max =     { .val_i = 320 },
-      .val_default = { .val_i = 0 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(320),
+      .val_default = GAVL_VALUE_INIT_INT(0),
       .help_string = TRS("Minimum bitrate for ABR mode. 0 means let lame decide. \
 If your selection is no valid mp3 bitrate, we'll choose the closest value.")
     },
@@ -130,9 +130,9 @@ If your selection is no valid mp3 bitrate, we'll choose the closest value.")
       .name =        "abr_max_bitrate",
       .long_name =   TRS("ABR max bitrate (kbps)"),
       .type =        BG_PARAMETER_INT,
-      .val_min =     { .val_i = 0 },
-      .val_max =     { .val_i = 320 },
-      .val_default = { .val_i = 0 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(320),
+      .val_default = GAVL_VALUE_INIT_INT(0),
       .help_string = TRS("Maximum bitrate for ABR mode. 0 means let lame decide. \
 If your selection is no valid mp3 bitrate, we'll choose the closest value.")
     },

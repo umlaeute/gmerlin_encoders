@@ -175,23 +175,23 @@ static const bg_parameter_info_t parameters[] =
       .name =        "use_vorbis_comment",
       .long_name =   TRS("Write vorbis comment"),
       .type =        BG_PARAMETER_CHECKBUTTON,
-      .val_default = { .val_i = 1 },
+      .val_default = GAVL_VALUE_INIT_INT(1),
       .help_string = TRS("Write Vorbis comment containing metadata to the file")
     },
     {
       .name =        "use_seektable",
       .long_name =   TRS("Write seek table"),
       .type =        BG_PARAMETER_CHECKBUTTON,
-      .val_default = { .val_i = 1 },
+      .val_default = GAVL_VALUE_INIT_INT(1),
       .help_string = TRS("Write seektable (strongly recommended)")
     },
     {
       .name =        "num_seektable_entries",
       .long_name =   TRS("Entries in the seektable"),
       .type =        BG_PARAMETER_INT,
-      .val_min = { .val_i = 1 },
-      .val_max = { .val_i = 1000000 },
-      .val_default = { .val_i = 100 },
+      .val_min = GAVL_VALUE_INIT_INT(1),
+      .val_max = GAVL_VALUE_INIT_INT(1000000),
+      .val_default = GAVL_VALUE_INIT_INT(100),
       .help_string = TRS("Maximum number of entries in the seek table. Default is 100, larger numbers result in\
  shorter seeking times but also in larger files.")
     },
@@ -214,11 +214,11 @@ static void set_parameter_flac(void * data,
     return;
 
   else if(!strcmp(name, "use_vorbis_comment"))
-    flac->use_vorbis_comment = v->val_i;
+    flac->use_vorbis_comment = v->v.i;
   else if(!strcmp(name, "use_seektable"))
-    flac->use_seektable = v->val_i;
+    flac->use_seektable = v->v.i;
   else if(!strcmp(name, "num_seektable_entries"))
-    flac->num_seektable_entries = v->val_i;
+    flac->num_seektable_entries = v->v.i;
   }
 
 static int streaminfo_callback(void * data, uint8_t * si, int len)

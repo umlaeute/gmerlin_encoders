@@ -107,19 +107,19 @@ static const bg_parameter_info_t parameters[] =
       .name =        "do_id3v1",
       .long_name =   TRS("Write ID3V1.1 tag"),
       .type =        BG_PARAMETER_CHECKBUTTON,
-      .val_default = { .val_i = 1 },
+      .val_default = GAVL_VALUE_INIT_INT(1),
     },
     {
       .name =        "do_id3v2",
       .long_name =   TRS("Write ID3V2 tag"),
       .type =        BG_PARAMETER_CHECKBUTTON,
-      .val_default = { .val_i = 1 },
+      .val_default = GAVL_VALUE_INIT_INT(1),
     },
     {
       .name =        "id3v2_charset",
       .long_name =   TRS("ID3V2 Encoding"),
       .type =        BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str = "3" },
+      .val_default = GAVL_VALUE_INIT_STRING("3"),
       .multi_names = (char const *[]){ "0", "1",
                                "2", "3", NULL },
       .multi_labels = (char const *[]){ TRS("ISO-8859-1"), TRS("UTF-16 LE"),
@@ -143,11 +143,11 @@ static void set_parameter_faac(void * data, const char * name,
   if(!name)
     return;
   else if(!strcmp(name, "do_id3v1"))
-    faac->do_id3v1 = v->val_i;
+    faac->do_id3v1 = v->v.i;
   else if(!strcmp(name, "do_id3v2"))
-    faac->do_id3v2 = v->val_i;
+    faac->do_id3v2 = v->v.i;
   else if(!strcmp(name, "id3v2_charset"))
-    faac->id3v2_charset = atoi(v->val_str);
+    faac->id3v2_charset = atoi(v->v.str);
   }
 
 static int open_io_faac(void * data, gavf_io_t * io,

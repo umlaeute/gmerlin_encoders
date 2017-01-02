@@ -683,8 +683,7 @@ create_codec_parameters(bg_ogg_codec_t const * const * codecs)
       ret[0].multi_parameters_nc[i] =
         bg_parameter_info_copy_array(codecs[i]->get_parameters());
     }
-  ret[0].val_default.val_str =
-    gavl_strrep(ret[0].val_default.val_str, codecs[0]->name);
+  gavl_value_set_string(&ret[0].val_default, codecs[0]->name);
   bg_parameter_info_set_const_ptrs(&ret[0]);
   return ret;
   }

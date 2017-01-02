@@ -417,11 +417,11 @@ void bg_lame_set_parameter(bg_lame_t * lame,
   
   if(!strcmp(name, "bitrate_mode"))
     {
-    if(!strcmp(v->val_str, "ABR"))
+    if(!strcmp(v->v.str, "ABR"))
       {
       lame->vbr_mode = vbr_abr;
       }
-    else if(!strcmp(v->val_str, "VBR"))
+    else if(!strcmp(v->v.str, "VBR"))
       {
       lame->vbr_mode = vbr_default;
       }
@@ -437,11 +437,11 @@ void bg_lame_set_parameter(bg_lame_t * lame,
     if(lame->format.num_channels == 1)
       return;
     i = NOT_SET;
-    if(!strcmp(v->val_str, "Stereo"))
+    if(!strcmp(v->v.str, "Stereo"))
       {
       i = STEREO;
       }
-    else if(!strcmp(v->val_str, "Joint stereo"))
+    else if(!strcmp(v->v.str, "Joint stereo"))
       {
       i = JOINT_STEREO;
       }
@@ -453,29 +453,29 @@ void bg_lame_set_parameter(bg_lame_t * lame,
     }
   else if(!strcmp(name, "quality"))
     {
-    if(lame_set_quality(lame->lame, v->val_i))
+    if(lame_set_quality(lame->lame, v->v.i))
       bg_log(BG_LOG_ERROR, LOG_DOMAIN,  "lame_set_quality failed");
     }
   
   else if(!strcmp(name, "cbr_bitrate"))
     {
-    lame->cbr_bitrate = v->val_i;
+    lame->cbr_bitrate = v->v.i;
     }
   else if(!strcmp(name, "vbr_quality"))
     {
-    lame->vbr_quality = v->val_i;
+    lame->vbr_quality = v->v.i;
     }
   else if(!strcmp(name, "abr_bitrate"))
     {
-    lame->abr_bitrate = v->val_i;
+    lame->abr_bitrate = v->v.i;
     }
   else if(!strcmp(name, "abr_min_bitrate"))
     {
-    lame->abr_min_bitrate = v->val_i;
+    lame->abr_min_bitrate = v->v.i;
     }
   else if(!strcmp(name, "abr_max_bitrate"))
     {
-    lame->abr_max_bitrate = v->val_i;
+    lame->abr_max_bitrate = v->v.i;
     }
   }
 

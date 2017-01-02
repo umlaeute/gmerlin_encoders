@@ -34,7 +34,7 @@
     .name =      "ff_bit_rate_str",        \
     .long_name = TRS("Bit rate (kbps)"),        \
     .type =      BG_PARAMETER_STRINGLIST, \
-    .val_default = { .val_str = "128" },       \
+    .val_default = GAVL_VALUE_INIT_STRING("128"),       \
     .multi_names = (char const *[]){ "32",  "48", "56", "64", "80", "96", "112", \
                    "128", "160", "192", "224", "256", "320", "384",\
                    NULL } \
@@ -45,7 +45,7 @@
     .name =      "ff_bit_rate_str",        \
     .long_name = TRS("Bit rate (kbps)"),        \
     .type =      BG_PARAMETER_STRINGLIST, \
-    .val_default = { .val_str = "128" },       \
+    .val_default = GAVL_VALUE_INIT_STRING("128"),       \
     .multi_names = (char const *[]){ "32", "40", "48", "56", "64", "80", "96", \
                    "112", "128", "160", "192", "224", "256", "320",\
                    NULL } \
@@ -56,7 +56,7 @@
     .name =      "ff_bit_rate_str",        \
     .long_name = TRS("Bit rate (kbps)"),        \
     .type =      BG_PARAMETER_STRINGLIST, \
-    .val_default = { .val_str = "128" },       \
+    .val_default = GAVL_VALUE_INIT_STRING("128"),       \
     .multi_names = (char const *[]){ "32", "40", "48", "56", "64", "80", "96", "112", "128", \
                    "160", "192", "224", "256", "320", "384", "448", "512", \
                    "576", "640", NULL } \
@@ -71,7 +71,7 @@
     .name =      "ff_bit_rate_str",        \
     .long_name = TRS("Bit rate (kbps)"),        \
     .type =      BG_PARAMETER_STRINGLIST, \
-    .val_default = { .val_str = "1536" },       \
+    .val_default = GAVL_VALUE_INIT_STRING("1536"),       \
     .multi_names = (char const *[]){ "32", "56", \
                                      "64", "96", "112", "128", \
                                      "192", "224", "256", "320", "384", \
@@ -87,7 +87,7 @@
     .name =      "ff_bit_rate_str",        \
     .long_name = TRS("Bit rate (kbps)"),        \
     .type =      BG_PARAMETER_STRINGLIST, \
-    .val_default = { .val_str = "128" },       \
+    .val_default = GAVL_VALUE_INIT_STRING("128"),       \
     .multi_names = (char const *[]){ "24", "48", "64", "96", "128", NULL } \
   },
 
@@ -97,7 +97,7 @@ static const bg_parameter_info_t parameters_libfaac[] =
       .name =      "faac_profile",
       .long_name = TRS("Profile"),
       .type =      BG_PARAMETER_STRINGLIST,
-      .val_default = {val_str: "lc"},
+      .val_default = GAVL_VALUE_INIT_STRING("lc"),
       .multi_names = (char const *[]){"main",
                                       "lc",
                                       "ssr",
@@ -114,9 +114,9 @@ static const bg_parameter_info_t parameters_libfaac[] =
       .name =        "faac_quality",
       .long_name =   TRS("Quality"),
       .type =        BG_PARAMETER_SLIDER_INT,
-      .val_min =     { .val_i = 10 },
-      .val_max =     { .val_i = 500 },
-      .val_default = { .val_i = 100 },
+      .val_min =     GAVL_VALUE_INIT_INT(10),
+      .val_max =     GAVL_VALUE_INIT_INT(500),
+      .val_default = GAVL_VALUE_INIT_INT(100),
       .help_string = TRS("Quantizer quality"),
     },
     { /* */ }
@@ -131,9 +131,9 @@ static const bg_parameter_info_t parameters_libvorbis[] =
       .name =        "quality",
       .long_name =   TRS("Quality"),
       .type =        BG_PARAMETER_SLIDER_INT,
-      .val_min =     { .val_i = -1 },
-      .val_max =     { .val_i = 10 },
-      .val_default = { .val_i = 3 },
+      .val_min =     GAVL_VALUE_INIT_INT(-1),
+      .val_max =     GAVL_VALUE_INIT_INT(10),
+      .val_default = GAVL_VALUE_INIT_INT(3),
       .help_string = TRS("Quantizer quality"),
     },
     { /* End */ },
@@ -186,7 +186,6 @@ static const bg_parameter_info_t parameters_libvorbis[] =
   },                                        \
   PARAM_GOP_SIZE,                      \
   PARAM_SCENE_CHANGE_THRESHOLD,       \
-  PARAM_SCENECHANGE_FACTOR,        \
   PARAM_FLAG_CLOSED_GOP,         \
   PARAM_FLAG2_STRICT_GOP
 
@@ -309,7 +308,7 @@ static const bg_parameter_info_t parameters_libx264[] = {
     .name =      "libx264_preset",
     .long_name = TRS("Preset"),
     .type =      BG_PARAMETER_STRINGLIST,
-    .val_default = {val_str: "medium"},
+    .val_default = GAVL_VALUE_INIT_STRING("medium"),
     .multi_names = (char const *[]){"ultrafast",
                                     "superfast",
                                     "veryfast",
@@ -337,7 +336,7 @@ static const bg_parameter_info_t parameters_libx264[] = {
     .name =      "libx264_tune",
     .long_name = TRS("Tune"),
     .type =      BG_PARAMETER_STRINGLIST,
-    .val_default = {val_str: "$none"},
+    .val_default = GAVL_VALUE_INIT_STRING("$none"),
     .multi_names = (char const *[]){"$none",
                                     "film",
                                     "animation",
@@ -363,18 +362,18 @@ static const bg_parameter_info_t parameters_libx264[] = {
     .name =      "ff_bit_rate_video",
     .long_name = TRS("Bit rate (kbps)"),
     .type =      BG_PARAMETER_INT,
-    .val_min     = { .val_i = 0 },
-    .val_max     = { .val_i = 10000 },
-    .val_default = { .val_i = 0 },
+    .val_min     = GAVL_VALUE_INIT_INT(0),
+    .val_max     = GAVL_VALUE_INIT_INT(10000),
+    .val_default = GAVL_VALUE_INIT_INT(0),
     .help_string = TRS("If > 0 encode with average bitrate"),
   },
   {
     .name =      "libx264_crf",
     .long_name = TRS("Quality-based VBR"),
     .type =      BG_PARAMETER_SLIDER_FLOAT,
-    .val_min     = { .val_f = -1.0 },
-    .val_max     = { .val_f = 51.0 },
-    .val_default = { .val_f = 23.0 },
+    .val_min     = GAVL_VALUE_INIT_FLOAT(-1.0),
+    .val_max     = GAVL_VALUE_INIT_FLOAT(51.0),
+    .val_default = GAVL_VALUE_INIT_FLOAT(23.0),
     .help_string = TRS("Negative means disable"),
     .num_digits  = 2,
   },
@@ -382,9 +381,9 @@ static const bg_parameter_info_t parameters_libx264[] = {
     .name =      "libx264_qp",
     .long_name = TRS("Force constant QP"),
     .type =      BG_PARAMETER_SLIDER_INT,
-    .val_min     = { .val_i = -1 },
-    .val_max     = { .val_i = 69 },
-    .val_default = { .val_i = -1 },
+    .val_min     = GAVL_VALUE_INIT_INT(-1),
+    .val_max     = GAVL_VALUE_INIT_INT(69),
+    .val_default = GAVL_VALUE_INIT_INT(-1),
     .help_string = TRS("Negative means disable, 0 means lossless"),
   },
   { /* End */ },
@@ -405,9 +404,9 @@ static const bg_parameter_info_t parameters_libvpx[] = {
     .name =        "ff_qcompress",
     .long_name =   TRS("2-Pass VBR/CBR"),
     .type =        BG_PARAMETER_SLIDER_FLOAT,
-    .val_default = { .val_f = 0.5 },
-    .val_min =     { .val_f = 0.0 },
-    .val_max =     { .val_f = 1.0 },
+    .val_default = GAVL_VALUE_INIT_FLOAT(0.5),
+    .val_min =     GAVL_VALUE_INIT_FLOAT(0.0),
+    .val_max =     GAVL_VALUE_INIT_FLOAT(1.0),
     .num_digits =  2,
     .help_string = TRS("0: CBR, 1: VBR")
   },
@@ -415,27 +414,27 @@ static const bg_parameter_info_t parameters_libvpx[] = {
     .name =      "ff_qmin",
     .long_name = TRS("Minimum quantizer scale"),
     .type =      BG_PARAMETER_SLIDER_INT,
-    .val_default = { .val_i = 2 },
-    .val_min =     { .val_i = 0 },
-    .val_max =     { .val_i = 63 },
+    .val_default = GAVL_VALUE_INIT_INT(2),
+    .val_min =     GAVL_VALUE_INIT_INT(0),
+    .val_max =     GAVL_VALUE_INIT_INT(63),
     .help_string = TRS("recommended value 0-4")
   },
   {
     .name =      "ff_qmax",
     .long_name = TRS("Maximum quantizer scale"),
     .type =      BG_PARAMETER_SLIDER_INT,
-    .val_default = { .val_i = 55 },
-    .val_min =     { .val_i = 0 },
-    .val_max =     { .val_i = 63 },
+    .val_default = GAVL_VALUE_INIT_INT(55),
+    .val_min =     GAVL_VALUE_INIT_INT(0),
+    .val_max =     GAVL_VALUE_INIT_INT(63),
     .help_string = TRS("Must be larger than minimum, recommended value 50-63")
   },
   {
     .name =      "libvpx_crf",
     .long_name = TRS("Constant quality"),
     .type =      BG_PARAMETER_SLIDER_INT,
-    .val_default = { .val_i = 10 },
-    .val_min =     { .val_i = 0 },
-    .val_max =     { .val_i = 63 },
+    .val_default = GAVL_VALUE_INIT_INT(10),
+    .val_min =     GAVL_VALUE_INIT_INT(0),
+    .val_max =     GAVL_VALUE_INIT_INT(63),
     .help_string = TRS("Set this to 0 for enabling VBR")
   },
   {
@@ -447,7 +446,7 @@ static const bg_parameter_info_t parameters_libvpx[] = {
     .name =      "libvpx_deadline",
     .long_name = TRS("Speed"),
     .type =      BG_PARAMETER_STRINGLIST,
-    .val_default = { .val_str = "good"},
+    .val_default = GAVL_VALUE_INIT_STRING("good"),
     .multi_names = (char const *[]){"best",
                                     "good",
                                     "realtime",
@@ -461,9 +460,9 @@ static const bg_parameter_info_t parameters_libvpx[] = {
     .name = "libvpx_cpu-used",
     .long_name = TRS("CPU usage modifier"),
     .type = BG_PARAMETER_INT,
-    .val_min = { .val_i = 0 },
-    .val_max = { .val_i = 1000 }, // Bogus
-    .val_default = { .val_i = 0 },
+    .val_min = GAVL_VALUE_INIT_INT(0),
+    .val_max = GAVL_VALUE_INIT_INT(1000), // Bogus
+    .val_default = GAVL_VALUE_INIT_INT(0),
   },
   PARAM_THREAD_COUNT,
   {
@@ -476,18 +475,18 @@ static const bg_parameter_info_t parameters_libvpx[] = {
     .name = "ff_keyint_min",
     .long_name = TRS("Minimum GOP size"),
     .type = BG_PARAMETER_INT,
-    .val_min = { .val_i = 0 },
-    .val_max = { .val_i = 1000 }, // Bogus
-    .val_default = { .val_i = 0 },
+    .val_min = GAVL_VALUE_INIT_INT(0),
+    .val_max = GAVL_VALUE_INIT_INT(1000), // Bogus
+    .val_default = GAVL_VALUE_INIT_INT(0),
   },
 #endif
   {
     .name = "ff_gop_size",
     .long_name = TRS("Maximum GOP size"),
     .type = BG_PARAMETER_INT,
-    .val_min = { .val_i = -1 },
-    .val_max = { .val_i = 1000 }, // Bogus
-    .val_default = { .val_i = -1 },
+    .val_min = GAVL_VALUE_INIT_INT(-1),
+    .val_max = GAVL_VALUE_INIT_INT(1000), // Bogus
+    .val_default = GAVL_VALUE_INIT_INT(-1),
     .help_string = TRS("Maximum keyframe distance, -1 means automatic"),
   },
   {
@@ -501,23 +500,23 @@ static const bg_parameter_info_t parameters_libvpx[] = {
     .long_name = TRS("Lookahead"),
     .help_string = TRS("Number of frames to look ahead for alternate reference frame selection"),
     .type = BG_PARAMETER_INT,
-    .val_min = { .val_i = 0 },
-    .val_max = { .val_i = 100 },
-    .val_default = { .val_i = 0 },
+    .val_min = GAVL_VALUE_INIT_INT(0),
+    .val_max = GAVL_VALUE_INIT_INT(100),
+    .val_default = GAVL_VALUE_INIT_INT(0),
   },
   {
     .name = "libvpx_arnr-maxframes",
     .long_name = TRS("Frame count for noise reduction"),
     .type = BG_PARAMETER_INT,
-    .val_min = { .val_i = 0 },
-    .val_max = { .val_i = 100 },
-    .val_default = { .val_i = 0 },
+    .val_min = GAVL_VALUE_INIT_INT(0),
+    .val_max = GAVL_VALUE_INIT_INT(100),
+    .val_default = GAVL_VALUE_INIT_INT(0),
   },
   {
     .name =      "libvpx_arnr-type",
     .long_name = TRS("Noise reduction filter"),
     .type =      BG_PARAMETER_STRINGLIST,
-    .val_default = {val_str: "backward"},
+    .val_default = GAVL_VALUE_INIT_STRING("backward"),
     .multi_names = (char const *[]){"$none",
                                     "backward",
                                     "forward",
@@ -829,8 +828,7 @@ static void create_codec_parameter(bg_parameter_info_t * parameter_info,
       parameter_info[0].multi_parameters_nc[i] =
         bg_parameter_info_copy_array(infos[i]->parameters);
     }
-  parameter_info[0].val_default.val_str =
-    gavl_strrep(parameter_info[0].val_default.val_str, infos[0]->name);
+  gavl_value_set_string(&parameter_info[0].val_default, infos[0]->name);
   bg_parameter_info_set_const_ptrs(&parameter_info[0]);
   }
 
@@ -1052,48 +1050,42 @@ typedef struct
 #define PARAM_INT(n, var) \
   if(!strcmp(n, name)) \
     { \
-    ctx->var = val->val_i;                         \
-    found = 1; \
+    ctx->var = val->v.i;                         \
     }
 
 #define PARAM_INT_SCALE(n, var, scale)   \
   if(!strcmp(n, name)) \
     { \
-    ctx->var = val->val_i * scale;                 \
-    found = 1; \
+    ctx->var = val->v.i * scale;                 \
     }
 
 #define PARAM_STR_INT_SCALE(n, var, scale) \
   if(!strcmp(n, name)) \
     { \
-    ctx->var = atoi(val->val_str) * scale; \
-    found = 1; \
+    ctx->var = atoi(val->v.str) * scale; \
     }
 
 
 #define PARAM_QP2LAMBDA(n, var)   \
   if(!strcmp(n, name)) \
     { \
-    ctx->var = (int)(val->val_f * FF_QP2LAMBDA+0.5);  \
-    found = 1; \
+    ctx->var = (int)(val->v.d * FF_QP2LAMBDA+0.5);  \
     }
 #define PARAM_FLOAT(n, var)   \
   if(!strcmp(n, name)) \
     { \
-    ctx->var = val->val_f;                 \
-    found = 1; \
+    ctx->var = val->v.d;                 \
     }
 
 #define PARAM_CMP_CHROMA(n,var)              \
   {                                             \
   if(!strcmp(n, name))                    \
     {                                           \
-    if(val->val_i)                            \
+    if(val->v.i)                            \
       ctx->var |= FF_CMP_CHROMA;                \
     else                                        \
       ctx->var &= ~FF_CMP_CHROMA;               \
                                                 \
-    found = 1;                                  \
     }                                           \
   }
 
@@ -1101,12 +1093,11 @@ typedef struct
   {                                             \
   if(!strcmp(n, name))                    \
     {                                           \
-    if(val->val_i)                            \
+    if(val->v.i)                            \
       ctx->flags |= flag;                \
     else                                        \
       ctx->flags &= ~flag;               \
                                                 \
-    found = 1;                                  \
     }                                           \
   }
 
@@ -1114,12 +1105,11 @@ typedef struct
   {                                             \
   if(!strcmp(n, name))                    \
     {                                           \
-    if(val->val_i)                            \
+    if(val->v.i)                            \
       ctx->flags2 |= flag;                \
     else                                        \
       ctx->flags2 &= ~flag;               \
                                                 \
-    found = 1;                                  \
     }                                           \
   }
 
@@ -1177,28 +1167,27 @@ static const enum_t faac_profile[] =
     { \
     for(i = 0; i < sizeof(arr)/sizeof(arr[0]); i++) \
       {                                             \
-      if(!strcmp(val->val_str, arr[i].s))       \
+      if(!strcmp(val->v.str, arr[i].s))       \
         {                                           \
         ctx->var = arr[i].i;                        \
         break;                                      \
         }                                           \
       }                                             \
-    found = 1;                                      \
     }
 
 #define PARAM_DICT_STRING(n, ffmpeg_key) \
   if(!strcmp(n, name)) \
     { \
-    if(val->val_str && (val->val_str[0] != '$')) \
+    if(val->v.str && (val->v.str[0] != '$')) \
       av_dict_set(options,                      \
-                  ffmpeg_key, val->val_str, 0); \
+                  ffmpeg_key, val->v.str, 0); \
     }
 
 #define PARAM_DICT_FLOAT(n, ffmpeg_key) \
   if(!strcmp(n, name)) \
     { \
     char * str; \
-    str = bg_sprintf("%f", val->val_f); \
+    str = bg_sprintf("%f", val->v.d); \
     av_dict_set(options, ffmpeg_key, str, 0); \
     free(str); \
     }
@@ -1207,7 +1196,7 @@ static const enum_t faac_profile[] =
   if(!strcmp(n, name)) \
     { \
     char * str; \
-    str = bg_sprintf("%d", val->val_i); \
+    str = bg_sprintf("%d", val->v.i); \
     av_dict_set(options, ffmpeg_key, str, 0); \
     free(str); \
     }
@@ -1219,7 +1208,7 @@ bg_ffmpeg_set_codec_parameter(AVCodecContext * ctx,
                               const char * name,
                               const bg_parameter_value_t * val)
   {
-  int found = 0, i;
+  int i;
 /*
  *   IMPORTANT: To keep the mess at a reasonable level,
  *   *all* parameters *must* appear in the same order as in
@@ -1247,10 +1236,8 @@ bg_ffmpeg_set_codec_parameter(AVCodecContext * ctx,
   PARAM_INT("ff_rc_min_rate",rc_min_rate);
   PARAM_INT("ff_rc_max_rate",rc_max_rate);
   PARAM_INT_SCALE("ff_rc_buffer_size",rc_buffer_size,1000);
-  PARAM_FLOAT("ff_rc_buffer_aggressivity",rc_buffer_aggressivity);
   PARAM_FLOAT("ff_i_quant_factor",i_quant_factor);
   PARAM_QP2LAMBDA("ff_i_quant_offset",i_quant_offset);
-  PARAM_FLOAT("ff_rc_initial_cplx",rc_initial_cplx);
   PARAM_FLOAT("ff_lumi_masking",lumi_masking);
   PARAM_FLOAT("ff_temporal_cplx_masking",temporal_cplx_masking);
   PARAM_FLOAT("ff_spatial_cplx_masking",spatial_cplx_masking);
@@ -1275,21 +1262,15 @@ bg_ffmpeg_set_codec_parameter(AVCodecContext * ctx,
   PARAM_INT("ff_me_range",me_range);
   PARAM_ENUM("ff_mb_decision",mb_decision,mb_decision);
   PARAM_INT("ff_scenechange_threshold",scenechange_threshold);
-  PARAM_QP2LAMBDA("ff_lmin", lmin);
-  PARAM_QP2LAMBDA("ff_lmax", lmax);
   PARAM_INT("ff_noise_reduction",noise_reduction);
   PARAM_INT_SCALE("ff_rc_initial_buffer_occupancy",rc_initial_buffer_occupancy,1000);
-  PARAM_INT("ff_me_threshold",me_threshold);
-  PARAM_INT("ff_mb_threshold",mb_threshold);
   PARAM_INT("ff_nsse_weight",nsse_weight);
-  PARAM_FLOAT("ff_border_masking",border_masking);
   PARAM_QP2LAMBDA("ff_mb_lmin", mb_lmin);
   PARAM_QP2LAMBDA("ff_mb_lmax", mb_lmax);
   PARAM_INT("ff_me_penalty_compensation",me_penalty_compensation);
   PARAM_INT("ff_bidir_refine",bidir_refine);
   PARAM_INT("ff_brd_scale",brd_scale);
   PARAM_INT("ff_keyint_min",keyint_min);
-  PARAM_INT("ff_scenechange_factor",scenechange_factor);
   PARAM_FLAG("ff_flag_qscale",CODEC_FLAG_QSCALE);
   PARAM_FLAG("ff_flag_4mv",CODEC_FLAG_4MV);
   PARAM_FLAG("ff_flag_qpel",CODEC_FLAG_QPEL);
@@ -1323,13 +1304,13 @@ bg_ffmpeg_set_codec_parameter(AVCodecContext * ctx,
   PARAM_ENUM("faac_profile", profile, faac_profile);
 
   if(!strcmp(name, "faac_quality"))
-    ctx->global_quality = FF_QP2LAMBDA * val->val_i;
+    ctx->global_quality = FF_QP2LAMBDA * val->v.i;
   else if(!strcmp(name, "vorbis_quality"))
-    ctx->global_quality = FF_QP2LAMBDA * val->val_i;
+    ctx->global_quality = FF_QP2LAMBDA * val->v.i;
   
   if(!strcmp(name, "tga_rle"))
     {
-    if(val->val_i)
+    if(val->v.i)
       ctx->coder_type = FF_CODER_TYPE_RLE;
     else
       ctx->coder_type = FF_CODER_TYPE_RAW;

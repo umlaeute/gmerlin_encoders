@@ -92,7 +92,7 @@ static const bg_parameter_info_t parameters[] =
       .name =        "bitrate_mode",
       .long_name =   TRS("Bitrate mode"),
       .type =        BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str = "VBR" },
+      .val_default = GAVL_VALUE_INIT_STRING("VBR"),
       .multi_names = (char const *[]){ "vbr", "vbr_bitrate", "managed", NULL },
       .multi_labels = (char const *[]){ TRS("VBR"), TRS("VBR (bitrate)"), TRS("Managed"), NULL },
       .help_string = TRS("Bitrate mode:\n\
@@ -105,18 +105,18 @@ VBR is recommended, managed bitrate might result in a worse quality")
       .name =        "nominal_bitrate",
       .long_name =   TRS("Nominal bitrate (kbps)"),
       .type =        BG_PARAMETER_INT,
-      .val_min =     { .val_i = 0 },
-      .val_max =     { .val_i = 1000 },
-      .val_default = { .val_i = 128 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(1000),
+      .val_default = GAVL_VALUE_INIT_INT(128),
       .help_string = TRS("Nominal bitrate (in kbps) for managed mode"),
     },
     {
       .name =      "quality",
       .long_name = TRS("VBR Quality (10: best)"),
       .type =      BG_PARAMETER_SLIDER_FLOAT,
-      .val_min =     { .val_f = 0.0 },
-      .val_max =     { .val_f = 10.0 },
-      .val_default = { .val_f = 3.0 },
+      .val_min =     GAVL_VALUE_INIT_FLOAT(0.0),
+      .val_max =     GAVL_VALUE_INIT_FLOAT(10.0),
+      .val_default = GAVL_VALUE_INIT_FLOAT(3.0),
       .num_digits =  1,
       .help_string = TRS("Quality for VBR mode\n\
 10: best (largest output file)\n\
@@ -126,9 +126,9 @@ VBR is recommended, managed bitrate might result in a worse quality")
       .name =        "min_bitrate",
       .long_name =   TRS("Minimum bitrate (kbps)"),
       .type =        BG_PARAMETER_INT,
-      .val_min =     { .val_i = 0 },
-      .val_max =     { .val_i = 1000 },
-      .val_default = { .val_i = 0 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(1000),
+      .val_default = GAVL_VALUE_INIT_INT(0),
       .help_string = TRS("Optional minimum bitrate (in kbps)\n\
 0 = unspecified"),
     },
@@ -136,9 +136,9 @@ VBR is recommended, managed bitrate might result in a worse quality")
       .name =        "max_bitrate",
       .long_name =   TRS("Maximum bitrate (kbps)"),
       .type =        BG_PARAMETER_INT,
-      .val_min =     { .val_i = 0 },
-      .val_max =     { .val_i = 1000 },
-      .val_default = { .val_i = 0 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(1000),
+      .val_default = GAVL_VALUE_INIT_INT(0),
       .help_string = TRS("Optional maximum bitrate (in kbps)\n\
 0 = unspecified"),
     },
@@ -383,33 +383,33 @@ static void set_parameter_vorbis(void * data, const char * name,
     }
   else if(!strcmp(name, "nominal_bitrate"))
     {
-    vorbis->nominal_bitrate = v->val_i * 1000;
+    vorbis->nominal_bitrate = v->v.i * 1000;
     if(vorbis->nominal_bitrate < 0)
       vorbis->nominal_bitrate = -1;
     }
   else if(!strcmp(name, "min_bitrate"))
     {
-    vorbis->min_bitrate = v->val_i * 1000;
+    vorbis->min_bitrate = v->v.i * 1000;
     if(vorbis->min_bitrate < 0)
       vorbis->min_bitrate = -1;
     }
   else if(!strcmp(name, "max_bitrate"))
     {
-    vorbis->max_bitrate = v->val_i * 1000;
+    vorbis->max_bitrate = v->v.i * 1000;
     if(vorbis->max_bitrate < 0)
       vorbis->max_bitrate = -1;
     }
   else if(!strcmp(name, "quality"))
     {
-    vorbis->quality = v->val_f * 0.1;
+    vorbis->quality = v->v.d * 0.1;
     }
   else if(!strcmp(name, "bitrate_mode"))
     {
-    if(!strcmp(v->val_str, "vbr"))
+    if(!strcmp(v->v.str, "vbr"))
       vorbis->bitrate_mode = BITRATE_MODE_VBR;
-    else if(!strcmp(v->val_str, "vbr_bitrate"))
+    else if(!strcmp(v->v.str, "vbr_bitrate"))
       vorbis->bitrate_mode = BITRATE_MODE_VBR_BITRATE;
-    else if(!strcmp(v->val_str, "managed"))
+    else if(!strcmp(v->v.str, "managed"))
       vorbis->bitrate_mode = BITRATE_MODE_MANAGED;
     }
   }

@@ -113,7 +113,7 @@ static const bg_parameter_info_t parameters[] =
       .name =        "application",
       .long_name =   TRS("Application"),
       .type =        BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str = "audio" },
+      .val_default = GAVL_VALUE_INIT_STRING("audio"),
       .multi_names =  (char const *[]){ "audio", "voip", NULL },
       .multi_labels = (char const *[]){ TRS("Audio"), TRS("VOIP"),
                                         NULL },
@@ -122,7 +122,7 @@ static const bg_parameter_info_t parameters[] =
       .name =        "bitrate_mode",
       .long_name =   TRS("Bitrate mode"),
       .type =        BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str = "vbr" },
+      .val_default = GAVL_VALUE_INIT_STRING("vbr"),
       .multi_names =  (char const *[]){ "vbr", "cvbr", "cbr", NULL },
       .multi_labels = (char const *[]){ TRS("VBR"), TRS("Constrained VBR"),
                                         TRS("CBR"),
@@ -133,25 +133,25 @@ static const bg_parameter_info_t parameters[] =
       .name =        "bitrate",
       .long_name =   TRS("Bitrate"),
       .type =        BG_PARAMETER_INT,
-      .val_min =     { .val_i = 0 },
-      .val_max =     { .val_i = 512000 },
-      .val_default = { .val_i = 0 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(512000),
+      .val_default = GAVL_VALUE_INIT_INT(0),
       .help_string = TRS("Bitrate (in bps). 0 means auto."),
     },
     {
       .name =      "complexity",
       .long_name = TRS("Encoding complexity"),
       .type =      BG_PARAMETER_SLIDER_INT,
-      .val_min =     { .val_i = 1  },
-      .val_max =     { .val_i = 10 },
-      .val_default = { .val_i = 10 },
+      .val_min =     GAVL_VALUE_INIT_INT(1),
+      .val_max =     GAVL_VALUE_INIT_INT(10),
+      .val_default = GAVL_VALUE_INIT_INT(10),
     },
     {
       .name =        "frame_size",
       .long_name =   TRS("Frame size (ms)"),
       .type =        BG_PARAMETER_STRINGLIST,
       /* Multiplied by 10 */
-      .val_default = { .val_str = "200" },
+      .val_default = GAVL_VALUE_INIT_STRING("200"),
       .multi_names =  (char const *[]){ "25",
                                         "50",
                                         "100",
@@ -182,7 +182,7 @@ static const bg_parameter_info_t parameters[] =
       .name =        "bandwidth",
       .long_name =   TRS("Bandwidth"),
       .type =        BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str = "auto" },
+      .val_default = GAVL_VALUE_INIT_STRING("auto"),
       .multi_names =  (char const *[]){ "auto", "narrow", "medium", "wide", "superwide", "full", NULL },
       .multi_labels = (char const *[]){ TRS("Automatic"),
                                         TRS("Narrow (4 kHz)"),
@@ -197,7 +197,7 @@ static const bg_parameter_info_t parameters[] =
       .name =        "max_bandwidth",
       .long_name =   TRS("Maximum bandwidth"),
       .type =        BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str = "full" },
+      .val_default = GAVL_VALUE_INIT_STRING("full"),
       .multi_names =  (char const *[]){ "narrow", "medium", "wide", "superwide", "full", NULL },
       .multi_labels = (char const *[]){ TRS("Narrow (4 kHz)"),
                                         TRS("Medium (6 kHz)"),
@@ -211,9 +211,9 @@ static const bg_parameter_info_t parameters[] =
       .name =      "loss_perc",
       .long_name = TRS("Loss percentage"),
       .type =      BG_PARAMETER_SLIDER_INT,
-      .val_min =     { .val_i = 0  },
-      .val_max =     { .val_i = 100 },
-      .val_default = { .val_i = 0 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(100),
+      .val_default = GAVL_VALUE_INIT_INT(0),
       
     },
     { /* End */ },
@@ -240,58 +240,58 @@ static void set_parameter_opus(void * data, const char * name,
   
   if(!strcmp(name, "application"))
     {
-    if(!strcmp(v->val_str, "audio"))
+    if(!strcmp(v->v.str, "audio"))
       opus->application = OPUS_APPLICATION_AUDIO;
-    else if(!strcmp(v->val_str, "voip"))
+    else if(!strcmp(v->v.str, "voip"))
       opus->application = OPUS_APPLICATION_VOIP;
     }
   else if(!strcmp(name, "bitrate_mode"))
     {
-    if(!strcmp(v->val_str, "vbr"))
+    if(!strcmp(v->v.str, "vbr"))
       opus->bitrate_mode = BITRATE_VBR;
-    else if(!strcmp(v->val_str, "cvbr"))
+    else if(!strcmp(v->v.str, "cvbr"))
       opus->bitrate_mode = BITRATE_CVBR;
-    else if(!strcmp(v->val_str, "cbr"))
+    else if(!strcmp(v->v.str, "cbr"))
       opus->bitrate_mode = BITRATE_CBR;
     }
   else if(!strcmp(name, "bitrate"))
     {
-    opus->bitrate = v->val_i;
+    opus->bitrate = v->v.i;
     }
   else if(!strcmp(name, "complexity"))
     {
-    opus->complexity = v->val_i; 
+    opus->complexity = v->v.i; 
     }
   else if(!strcmp(name, "dtx"))
     {
-    opus->dtx = v->val_i; 
+    opus->dtx = v->v.i; 
     }
   else if(!strcmp(name, "inband_fec"))
     {
-    opus->fec = v->val_i; 
+    opus->fec = v->v.i; 
     }
   else if(!strcmp(name, "bandwidth"))
     {
-    if(!strcmp(v->val_str, "narrow"))
+    if(!strcmp(v->v.str, "narrow"))
       opus->bandwidth = OPUS_BANDWIDTH_NARROWBAND;
-    else if(!strcmp(v->val_str, "medium"))
+    else if(!strcmp(v->v.str, "medium"))
       opus->bandwidth = OPUS_BANDWIDTH_MEDIUMBAND;
-    else if(!strcmp(v->val_str, "wide"))
+    else if(!strcmp(v->v.str, "wide"))
       opus->bandwidth = OPUS_BANDWIDTH_WIDEBAND;
-    else if(!strcmp(v->val_str, "superwide"))
+    else if(!strcmp(v->v.str, "superwide"))
       opus->bandwidth = OPUS_BANDWIDTH_SUPERWIDEBAND;
-    else if(!strcmp(v->val_str, "full"))
+    else if(!strcmp(v->v.str, "full"))
       opus->bandwidth = OPUS_BANDWIDTH_FULLBAND;
-    else if(!strcmp(v->val_str, "auto"))
+    else if(!strcmp(v->v.str, "auto"))
       opus->bandwidth = OPUS_AUTO;
     }
   else if(!strcmp(name, "loss_perc"))
     {
-    opus->loss_perc = v->val_i; 
+    opus->loss_perc = v->v.i; 
     }
   else if(!strcmp(name, "frame_size"))
     {
-    opus->frame_size = atoi(v->val_str); 
+    opus->frame_size = atoi(v->v.str); 
     }
   
   }

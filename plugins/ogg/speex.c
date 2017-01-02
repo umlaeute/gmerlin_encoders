@@ -94,7 +94,7 @@ static const bg_parameter_info_t parameters[] =
       .name =        "mode",
       .long_name =   TRS("Speex mode"),
       .type =        BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str = "auto" },
+      .val_default = GAVL_VALUE_INIT_STRING("auto"),
       .multi_names =  (char const *[]){ "auto", "nb",         "wb",       "uwb",            NULL },
       .multi_labels = (char const *[]){ TRS("Auto"), TRS("Narrowband"), TRS("Wideband"),
                                TRS("Ultra-wideband"), NULL },
@@ -104,33 +104,33 @@ static const bg_parameter_info_t parameters[] =
       .name =      "quality",
       .long_name = TRS("Quality (10: best)"),
       .type =      BG_PARAMETER_SLIDER_INT,
-      .val_min =     { .val_i = 0 },
-      .val_max =     { .val_i = 10 },
-      .val_default = { .val_i = 3 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(10),
+      .val_default = GAVL_VALUE_INIT_INT(3),
     },
     {
       .name =      "complexity",
       .long_name = TRS("Encoding complexity"),
       .type =      BG_PARAMETER_SLIDER_INT,
-      .val_min =     { .val_i = 0 },
-      .val_max =     { .val_i = 10 },
-      .val_default = { .val_i = 3 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(10),
+      .val_default = GAVL_VALUE_INIT_INT(3),
     },
     {
       .name =      "nframes",
       .long_name = TRS("Frames per Ogg packet"),
       .type =      BG_PARAMETER_SLIDER_INT,
-      .val_min =     { .val_i = 1 },
-      .val_max =     { .val_i = 10 },
-      .val_default = { .val_i = 1 },
+      .val_min =     GAVL_VALUE_INIT_INT(1),
+      .val_max =     GAVL_VALUE_INIT_INT(10),
+      .val_default = GAVL_VALUE_INIT_INT(1),
     },
     {
       .name =        "bitrate",
       .long_name =   TRS("Bitrate (kbps)"),
       .type =        BG_PARAMETER_INT,
-      .val_min =     { .val_i = 0 },
-      .val_max =     { .val_i = 128 },
-      .val_default = { .val_i = 8 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(128),
+      .val_default = GAVL_VALUE_INIT_INT(8),
       .help_string = TRS("Bitrate (in kbps). Set to 0 for seleting the standard bitrates for the encoding mode."),
     },
     {
@@ -142,9 +142,9 @@ static const bg_parameter_info_t parameters[] =
       .name =        "abr_bitrate",
       .long_name =   TRS("Average bitrate (kbps)"),
       .type =        BG_PARAMETER_INT,
-      .val_min =     { .val_i = 0 },
-      .val_max =     { .val_i = 128 },
-      .val_default = { .val_i = 0 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(128),
+      .val_default = GAVL_VALUE_INIT_INT(0),
       .help_string = TRS("Average bitrate (in kbps). Set to 0 for disabling ABR."),
     },
     {
@@ -178,47 +178,47 @@ static void set_parameter_speex(void * data, const char * name,
     }
   else if(!strcmp(name, "mode"))
     {
-    if(!strcmp(v->val_str, "auto"))
+    if(!strcmp(v->v.str, "auto"))
       speex->modeID = -1;
-    else if(!strcmp(v->val_str, "nb"))
+    else if(!strcmp(v->v.str, "nb"))
       speex->modeID = SPEEX_MODEID_NB;
-    else if(!strcmp(v->val_str, "wb"))
+    else if(!strcmp(v->v.str, "wb"))
       speex->modeID = SPEEX_MODEID_WB;
-    else if(!strcmp(v->val_str, "uwb"))
+    else if(!strcmp(v->v.str, "uwb"))
       speex->modeID = SPEEX_MODEID_UWB;
     }
   
   else if(!strcmp(name, "bitrate"))
     {
-    speex->bitrate = v->val_i * 1000;
+    speex->bitrate = v->v.i * 1000;
     }
   else if(!strcmp(name, "abr_bitrate"))
     {
-    speex->abr_bitrate = v->val_i * 1000;
+    speex->abr_bitrate = v->v.i * 1000;
     }
   else if(!strcmp(name, "quality"))
     {
-    speex->quality = v->val_i;
+    speex->quality = v->v.i;
     }
   else if(!strcmp(name, "complexity"))
     {
-    speex->complexity = v->val_i;
+    speex->complexity = v->v.i;
     }
   else if(!strcmp(name, "vbr"))
     {
-    speex->vbr = v->val_i;
+    speex->vbr = v->v.i;
     }
   else if(!strcmp(name, "vad"))
     {
-    speex->vad = v->val_i;
+    speex->vad = v->v.i;
     }
   else if(!strcmp(name, "dtx"))
     {
-    speex->dtx = v->val_i;
+    speex->dtx = v->v.i;
     }
   else if(!strcmp(name, "nframes"))
     {
-    speex->nframes = v->val_i;
+    speex->nframes = v->v.i;
     }
   }
 

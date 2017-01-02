@@ -123,79 +123,79 @@ static const bg_parameter_info_t parameters[] =
       TRS("Constant quality"),
       NULL
       },
-    .val_default = { .val_str = "constant_quality" },
+    .val_default = GAVL_VALUE_INIT_STRING("constant_quality"),
     },
     {
     .name = "schro_bitrate",
     .long_name = TRS("Bitrate"),
     .type = BG_PARAMETER_INT,
-    .val_min = { .val_i = 0 },
-    .val_max = { .val_i = 2147483647 },
-    .val_default = { .val_i = 0 },
+    .val_min = GAVL_VALUE_INIT_INT(0),
+    .val_max = GAVL_VALUE_INIT_INT(2147483647),
+    .val_default = GAVL_VALUE_INIT_INT(0),
     },
     {
     .name = "schro_max_bitrate",
     .long_name = TRS("Max bitrate"),
     .type = BG_PARAMETER_INT,
-    .val_min = { .val_i = 0 },
-    .val_max = { .val_i = 2147483647 },
-    .val_default = { .val_i = 13824000 },
+    .val_min = GAVL_VALUE_INIT_INT(0),
+    .val_max = GAVL_VALUE_INIT_INT(2147483647),
+    .val_default = GAVL_VALUE_INIT_INT(13824000),
     },
     {
     .name = "schro_min_bitrate",
     .long_name = TRS("Min bitrate"),
     .type = BG_PARAMETER_INT,
-    .val_min = { .val_i = 0 },
-    .val_max = { .val_i = 2147483647 },
-    .val_default = { .val_i = 13824000 },
+    .val_min = GAVL_VALUE_INIT_INT(0),
+    .val_max = GAVL_VALUE_INIT_INT(2147483647),
+    .val_default = GAVL_VALUE_INIT_INT(13824000),
     },
     {
     .name = "schro_buffer_size",
     .long_name = TRS("Buffer size"),
     .type = BG_PARAMETER_INT,
-    .val_min = { .val_i = 0 },
-    .val_max = { .val_i = 2147483647 },
-    .val_default = { .val_i = 0 },
+    .val_min = GAVL_VALUE_INIT_INT(0),
+    .val_max = GAVL_VALUE_INIT_INT(2147483647),
+    .val_default = GAVL_VALUE_INIT_INT(0),
     },
     {
     .name = "schro_buffer_level",
     .long_name = TRS("Buffer level"),
     .type = BG_PARAMETER_INT,
-    .val_min = { .val_i = 0 },
-    .val_max = { .val_i = 2147483647 },
-    .val_default = { .val_i = 0 },
+    .val_min = GAVL_VALUE_INIT_INT(0),
+    .val_max = GAVL_VALUE_INIT_INT(2147483647),
+    .val_default = GAVL_VALUE_INIT_INT(0),
     },
     {
     .name = "schro_quality",
     .long_name = TRS("Quality"),
     .type = BG_PARAMETER_SLIDER_FLOAT,
-    .val_min = { .val_f = 0.000000 },
-    .val_max = { .val_f = 10.000000 },
-    .val_default = { .val_f = 5.000000 },
+    .val_min = GAVL_VALUE_INIT_FLOAT(0.000000),
+    .val_max = GAVL_VALUE_INIT_FLOAT(10.000000),
+    .val_default = GAVL_VALUE_INIT_FLOAT(5.000000),
     .num_digits = 2,
     },
     {
     .name = "schro_noise_threshold",
     .long_name = TRS("Noise threshold"),
     .type = BG_PARAMETER_SLIDER_FLOAT,
-    .val_min = { .val_f = 0.000000 },
-    .val_max = { .val_f = 100.000000 },
-    .val_default = { .val_f = 25.000000 },
+    .val_min = GAVL_VALUE_INIT_FLOAT(0.000000),
+    .val_max = GAVL_VALUE_INIT_FLOAT(100.000000),
+    .val_default = GAVL_VALUE_INIT_FLOAT(25.000000),
     .num_digits = 2,
     },
     {
     .name = "schro_enable_rdo_cbr",
     .long_name = TRS("Enable rdo cbr"),
     .type = BG_PARAMETER_CHECKBUTTON,
-    .val_default = { .val_i = 1 },
+    .val_default = GAVL_VALUE_INIT_INT(1),
     },
     {
     .name = "schro_noise_threshold",
     .long_name = TRS("Noise threshold"),
     .type = BG_PARAMETER_SLIDER_FLOAT,
-    .val_min = { .val_f = 0.000000 },
-    .val_max = { .val_f = 100.000000 },
-    .val_default = { .val_f = 25.000000 },
+    .val_min = GAVL_VALUE_INIT_FLOAT(0.000000),
+    .val_max = GAVL_VALUE_INIT_FLOAT(100.000000),
+    .val_default = GAVL_VALUE_INIT_FLOAT(25.000000),
     .num_digits = 2,
     },
     { 
@@ -227,21 +227,21 @@ static const bg_parameter_info_t parameters[] =
       TRS("Chained biref"),
       NULL
       },
-    .val_default = { .val_str = "adaptive" },
+    .val_default = GAVL_VALUE_INIT_STRING("adaptive"),
     },
     {
     .name = "schro_au_distance",
     .long_name = TRS("Au distance"),
     .type = BG_PARAMETER_INT,
-    .val_min = { .val_i = 1 },
-    .val_max = { .val_i = 2147483647 },
-    .val_default = { .val_i = 120 },
+    .val_min = GAVL_VALUE_INIT_INT(1),
+    .val_max = GAVL_VALUE_INIT_INT(2147483647),
+    .val_default = GAVL_VALUE_INIT_INT(120),
     },
     {
     .name = "schro_open_gop",
     .long_name = TRS("Open gop"),
     .type = BG_PARAMETER_CHECKBUTTON,
-    .val_default = { .val_i = 1 },
+    .val_default = GAVL_VALUE_INIT_INT(1),
     },
     { 
       .name =        "enc_me",
@@ -252,9 +252,9 @@ static const bg_parameter_info_t parameters[] =
     .name = "schro_mv_precision",
     .long_name = TRS("Mv precision"),
     .type = BG_PARAMETER_INT,
-    .val_min = { .val_i = 0 },
-    .val_max = { .val_i = 3 },
-    .val_default = { .val_i = 0 },
+    .val_min = GAVL_VALUE_INIT_INT(0),
+    .val_max = GAVL_VALUE_INIT_INT(3),
+    .val_default = GAVL_VALUE_INIT_INT(0),
     },
     {
     .name = "schro_motion_block_size",
@@ -276,7 +276,7 @@ static const bg_parameter_info_t parameters[] =
       TRS("Large"),
       NULL
       },
-    .val_default = { .val_str = "automatic" },
+    .val_default = GAVL_VALUE_INIT_STRING("automatic"),
     },
     {
     .name = "schro_motion_block_overlap",
@@ -298,55 +298,55 @@ static const bg_parameter_info_t parameters[] =
       TRS("Full"),
       NULL
       },
-    .val_default = { .val_str = "automatic" },
+    .val_default = GAVL_VALUE_INIT_STRING("automatic"),
     },
     {
     .name = "schro_enable_chroma_me",
     .long_name = TRS("Enable chroma me"),
     .type = BG_PARAMETER_CHECKBUTTON,
-    .val_default = { .val_i = 0 },
+    .val_default = GAVL_VALUE_INIT_INT(0),
     },
     {
     .name = "schro_enable_global_motion",
     .long_name = TRS("Enable global motion"),
     .type = BG_PARAMETER_CHECKBUTTON,
-    .val_default = { .val_i = 0 },
+    .val_default = GAVL_VALUE_INIT_INT(0),
     },
     {
     .name = "schro_enable_phasecorr_estimation",
     .long_name = TRS("Enable phasecorr estimation"),
     .type = BG_PARAMETER_CHECKBUTTON,
-    .val_default = { .val_i = 0 },
+    .val_default = GAVL_VALUE_INIT_INT(0),
     },
     {
     .name = "schro_enable_hierarchical_estimation",
     .long_name = TRS("Enable hierarchical estimation"),
     .type = BG_PARAMETER_CHECKBUTTON,
-    .val_default = { .val_i = 1 },
+    .val_default = GAVL_VALUE_INIT_INT(1),
     },
     {
     .name = "schro_enable_zero_estimation",
     .long_name = TRS("Enable zero estimation"),
     .type = BG_PARAMETER_CHECKBUTTON,
-    .val_default = { .val_i = 0 },
+    .val_default = GAVL_VALUE_INIT_INT(0),
     },
     {
     .name = "schro_enable_bigblock_estimation",
     .long_name = TRS("Enable bigblock estimation"),
     .type = BG_PARAMETER_CHECKBUTTON,
-    .val_default = { .val_i = 1 },
+    .val_default = GAVL_VALUE_INIT_INT(1),
     },
     {
     .name = "schro_enable_scene_change_detection",
     .long_name = TRS("Enable scene change detection"),
     .type = BG_PARAMETER_CHECKBUTTON,
-    .val_default = { .val_i = 1 },
+    .val_default = GAVL_VALUE_INIT_INT(1),
     },
     {
     .name = "schro_enable_deep_estimation",
     .long_name = TRS("Enable deep estimation"),
     .type = BG_PARAMETER_CHECKBUTTON,
-    .val_default = { .val_i = 1 },
+    .val_default = GAVL_VALUE_INIT_INT(1),
     },
     { 
       .name =        "enc_wavelets",
@@ -379,7 +379,7 @@ static const bg_parameter_info_t parameters[] =
       TRS("Daub 9 7"),
       NULL
       },
-    .val_default = { .val_str = "desl_dubuc_9_7" },
+    .val_default = GAVL_VALUE_INIT_STRING("desl_dubuc_9_7"),
     },
     {
     .name = "schro_inter_wavelet",
@@ -407,7 +407,7 @@ static const bg_parameter_info_t parameters[] =
       TRS("Daub 9 7"),
       NULL
       },
-    .val_default = { .val_str = "desl_dubuc_9_7" },
+    .val_default = GAVL_VALUE_INIT_STRING("desl_dubuc_9_7"),
     },
    
     { 
@@ -437,15 +437,15 @@ static const bg_parameter_info_t parameters[] =
       TRS("Adaptive gaussian"),
       NULL
       },
-    .val_default = { .val_str = "none" },
+    .val_default = GAVL_VALUE_INIT_STRING("none"),
     },
     {
     .name = "schro_filter_value",
     .long_name = TRS("Filter value"),
     .type = BG_PARAMETER_SLIDER_FLOAT,
-    .val_min = { .val_f = 0.000000 },
-    .val_max = { .val_f = 100.000000 },
-    .val_default = { .val_f = 5.000000 },
+    .val_min = GAVL_VALUE_INIT_FLOAT(0.000000),
+    .val_max = GAVL_VALUE_INIT_FLOAT(100.000000),
+    .val_default = GAVL_VALUE_INIT_FLOAT(5.000000),
     .num_digits = 2,
     },
     { 
@@ -475,7 +475,7 @@ static const bg_parameter_info_t parameters[] =
       TRS("Main"),
       NULL
       },
-    .val_default = { .val_str = "auto" },
+    .val_default = GAVL_VALUE_INIT_STRING("auto"),
     },
     {
     .name = "schro_codeblock_size",
@@ -499,41 +499,41 @@ static const bg_parameter_info_t parameters[] =
       TRS("Full"),
       NULL
       },
-    .val_default = { .val_str = "automatic" },
+    .val_default = GAVL_VALUE_INIT_STRING("automatic"),
     },
     {
     .name = "schro_enable_multiquant",
     .long_name = TRS("Enable multiquant"),
     .type = BG_PARAMETER_CHECKBUTTON,
-    .val_default = { .val_i = 0 },
+    .val_default = GAVL_VALUE_INIT_INT(0),
     },
     {
     .name = "schro_enable_dc_multiquant",
     .long_name = TRS("Enable dc multiquant"),
     .type = BG_PARAMETER_CHECKBUTTON,
-    .val_default = { .val_i = 0 },
+    .val_default = GAVL_VALUE_INIT_INT(0),
     },
     {
     .name = "schro_enable_noarith",
     .long_name = TRS("Enable noarith"),
     .type = BG_PARAMETER_CHECKBUTTON,
-    .val_default = { .val_i = 0 },
+    .val_default = GAVL_VALUE_INIT_INT(0),
     },
     {
     .name = "schro_downsample_levels",
     .long_name = TRS("Downsample levels"),
     .type = BG_PARAMETER_INT,
-    .val_min = { .val_i = 2 },
-    .val_max = { .val_i = 8 },
-    .val_default = { .val_i = 5 },
+    .val_min = GAVL_VALUE_INIT_INT(2),
+    .val_max = GAVL_VALUE_INIT_INT(8),
+    .val_default = GAVL_VALUE_INIT_INT(5),
     },
     {
     .name = "schro_transform_depth",
     .long_name = TRS("Transform depth"),
     .type = BG_PARAMETER_INT,
-    .val_min = { .val_i = 0 },
-    .val_max = { .val_i = 6 },
-    .val_default = { .val_i = 3 },
+    .val_min = GAVL_VALUE_INIT_INT(0),
+    .val_max = GAVL_VALUE_INIT_INT(6),
+    .val_default = GAVL_VALUE_INIT_INT(3),
     },
     BG_ENCODER_FRAMERATE_PARAMS,
     { /* End of parameters */ }
@@ -578,18 +578,18 @@ static void set_parameter_schro(void * data, const char * name,
     {
     case BG_PARAMETER_CHECKBUTTON:
     case BG_PARAMETER_INT:
-      val = (double)v->val_i;
+      val = (double)v->v.i;
       break;
     case BG_PARAMETER_FLOAT:
     case BG_PARAMETER_SLIDER_FLOAT:
-      val = v->val_f;
+      val = v->v.d;
       break;
     case BG_PARAMETER_STRINGLIST:
       {
       int j = 0, found = -1;
       while(info->multi_names[j])
         {
-        if(!strcmp(v->val_str, info->multi_names[j]))
+        if(!strcmp(v->v.str, info->multi_names[j]))
           {
           found = j;
           break;

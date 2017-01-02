@@ -698,7 +698,7 @@ static const bg_parameter_info_t common_parameters[] =
       .name =      "format",
       .long_name = TRS("Format"),
       .type =      BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str = "mpeg1" },
+      .val_default = GAVL_VALUE_INIT_STRING("mpeg1"),
       .multi_names =    (char const *[]) { "mpeg1",            "vcd",          "mpeg2",            "svcd",         "dvd_nav",   "dvd", NULL },
       .multi_labels =   (char const *[]) { TRS("MPEG-1 (generic)"), TRS("MPEG-1 (VCD)"),
                                   TRS("MPEG-2 (generic)"), TRS("MPEG-2 (SVCD)"),
@@ -740,9 +740,9 @@ static const bg_parameter_info_t * get_parameters_mpeg(void * data)
   return common_parameters;
   }
 
-#define SET_ENUM(ret, key, v) if(!strcmp(val->val_str, key)) ret = v;
+#define SET_ENUM(ret, key, v) if(!strcmp(val->v.str, key)) ret = v;
 
-#define SET_STRING(key) if(!strcmp(# key, name)) e->key = gavl_strrep(e->key, val->val_str);
+#define SET_STRING(key) if(!strcmp(# key, name)) e->key = gavl_strrep(e->key, val->v.str);
 
 static void set_parameter_mpeg(void * data, const char * name,
                                const bg_parameter_value_t * val)

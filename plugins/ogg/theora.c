@@ -116,17 +116,17 @@ static const bg_parameter_info_t parameters[] =
       .name =        "target_bitrate",
       .long_name =   TRS("Target bitrate (kbps)"),
       .type =        BG_PARAMETER_INT,
-      .val_min =     { .val_i = 45 },
-      .val_max =     { .val_i = 2000 },
-      .val_default = { .val_i = 250 },
+      .val_min =     GAVL_VALUE_INIT_INT(45),
+      .val_max =     GAVL_VALUE_INIT_INT(2000),
+      .val_default = GAVL_VALUE_INIT_INT(250),
     },
     {
       .name =      "quality",
       .long_name = TRS("Nominal quality"),
       .type =      BG_PARAMETER_SLIDER_INT,
-      .val_min =     { .val_i = 0 },
-      .val_max =     { .val_i = 63 },
-      .val_default = { .val_i = 10 },
+      .val_min =     GAVL_VALUE_INIT_INT(0),
+      .val_max =     GAVL_VALUE_INIT_INT(63),
+      .val_default = GAVL_VALUE_INIT_INT(10),
       .num_digits =  1,
       .help_string = TRS("Quality for VBR mode\n\
 63: best (largest output file)\n\
@@ -136,30 +136,30 @@ static const bg_parameter_info_t parameters[] =
       .name =      "max_keyframe_interval",
       .long_name = TRS("Maximum keyframe interval"),
       .type =      BG_PARAMETER_INT,
-      .val_min =     { .val_i = 1    },
-      .val_max =     { .val_i = 1000 },
-      .val_default = { .val_i = 64   },
+      .val_min =     GAVL_VALUE_INIT_INT(1),
+      .val_max =     GAVL_VALUE_INIT_INT(1000),
+      .val_default = GAVL_VALUE_INIT_INT(64),
     },
 #ifdef THEORA_1_1
     {
       .name = "drop_frames",
       .long_name = TRS("Enable frame dropping"),
       .type = BG_PARAMETER_CHECKBUTTON,
-      .val_default = { .val_i = 1 },
+      .val_default = GAVL_VALUE_INIT_INT(1),
       .help_string = TRS("Drop frames to keep within bitrate buffer constraints. This can have a severe impact on quality, but is the only way to ensure that bitrate targets are met at low rates during sudden bursts of activity."),
     },
     {
       .name = "cap_overflow",
       .long_name = TRS("Don't bank excess bits for later use"),
       .type = BG_PARAMETER_CHECKBUTTON,
-      .val_default = { .val_i = 1 },
+      .val_default = GAVL_VALUE_INIT_INT(1),
       .help_string = TRS("Ignore bitrate buffer overflows. If the encoder uses so few bits that the reservoir of available bits overflows, ignore the excess. The encoder will not try to use these extra bits in future frames. At high rates this may cause the result to be undersized, but allows a client to play the stream using a finite buffer; it should normally be enabled."),
     },
     {
       .name = "cap_underflow",
       .long_name = TRS("Don't try to make up shortfalls later"),
       .type = BG_PARAMETER_CHECKBUTTON,
-      .val_default = { .val_i = 0 },
+      .val_default = GAVL_VALUE_INIT_INT(0),
       .help_string = TRS("Ignore bitrate buffer underflows. If the encoder uses so many bits that the reservoir of available bits underflows, ignore the deficit. The encoder will not try to make up these extra bits in future frames. At low rates this may cause the result to be oversized; it should normally be disabled."),
     },
 #endif
@@ -167,9 +167,9 @@ static const bg_parameter_info_t parameters[] =
       .name =      "speed",
       .long_name = TRS("Encoding speed"),
       .type =      BG_PARAMETER_SLIDER_FLOAT,
-      .val_min =     { .val_f = 0.0 },
-      .val_max =     { .val_f = 1.0 },
-      .val_default = { .val_f = 0.0 },
+      .val_min =     GAVL_VALUE_INIT_FLOAT(0.0),
+      .val_max =     GAVL_VALUE_INIT_FLOAT(1.0),
+      .val_default = GAVL_VALUE_INIT_FLOAT(0.0),
       .num_digits  = 2,
       .help_string = TRS("Higher speed levels favor quicker encoding over better quality per bit. Depending on the encoding mode, and the internal algorithms used, quality may actually improve, but in this case bitrate will also likely increase. In any case, overall rate/distortion performance will probably decrease."),
     },
@@ -192,33 +192,33 @@ static void set_parameter_theora(void * data, const char * name,
   else if(bg_encoder_set_framerate_parameter(&theora->fr, name, v))
     return;
   else if(!strcmp(name, "target_bitrate"))
-    theora->ti.target_bitrate = v->val_i * 1000;
+    theora->ti.target_bitrate = v->v.i * 1000;
   else if(!strcmp(name, "quality"))
-    theora->ti.quality = v->val_i;
+    theora->ti.quality = v->v.i;
   else if(!strcmp(name, "cbr"))
-    theora->cbr = v->val_i;
+    theora->cbr = v->v.i;
   else if(!strcmp(name, "max_keyframe_interval"))
-    theora->max_keyframe_interval = v->val_i;
+    theora->max_keyframe_interval = v->v.i;
   else if(!strcmp(name, "speed"))
-    theora->speed = v->val_f;
+    theora->speed = v->v.d;
 #ifdef THEORA_1_1
   else if(!strcmp(name, "drop_frames"))
     {
-    if(v->val_i)
+    if(v->v.i)
       theora->rate_flags |= TH_RATECTL_DROP_FRAMES;
     else
       theora->rate_flags &= ~TH_RATECTL_DROP_FRAMES;
     }
   else if(!strcmp(name, "cap_overflow"))
     {
-    if(v->val_i)
+    if(v->v.i)
       theora->rate_flags |= TH_RATECTL_CAP_OVERFLOW;
     else
       theora->rate_flags &= ~TH_RATECTL_CAP_OVERFLOW;
     }
   else if(!strcmp(name, "cap_underflow"))
     {
-    if(v->val_i)
+    if(v->v.i)
       theora->rate_flags |= TH_RATECTL_CAP_UNDERFLOW;
     else
       theora->rate_flags &= ~TH_RATECTL_CAP_UNDERFLOW;

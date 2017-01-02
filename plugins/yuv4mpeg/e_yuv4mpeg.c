@@ -142,7 +142,7 @@ static const bg_parameter_info_t video_parameters[] =
       .name =        "chroma_mode",
       .long_name =   TRS("Chroma mode"),
       .type =        BG_PARAMETER_STRINGLIST,
-      .val_default = { .val_str = "auto" },
+      .val_default = GAVL_VALUE_INIT_STRING("auto"),
       .multi_names = (char const *[]){ "auto",
                               "420jpeg",
                               "420mpeg2",
@@ -174,7 +174,7 @@ static const bg_parameter_info_t * get_video_parameters_y4m(void * data)
   return video_parameters;
   }
 
-#define SET_ENUM(str, dst, v) if(!strcmp(val->val_str, str)) dst = v
+#define SET_ENUM(str, dst, v) if(!strcmp(val->v.str, str)) dst = v
 
 static void set_video_parameter_y4m(void * data, int stream, const char * name,
                                     const bg_parameter_value_t * val)

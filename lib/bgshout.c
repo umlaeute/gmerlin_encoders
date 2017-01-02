@@ -69,27 +69,27 @@ static const bg_parameter_info_t parameters[] =
       .name        = "server",
       .long_name   = TRS("Server"),
       .type        = BG_PARAMETER_STRING,
-      .val_default = { .val_str = "localhost" },
+      .val_default = GAVL_VALUE_INIT_STRING("localhost"),
     },
     {
       .name        = "port",
       .long_name   = TRS("Port"),
       .type        = BG_PARAMETER_INT,
-      .val_min     = { .val_i = 1 },
-      .val_max     = { .val_i = 65535 },
-      .val_default = { .val_i = 8000 },
+      .val_min     = GAVL_VALUE_INIT_INT(1),
+      .val_max     = GAVL_VALUE_INIT_INT(65535),
+      .val_default = GAVL_VALUE_INIT_INT(8000),
     },
     {
       .name        = "mount",
       .long_name   = TRS("Mount"),
       .type        = BG_PARAMETER_STRING,
-      .val_default = { .val_str = "/stream.ogg" },
+      .val_default = GAVL_VALUE_INIT_STRING("/stream.ogg"),
     },
     {
       .name        = "user",
       .long_name   = TRS("User"),
       .type        = BG_PARAMETER_STRING,
-      .val_default = { .val_str = "source" },
+      .val_default = GAVL_VALUE_INIT_STRING("source"),
     },
     {
       .name        = "password",
@@ -100,13 +100,13 @@ static const bg_parameter_info_t parameters[] =
       .name        = "name",
       .long_name   = TRS("Name"),
       .type        = BG_PARAMETER_STRING,
-      .val_default = { .val_str = "Test stream" },
+      .val_default = GAVL_VALUE_INIT_STRING("Test stream"),
     },
     {
       .name        = "description",
       .long_name   = TRS("Description"),
       .type        = BG_PARAMETER_STRING,
-      .val_default = { .val_str = "Brought to you by gmerlin" },
+      .val_default = GAVL_VALUE_INIT_STRING("Brought to you by gmerlin"),
     },
     {
       .name        = "genre",
@@ -130,40 +130,40 @@ void bg_shout_set_parameter(void * data, const char * name,
 
   if(!strcmp(name, "server"))
     {
-    shout_set_host(s->s, val->val_str);
+    shout_set_host(s->s, val->v.str);
     }
   else if(!strcmp(name, "port"))
     {
-    shout_set_port(s->s, val->val_i);
+    shout_set_port(s->s, val->v.i);
     }
   else if(!strcmp(name, "mount"))
     {
-    shout_set_mount(s->s, val->val_str);
+    shout_set_mount(s->s, val->v.str);
     }
   else if(!strcmp(name, "user"))
     {
-    if(val->val_str)
-      shout_set_user(s->s, val->val_str);
+    if(val->v.str)
+      shout_set_user(s->s, val->v.str);
     }
   else if(!strcmp(name, "password"))
     {
-    if(val->val_str)
-      shout_set_password(s->s, val->val_str);
+    if(val->v.str)
+      shout_set_password(s->s, val->v.str);
     }
   else if(!strcmp(name, "name"))
     {
-    if(val->val_str)
-      shout_set_name(s->s, val->val_str);
+    if(val->v.str)
+      shout_set_name(s->s, val->v.str);
     }
   else if(!strcmp(name, "description"))
     {
-    if(val->val_str)
-      shout_set_description(s->s, val->val_str);
+    if(val->v.str)
+      shout_set_description(s->s, val->v.str);
     }
   else if(!strcmp(name, "genre"))
     {
-    if(val->val_str)
-      shout_set_genre(s->s, val->val_str);
+    if(val->v.str)
+      shout_set_genre(s->s, val->v.str);
     }
   }
 

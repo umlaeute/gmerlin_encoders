@@ -32,7 +32,7 @@
     .name =      "ff_bit_rate_audio",                 \
     .long_name = TRS("Bit rate (kbps)"),                \
     .type =      BG_PARAMETER_INT,                \
-    .val_default = { .val_i = 0 },               \
+    .val_default = GAVL_VALUE_INIT_INT(0),               \
   }
 
 /** Rate control */
@@ -41,7 +41,7 @@
     .name =      "ff_bit_rate_video",                 \
     .long_name = TRS("Bit rate (kbps)"),                \
     .type =      BG_PARAMETER_INT,                \
-    .val_default = { .val_i = 800 },               \
+    .val_default = GAVL_VALUE_INIT_INT(800),               \
   }
 
 /** Rate control */
@@ -50,7 +50,7 @@
     .name =        "ff_bit_rate_tolerance",           \
     .long_name =   TRS("Bitrate tolerance (kbps)"),             \
     .type =        BG_PARAMETER_INT,             \
-    .val_default = { .val_i = 8000 },           \
+    .val_default = GAVL_VALUE_INIT_INT(8000),           \
     .help_string = TRS("Number of bits the bitstream is allowed to diverge from the reference.\
  Unused for constant quantizer encoding") \
   }
@@ -61,7 +61,7 @@
     .name =      "ff_me_method",\
     .long_name = TRS("Motion estimation method"),\
     .type =      BG_PARAMETER_STRINGLIST,\
-    .val_default = {val_str: "Zero"},\
+    .val_default = GAVL_VALUE_INIT_STRING("Zero"),                      \
     .multi_names = (char const *[]){"Zero", "Phods", "Log", "X1", "Epzs", "Full", (char *)0}, \
     .multi_labels = (char const *[]){TRS("Zero"), TRS("Phods"), TRS("Log"), \
 TRS("X1"), TRS("Epzs"), TRS("Full"), (char *)0} \
@@ -73,9 +73,9 @@ TRS("X1"), TRS("Epzs"), TRS("Full"), (char *)0} \
     .name =      "gop_size", \
     .long_name = TRS("GOP size (0 = intra only)"), \
     .type =      BG_PARAMETER_SLIDER_INT, \
-    .val_default = { .val_i = 250 },   \
-    .val_min =     { .val_i = 0 },     \
-    .val_max =     { .val_i = 300 },   \
+    .val_default = GAVL_VALUE_INIT_INT(250),   \
+    .val_min =     GAVL_VALUE_INIT_INT(0),     \
+    .val_max =     GAVL_VALUE_INIT_INT(300),   \
   } \
 
 /** Quantizer */
@@ -84,9 +84,9 @@ TRS("X1"), TRS("Epzs"), TRS("Full"), (char *)0} \
     .name =        "ff_qcompress",                   \
     .long_name =   TRS("Quantizer compression"),\
     .type =        BG_PARAMETER_SLIDER_FLOAT,  \
-    .val_default = { .val_f = 0.5 }, \
-    .val_min =     { .val_f = 0.0 }, \
-    .val_max =     { .val_f = 1.0 }, \
+    .val_default = GAVL_VALUE_INIT_FLOAT(0.5), \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(0.0), \
+    .val_max =     GAVL_VALUE_INIT_FLOAT(1.0), \
     .num_digits =  2, \
     .help_string = TRS("Amount of qscale change between easy & hard scenes") \
   }
@@ -97,9 +97,9 @@ TRS("X1"), TRS("Epzs"), TRS("Full"), (char *)0} \
     .name =        "ff_qblur",                     \
     .long_name =   TRS("Quantizer blur"), \
     .type =        BG_PARAMETER_SLIDER_FLOAT,  \
-    .val_default = { .val_f = 0.0 }, \
-    .val_min =     { .val_f = 0.0 }, \
-    .val_max =     { .val_f = 1.0 }, \
+    .val_default = GAVL_VALUE_INIT_FLOAT(0.0), \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(0.0), \
+    .val_max =     GAVL_VALUE_INIT_FLOAT(1.0), \
     .num_digits =  2,                  \
     .help_string = TRS("Amount of qscale smoothing over time"),        \
   }
@@ -110,9 +110,9 @@ TRS("X1"), TRS("Epzs"), TRS("Full"), (char *)0} \
     .name =      "ff_qmin", \
     .long_name = TRS("Minimum quantizer scale"), \
     .type =      BG_PARAMETER_SLIDER_INT, \
-    .val_default = { .val_i = 2 }, \
-    .val_min =     { .val_i = 0 }, \
-    .val_max =     { .val_i = 31 },               \
+    .val_default = GAVL_VALUE_INIT_INT(2), \
+    .val_min =     GAVL_VALUE_INIT_INT(0), \
+    .val_max =     GAVL_VALUE_INIT_INT(31),               \
   }
 
 /** Quantizer */
@@ -121,9 +121,9 @@ TRS("X1"), TRS("Epzs"), TRS("Full"), (char *)0} \
     .name =      "ff_qmax", \
     .long_name = TRS("Maximum quantizer scale"), \
     .type =      BG_PARAMETER_SLIDER_INT, \
-    .val_default = { .val_i = 31 }, \
-    .val_min =     { .val_i = 0 }, \
-    .val_max =     { .val_i = 31 },               \
+    .val_default = GAVL_VALUE_INIT_INT(31), \
+    .val_min =     GAVL_VALUE_INIT_INT(0), \
+    .val_max =     GAVL_VALUE_INIT_INT(31),               \
   } \
 
 /** Quantizer */
@@ -132,9 +132,9 @@ TRS("X1"), TRS("Epzs"), TRS("Full"), (char *)0} \
     .name =      "ff_max_qdiff",                                  \
     .long_name = TRS("Maximum quantizer difference"),                  \
     .type =      BG_PARAMETER_SLIDER_INT,                               \
-    .val_default = { .val_i = 3 },                                \
-    .val_min =     { .val_i = 0 },                                \
-    .val_max =     { .val_i = 31 },                               \
+    .val_default = GAVL_VALUE_INIT_INT(3),                                \
+    .val_min =     GAVL_VALUE_INIT_INT(0),                                \
+    .val_max =     GAVL_VALUE_INIT_INT(31),                               \
     .help_string = TRS("Maximum quantizer difference between frames")  \
   }
 
@@ -144,9 +144,9 @@ TRS("X1"), TRS("Epzs"), TRS("Full"), (char *)0} \
     .name =      "ff_max_b_frames",                                       \
     .long_name = TRS("Max B-Frames"),                                          \
     .type =      BG_PARAMETER_SLIDER_INT,                                       \
-    .val_default = { .val_i = 0 },                                        \
-    .val_min =     { .val_i = 0 },                                        \
-    .val_max =     { .val_i = FF_MAX_B_FRAMES },                          \
+    .val_default = GAVL_VALUE_INIT_INT(0),                                        \
+    .val_min =     GAVL_VALUE_INIT_INT(0),                                        \
+    .val_max =     GAVL_VALUE_INIT_INT(FF_MAX_B_FRAMES),                \
     .help_string = TRS("Maximum number of B-frames between non B-frames") \
   }
 
@@ -156,9 +156,9 @@ TRS("X1"), TRS("Epzs"), TRS("Full"), (char *)0} \
     .name =      "ff_b_quant_factor",                                     \
     .long_name = TRS("B quantizer factor"),                                    \
     .type =        BG_PARAMETER_SLIDER_FLOAT,                                   \
-    .val_default = { .val_f = 1.25 },                                 \
-    .val_min =     { .val_f = -31.0 },                                \
-    .val_max =     { .val_f = 31.0 },                                 \
+    .val_default = GAVL_VALUE_INIT_FLOAT(1.25),                                 \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(-31.0),                        \
+    .val_max =     GAVL_VALUE_INIT_FLOAT(31.0),                                 \
     .num_digits =  2, \
     .help_string = TRS("Quantizer factor between B-frames and non-B-frames"),  \
   }
@@ -169,7 +169,7 @@ TRS("X1"), TRS("Epzs"), TRS("Full"), (char *)0} \
     .name =        "ff_b_frame_strategy",                         \
     .long_name =   TRS("Avoid B-frames in high motion scenes"),        \
     .type =        BG_PARAMETER_CHECKBUTTON,                             \
-    .val_default = { .val_i = 0 },                                \
+    .val_default = GAVL_VALUE_INIT_INT(0),                                \
   }
 
 #define PARAM_STRICT_STANDARD_COMPLIANCE \
@@ -177,9 +177,9 @@ TRS("X1"), TRS("Epzs"), TRS("Full"), (char *)0} \
     .name = "ff_strict_std_compliance",                              \
     .long_name =   TRS("Standards compliance"),                         \
     .type =        BG_PARAMETER_SLIDER_INT,                              \
-    .val_default = { .val_i =  0 },                                \
-    .val_min =     { .val_i = -2 },                                \
-    .val_max =     { .val_i =  2 },                                \
+    .val_default = GAVL_VALUE_INIT_INT(0),                                \
+    .val_min =     GAVL_VALUE_INIT_INT(-2),                             \
+    .val_max =     GAVL_VALUE_INIT_INT(2),                                \
     .help_string = TRS("2: Strictly conform to a older more strict version\
  of the spec or reference software\n\
 1: Strictly conform to all the things in the spec no matter what \
@@ -195,9 +195,9 @@ consequences\n\
     .name =       "ff_b_quant_offset",                    \
     .long_name =  TRS("B quantizer offset"),                   \
     .type =       BG_PARAMETER_SLIDER_FLOAT,                    \
-    .val_default = { .val_f = 1.25 },                   \
-    .val_min =     { .val_f = 0.0 },                    \
-    .val_max =     { .val_f = 31.0 },                   \
+    .val_default = GAVL_VALUE_INIT_FLOAT(1.25),                   \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(0.0),                    \
+    .val_max =     GAVL_VALUE_INIT_FLOAT(31.0),                   \
     .num_digits =  2, \
     .help_string = TRS("Quantizer offset between B-frames and non-B-frames\n"\
     "if > 0 then the last p frame quantizer will be used (q= lastp_q*factor+offset)\n"\
@@ -210,7 +210,7 @@ consequences\n\
     .name =        "ff_rc_min_rate",\
     .long_name =   TRS("Minimum bitrate (kbps)"),\
     .type =        BG_PARAMETER_INT,\
-    .val_default = { .val_i = 0 },                        \
+    .val_default = GAVL_VALUE_INIT_INT(0),                        \
     .help_string = TRS("Minimum bitrate (0 means arbitrary)"), \
   }
 
@@ -220,7 +220,7 @@ consequences\n\
     .name =      "ff_rc_max_rate",\
     .long_name = TRS("Maximum bitrate (kbps)"),\
     .type =      BG_PARAMETER_INT,\
-    .val_default = { .val_i = 0 },                        \
+    .val_default = GAVL_VALUE_INIT_INT(0),                        \
     .help_string = TRS("Maximum bitrate (0 means arbitrary)"), \
   }
 
@@ -230,7 +230,7 @@ consequences\n\
     .name =      "ff_rc_buffer_size",        \
     .long_name = TRS("RC buffer size"),           \
     .type =      BG_PARAMETER_INT,          \
-    .val_default = { .val_i = 0 },           \
+    .val_default = GAVL_VALUE_INIT_INT(0),           \
     .help_string = TRS("Decoder bitstream buffer size in kbits. When encoding " \
 "with max and/or min bitrate, this must be specified.") \
   }
@@ -241,9 +241,9 @@ consequences\n\
     .name =       "ff_rc_buffer_aggressivity",    \
     .long_name =  TRS("RC buffer aggressivity"),               \
     .type =       BG_PARAMETER_SLIDER_FLOAT,                    \
-    .val_default = { .val_f = 1.0 },                   \
-    .val_min =     { .val_f = 0.01 },                    \
-    .val_max =     { .val_f = 99.0 },                   \
+    .val_default = GAVL_VALUE_INIT_FLOAT(1.0),                   \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(0.01),                    \
+    .val_max =     GAVL_VALUE_INIT_FLOAT(99.0),                   \
     .num_digits =  2, \
   }
 
@@ -253,9 +253,9 @@ consequences\n\
     .name =      "ff_i_quant_factor",                                     \
     .long_name = TRS("I quantizer factor"),                                    \
     .type =        BG_PARAMETER_SLIDER_FLOAT,                                   \
-    .val_default = { .val_f = -0.8 },                                 \
-    .val_min =     { .val_f = -31.0 },                                \
-    .val_max =     { .val_f = 31.0 },                                 \
+    .val_default = GAVL_VALUE_INIT_FLOAT(-0.8),                         \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(-31.0),                        \
+    .val_max =     GAVL_VALUE_INIT_FLOAT(31.0),                                 \
     .num_digits =  1, \
     .help_string = TRS("Quantizer factor between P-frames and I-frames.\n"\
 "If > 0 then the last P frame quantizer will be used (q= lastp_q*factor+offset).\n"\
@@ -268,9 +268,9 @@ consequences\n\
     .name =      "ff_i_quant_offset",                              \
     .long_name = TRS("I quantizer offset"),                             \
     .type =        BG_PARAMETER_SLIDER_FLOAT,                            \
-    .val_default = { .val_f =  0.0 },                            \
-    .val_min =     { .val_f =  0.0 },                            \
-    .val_max =     { .val_f = 31.0 },                                 \
+    .val_default = GAVL_VALUE_INIT_FLOAT(0.0),                            \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(0.0),                            \
+    .val_max =     GAVL_VALUE_INIT_FLOAT(31.0),                                 \
     .num_digits =  1, \
     .help_string = TRS("Quantizer offset between P-frames and I-frames"),  \
   }
@@ -281,9 +281,9 @@ consequences\n\
     .name =      "ff_rc_initial_cplx",                           \
     .long_name = TRS("Initial RC complexity"),                      \
     .type =      BG_PARAMETER_SLIDER_FLOAT,\
-    .val_default = { .val_f =  0.0 },                            \
-    .val_min =     { .val_f =  0.0 },                            \
-    .val_max =     { .val_f = 99.0 },                                 \
+    .val_default = GAVL_VALUE_INIT_FLOAT(0.0),                            \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(0.0),                            \
+    .val_max =     GAVL_VALUE_INIT_FLOAT(99.0),                                 \
     .num_digits =  1, \
   }
 
@@ -293,9 +293,9 @@ consequences\n\
     .name =        "ff_lumi_masking",               \
     .long_name = TRS("Luminance masking"),      \
     .type =      BG_PARAMETER_SLIDER_FLOAT,                              \
-    .val_default = { .val_f =  0.0 },                            \
-    .val_min =     { .val_f =  0.0 },                            \
-    .val_max =     { .val_f =  1.0 },                          \
+    .val_default = GAVL_VALUE_INIT_FLOAT(0.0),                            \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(0.0),                            \
+    .val_max =     GAVL_VALUE_INIT_FLOAT(1.0),                          \
     .num_digits =  2, \
     .help_string = TRS("Encode very bright image parts with reduced quality."\
     " 0 means disabled, 0-0.3 is a sane range."),      \
@@ -307,9 +307,9 @@ consequences\n\
     .name =        "ff_temporal_cplx_masking",               \
     .long_name = TRS("Temporary complexity masking"),      \
     .type =      BG_PARAMETER_SLIDER_FLOAT,                              \
-    .val_default = { .val_f =  0.0 },                            \
-    .val_min =     { .val_f =  0.0 },                            \
-    .val_max =     { .val_f =  1.0 },                          \
+    .val_default = GAVL_VALUE_INIT_FLOAT(0.0),                            \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(0.0),                            \
+    .val_max =     GAVL_VALUE_INIT_FLOAT(1.0),                          \
     .num_digits =  2, \
     .help_string = TRS("Encode very fast moving image parts with reduced quality."\
     " 0 means disabled."),      \
@@ -321,9 +321,9 @@ consequences\n\
     .name =        "ff_spatial_cplx_masking",               \
     .long_name = TRS("Spatial complexity masking"),      \
     .type =      BG_PARAMETER_SLIDER_FLOAT,                              \
-    .val_default = { .val_f =  0.0 },                            \
-    .val_min =     { .val_f =  0.0 },                            \
-    .val_max =     { .val_f =  1.0 },                          \
+    .val_default = GAVL_VALUE_INIT_FLOAT(0.0),                            \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(0.0),                            \
+    .val_max =     GAVL_VALUE_INIT_FLOAT(1.0),                          \
     .num_digits =  2, \
     .help_string = TRS("Encode very complex image parts with reduced quality."\
     " 0 means disabled, 0-0.5 is a sane range."),                          \
@@ -335,9 +335,9 @@ consequences\n\
     .name =        "ff_p_masking",               \
     .long_name = TRS("Inter block masking"),      \
     .type =      BG_PARAMETER_SLIDER_FLOAT,                              \
-    .val_default = { .val_f =  0.0 },                            \
-    .val_min =     { .val_f =  0.0 },                            \
-    .val_max =     { .val_f =  1.0 },                          \
+    .val_default = GAVL_VALUE_INIT_FLOAT(0.0),                            \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(0.0),                            \
+    .val_max =     GAVL_VALUE_INIT_FLOAT(1.0),                          \
     .num_digits =  2, \
     .help_string = TRS("Encode inter blocks with reduced quality (increases the quality of intra blocks). "\
     " 0 means disabled, 1 will double the bits allocated for intra blocks."),      \
@@ -349,9 +349,9 @@ consequences\n\
     .name =        "ff_dark_masking",               \
     .long_name = TRS("Darkness masking"),      \
     .type =      BG_PARAMETER_SLIDER_FLOAT,                              \
-    .val_default = { .val_f =  0.0 },                            \
-    .val_min =     { .val_f =  0.0 },                            \
-    .val_max =     { .val_f =  1.0 },                            \
+    .val_default = GAVL_VALUE_INIT_FLOAT(0.0),                            \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(0.0),                            \
+    .val_max =     GAVL_VALUE_INIT_FLOAT(1.0),                            \
     .num_digits =  2, \
     .help_string = TRS("Encode very dark image parts with reduced quality. " \
     "0 means disabled, 0-0.3 is a sane range."),                          \
@@ -362,7 +362,7 @@ consequences\n\
     .name =       "ff_prediction_method",             \
     .long_name = TRS("Precition method"),                \
     .type =      BG_PARAMETER_STRINGLIST,          \
-    .val_default = { .val_str = "Left" },\
+    .val_default = GAVL_VALUE_INIT_STRING("Left"),\
 multi_names: (char const *[]){ "Left", "Plane", "Median", (char*)0 },    \
 multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*)0 },    \
   }
@@ -373,9 +373,9 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
   .name =      "ff_mb_qmin", \
     .long_name = TRS("Minimum MB quantizer"),          \
     .type =    BG_PARAMETER_SLIDER_INT,                 \
-    .val_default = { .val_i = 2 },\
-    .val_min =     { .val_i = 0 },\
-    .val_max =     { .val_i = 31 },\
+    .val_default = GAVL_VALUE_INIT_INT(2),\
+    .val_min =     GAVL_VALUE_INIT_INT(0),\
+    .val_max =     GAVL_VALUE_INIT_INT(31),\
   }
 
 /** Quantizer */
@@ -384,9 +384,9 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
   .name =      "ff_mb_qmax", \
     .long_name = TRS("Maximum MB quantizer"),          \
     .type =    BG_PARAMETER_SLIDER_INT,                 \
-    .val_default = { .val_i = 31 },\
-    .val_min =     { .val_i = 0 },\
-    .val_max =     { .val_i = 31 },\
+    .val_default = GAVL_VALUE_INIT_INT(31),\
+    .val_min =     GAVL_VALUE_INIT_INT(0),\
+    .val_max =     GAVL_VALUE_INIT_INT(31),\
   }
 
 #define COMPARE_FUNCS (char const *[]){ "SAD", "SSE", "SATD", "DCT", "PSNR", \
@@ -410,7 +410,7 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_me_cmp",                          \
     .long_name = "ME compare function",           \
     .type =  BG_PARAMETER_STRINGLIST,                \
-    .val_default = { .val_str = "SAD" },         \
+    .val_default = GAVL_VALUE_INIT_STRING("SAD"),         \
     .multi_names = COMPARE_FUNCS,          \
     .help_string = TRS("Motion estimation compare function.") COMPARE_FUNCS_HELP \
   }
@@ -421,7 +421,7 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_me_cmp_chroma",                 \
     .long_name = TRS("Enable chroma ME compare"),    \
     .type = BG_PARAMETER_CHECKBUTTON,                  \
-    .val_default = { .val_i = 0 },              \
+    .val_default = GAVL_VALUE_INIT_INT(0),              \
   }
 
 /** Motion estimation */
@@ -430,7 +430,7 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_me_sub_cmp",                          \
     .long_name = TRS("Subpixel ME compare function"),           \
     .type =  BG_PARAMETER_STRINGLIST,                \
-    .val_default = { .val_str = "SAD" },         \
+    .val_default = GAVL_VALUE_INIT_STRING("SAD"),         \
     .multi_names = COMPARE_FUNCS,          \
     .help_string = TRS("Subpixel motion estimation compare function.\n")COMPARE_FUNCS_HELP \
   }
@@ -441,7 +441,7 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_me_sub_cmp_chroma",                 \
     .long_name = TRS("Enable chroma subpixel ME compare"),    \
     .type = BG_PARAMETER_CHECKBUTTON,                  \
-    .val_default = { .val_i = 0 },              \
+    .val_default = GAVL_VALUE_INIT_INT(0),              \
   }
 
 
@@ -450,7 +450,7 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_mb_cmp",                          \
     .long_name = TRS("MB compare function"),           \
     .type =  BG_PARAMETER_STRINGLIST,                \
-    .val_default = { .val_str = "SAD" },         \
+    .val_default = GAVL_VALUE_INIT_STRING("SAD"),         \
     .multi_names = COMPARE_FUNCS,          \
     .help_string = TRS("Macroblock compare function.\n")COMPARE_FUNCS_HELP \
   }
@@ -460,7 +460,7 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_mb_cmp_chroma",                 \
     .long_name = TRS("Enable chroma macroblock ME compare"),    \
     .type = BG_PARAMETER_CHECKBUTTON,                  \
-    .val_default = { .val_i = 0 },              \
+    .val_default = GAVL_VALUE_INIT_INT(0),              \
   }
 
 
@@ -469,7 +469,7 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_ildct_cmp",                          \
     .long_name = TRS("ILDCT compare function"),           \
     .type =  BG_PARAMETER_STRINGLIST,                \
-    .val_default = { .val_str = "SAD" },         \
+    .val_default = GAVL_VALUE_INIT_STRING("SAD"),         \
     .multi_names = COMPARE_FUNCS,          \
     .help_string = TRS("Interlaced dct compare function.\n")COMPARE_FUNCS_HELP \
   }
@@ -479,7 +479,7 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_ildct_cmp_chroma",                 \
     .long_name = TRS("Enable chroma ILDCT ME compare"),    \
     .type = BG_PARAMETER_CHECKBUTTON,                  \
-    .val_default = { .val_i = 0 },              \
+    .val_default = GAVL_VALUE_INIT_INT(0),              \
   }
 
 /** Motion estimation */
@@ -488,9 +488,9 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_dia_size",                        \
     .long_name = TRS("ME diamond size & shape"),\
     .type = BG_PARAMETER_SLIDER_INT,                  \
-    .val_default = { .val_i = 0 },              \
-    .val_min =     { .val_i = -9 },              \
-    .val_max =     { .val_i =  9 },              \
+    .val_default = GAVL_VALUE_INIT_INT(0),              \
+    .val_min =     GAVL_VALUE_INIT_INT(-9),             \
+    .val_max =     GAVL_VALUE_INIT_INT(9),              \
     .help_string = TRS("Motion estimation diamond size. Negative means shape adaptive.") \
   }
 
@@ -499,9 +499,9 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_last_predictor_count",                        \
     .long_name = TRS("Last predictor count"),\
     .type = BG_PARAMETER_SLIDER_INT,                  \
-    .val_default = { .val_i = 0 },              \
-    .val_min =     { .val_i = 0 },              \
-    .val_max =     { .val_i = 99 },              \
+    .val_default = GAVL_VALUE_INIT_INT(0),              \
+    .val_min =     GAVL_VALUE_INIT_INT(0),              \
+    .val_max =     GAVL_VALUE_INIT_INT(99),              \
     .help_string = TRS("Amount of motion predictors from the previous frame.\n"\
 "0 (default)\n"\
 "a Will use 2a+1 x 2a+1 macroblock square of motion vector predictors " \
@@ -514,9 +514,9 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_pre_me", \
     .long_name = TRS("ME pre-pass"), \
     .type = BG_PARAMETER_SLIDER_INT,  \
-    .val_default = { .val_i = 0 },              \
-    .val_min =     { .val_i = 0 },              \
-    .val_max =     { .val_i = 2 },              \
+    .val_default = GAVL_VALUE_INIT_INT(0),              \
+    .val_min =     GAVL_VALUE_INIT_INT(0),              \
+    .val_max =     GAVL_VALUE_INIT_INT(2),              \
     .help_string = TRS("Motion estimation pre-pass\n"\
 "0: disabled\n"\
 "1: only after I-frames\n"\
@@ -529,7 +529,7 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_me_pre_cmp",                          \
     .long_name = TRS("ME pre-pass compare function"),           \
     .type =  BG_PARAMETER_STRINGLIST,                \
-    .val_default = { .val_str = "SAD" },         \
+    .val_default = GAVL_VALUE_INIT_STRING("SAD"),         \
     .multi_names = COMPARE_FUNCS,          \
     .help_string = TRS("Motion estimation pre-pass compare function.\n")COMPARE_FUNCS_HELP\
   }
@@ -540,9 +540,9 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_me_pre_cmp_chroma",                 \
     .long_name = TRS("Enable chroma ME pre-pass compare"),    \
     .type = BG_PARAMETER_CHECKBUTTON,                  \
-    .val_default = { .val_i = 0 },              \
-    .val_min =     { .val_i = 0 },              \
-    .val_max =     { .val_i = 1 },              \
+    .val_default = GAVL_VALUE_INIT_INT(0),              \
+    .val_min =     GAVL_VALUE_INIT_INT(0),              \
+    .val_max =     GAVL_VALUE_INIT_INT(1),              \
   }
 
 /** Motion estimation */
@@ -551,9 +551,9 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_pre_dia_size",                        \
     .long_name = TRS("ME pre-pass diamond size & shape"),           \
     .type = BG_PARAMETER_SLIDER_INT,                  \
-    .val_default = { .val_i = 0 },              \
-    .val_min =     { .val_i = -9 },              \
-    .val_max =     { .val_i =  9 },              \
+    .val_default = GAVL_VALUE_INIT_INT(0),              \
+    .val_min =     GAVL_VALUE_INIT_INT(-9),             \
+    .val_max =     GAVL_VALUE_INIT_INT(9),              \
     .help_string = TRS("Motion estimation pre-pass diamond size. Negative means shape adaptive.") \
   }
 
@@ -563,9 +563,9 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_me_subpel_quality",                 \
     .long_name = TRS("Subpel ME quality"),               \
     .type = BG_PARAMETER_SLIDER_INT,                  \
-    .val_default = { .val_i = 8 },              \
-    .val_min =     { .val_i = 1 },              \
-    .val_max =     { .val_i = 8 },              \
+    .val_default = GAVL_VALUE_INIT_INT(8),              \
+    .val_min =     GAVL_VALUE_INIT_INT(1),              \
+    .val_max =     GAVL_VALUE_INIT_INT(8),              \
     .help_string = TRS("Subpel motion estimation refinement quality (for qpel). Higher values "\
 "mean higher quality but slower encoding.") \
   }
@@ -576,9 +576,9 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_me_range",                          \
     .long_name = TRS("Motion estimation range"),       \
     .type = BG_PARAMETER_SLIDER_INT,                    \
-    .val_default = { .val_i = 0 },                \
-    .val_min = { .val_i = 0 },                    \
-    .val_max = { .val_i = 1000 },                 \
+    .val_default = GAVL_VALUE_INIT_INT(0),                \
+    .val_min = GAVL_VALUE_INIT_INT(0),                    \
+    .val_max = GAVL_VALUE_INIT_INT(1000),                 \
     .help_string = TRS("Motion estimation search range (0 means unlimited)"),  \
   }
 
@@ -588,7 +588,7 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name = "ff_mb_decision",                     \
     .long_name = TRS("MB decision mode"),              \
     .type = BG_PARAMETER_STRINGLIST,             \
-    .val_default = { .val_str = "Use compare function" },        \
+    .val_default = GAVL_VALUE_INIT_STRING("Use compare function"),        \
     .multi_names = (char const *[]){ "Use compare function", \
                           "Fewest bits", "Rate distoration", (char*)0 },\
     .multi_labels = (char const *[]){ TRS("Use compare function"), \
@@ -601,9 +601,9 @@ multi_labels: (char const *[]){ TRS("Left"), TRS("Plane"), TRS("Median"), (char*
     .name =      "ff_scenechange_threshold",        \
     .long_name = TRS("Scenechange threshold"),            \
     .type = BG_PARAMETER_INT,             \
-    .val_default = { .val_i = 0 },                \
-    .val_min = { .val_i = -1000000000 },                    \
-    .val_max = { .val_i = 1000000000 },                 \
+    .val_default = GAVL_VALUE_INIT_INT(0),                \
+    .val_min = GAVL_VALUE_INIT_INT(-1000000000),                \
+    .val_max = GAVL_VALUE_INIT_INT(1000000000),                 \
     .help_string = TRS("Threshold for scene change detection.\n\
 Negative values mean more sensitivity (more keyframes)") \
   }
@@ -614,9 +614,9 @@ Negative values mean more sensitivity (more keyframes)") \
     .name = "ff_lmin", \
     .long_name = TRS("Minimum lagrange multiplier"),    \
     .type = BG_PARAMETER_SLIDER_FLOAT,             \
-    .val_default = { .val_f = 2.0 }, \
-    .val_min =     {  .val_f = 1.0 }, \
-    .val_min =     {  .val_f = 31.0 }, \
+    .val_default = GAVL_VALUE_INIT_FLOAT(2.0), \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(1.0), \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(31.0), \
     .num_digits =  1, \
     .help_string = TRS("Minimum Lagrange multiplier for ratecontrol. "\
 "Should possibly be the same as minimum quantizer scale.")\
@@ -628,9 +628,9 @@ Negative values mean more sensitivity (more keyframes)") \
     .name = "ff_lmax", \
     .long_name = TRS("Maximum lagrange multipler"),    \
     .type = BG_PARAMETER_SLIDER_FLOAT,             \
-    .val_default = { .val_f = 31.0 }, \
-    .val_min =     {  .val_f = 1.0 }, \
-    .val_min =     {  .val_f = 31.0 }, \
+    .val_default = GAVL_VALUE_INIT_FLOAT(31.0), \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(1.0), \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(31.0), \
     .num_digits =  1, \
     .help_string = TRS("Maximum Lagrange multiplier for ratecontrol. "\
 "Should possibly be the same as maximum quantizer scale.")\
@@ -641,9 +641,9 @@ Negative values mean more sensitivity (more keyframes)") \
     .name = "ff_noise_reduction", \
     .long_name = TRS("Noise reduction"), \
     .type = BG_PARAMETER_SLIDER_INT, \
-    .val_default = { .val_i = 0 },            \
-    .val_min = { .val_i = 0 },                \
-    .val_max = { .val_i = 2000 },             \
+    .val_default = GAVL_VALUE_INIT_INT(0),            \
+    .val_min = GAVL_VALUE_INIT_INT(0),                \
+    .val_max = GAVL_VALUE_INIT_INT(2000),             \
   }
 
 /** Rate control */
@@ -652,7 +652,7 @@ Negative values mean more sensitivity (more keyframes)") \
     .name = "ff_rc_initial_buffer_occupancy",   \
     .long_name = TRS("Initial RC buffer occupancy"),   \
     .type = BG_PARAMETER_INT,                \
-    .val_default = { .val_i = 0 },            \
+    .val_default = GAVL_VALUE_INIT_INT(0),            \
     .help_string = TRS("Number of kilobits which should be loaded into \
 the rc buffer before encoding starts. Must not be larger than \
 RC buffer size") \
@@ -670,9 +670,9 @@ RC buffer size") \
     .name = "ff_me_threshold", \
     .long_name = TRS("ME Theshold"),                   \
     .type = BG_PARAMETER_INT, \
-    .val_default = { .val_i = 0 },\
-    .val_min =     { .val_i = 0 },\
-    .val_max =     { .val_i = 4000000 },\
+    .val_default = GAVL_VALUE_INIT_INT(0),\
+    .val_min =     GAVL_VALUE_INIT_INT(0),\
+    .val_max =     GAVL_VALUE_INIT_INT(4000000),\
     .help_string = TRS("Motion estimation threshold. under which no motion estimation is performed, but instead the user specified motion vectors are used") \
   }
 
@@ -681,9 +681,9 @@ RC buffer size") \
     .name = "ff_mb_threshold", \
     .long_name = TRS("MB Theshold"),\
     .type = BG_PARAMETER_INT, \
-    .val_default = { .val_i = 0 },\
-    .val_min =     { .val_i = 0 },\
-    .val_max =     { .val_i = 4000000 },\
+    .val_default = GAVL_VALUE_INIT_INT(0),\
+    .val_min =     GAVL_VALUE_INIT_INT(0),\
+    .val_max =     GAVL_VALUE_INIT_INT(4000000),\
     .help_string = TRS("Macroblock threshold. under which the user specified macroblock types will be used") \
   }
 
@@ -692,7 +692,7 @@ RC buffer size") \
     .name = "ff_nsse_weight", \
     .long_name = TRS("NSSE weight"),                   \
     .type = BG_PARAMETER_INT,                    \
-    .val_default = { .val_i = 8 },\
+    .val_default = GAVL_VALUE_INIT_INT(8),\
     .help_string = TRS("Noise vs. SSE weight for the NSSE comparsion function. "\
 "0 is identical to SSE")\
   }
@@ -703,9 +703,9 @@ RC buffer size") \
     .name = "ff_border_masking", \
     .long_name = TRS("Border masking"), \
     .type = BG_PARAMETER_SLIDER_FLOAT,                    \
-    .val_default = { .val_f = 0.0 }, \
-    .val_min =     { .val_f = 0.0 }, \
-    .val_max =     { .val_f = 1.0 }, \
+    .val_default = GAVL_VALUE_INIT_FLOAT(0.0), \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(0.0), \
+    .val_max =     GAVL_VALUE_INIT_FLOAT(1.0), \
     .num_digits =  2, \
     .help_string = TRS("Encode image parts near the border with reduced quality."\
     " 0 means disabled")\
@@ -716,9 +716,9 @@ RC buffer size") \
     .name = "ff_mb_lmin", \
     .long_name = TRS("Minimum MB lagrange multipler"),    \
     .type = BG_PARAMETER_SLIDER_FLOAT,             \
-    .val_default = { .val_f = 2.0 }, \
-    .val_min =     {  .val_f = 1.0 }, \
-    .val_min =     {  .val_f = 31.0 }, \
+    .val_default = GAVL_VALUE_INIT_FLOAT(2.0), \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(1.0), \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(31.0), \
     .num_digits =  1, \
     .help_string = TRS("Minimum macroblock Lagrange multiplier.") \
   }
@@ -728,9 +728,9 @@ RC buffer size") \
     .name = "ff_mb_lmax", \
     .long_name = TRS("Maximum MB lagrange multipler"),    \
     .type = BG_PARAMETER_SLIDER_FLOAT,             \
-    .val_default = { .val_f = 31.0 }, \
-    .val_min =     {  .val_f = 1.0 }, \
-    .val_min =     {  .val_f = 31.0 }, \
+    .val_default = GAVL_VALUE_INIT_FLOAT(31.0), \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(1.0), \
+    .val_min =     GAVL_VALUE_INIT_FLOAT(31.0), \
     .num_digits =  1, \
     .help_string = TRS("Maximum macroblock Lagrange multiplier.") \
   }
@@ -741,7 +741,7 @@ RC buffer size") \
     .name = "ff_me_penalty_compensation", \
     .long_name = TRS("ME penalty compensation"),    \
     .type = BG_PARAMETER_INT,             \
-    .val_default = { .val_i = 256 }, \
+    .val_default = GAVL_VALUE_INIT_INT(256), \
   }
 
 #define PARAM_BIDIR_REFINE  \
@@ -749,9 +749,9 @@ RC buffer size") \
     .name = "ff_bidir_refine", \
     .long_name = TRS("Bidir refine"),    \
     .type = BG_PARAMETER_SLIDER_INT,             \
-    .val_default = { .val_i = 0 }, \
-    .val_min =     { .val_i = 0 }, \
-    .val_max =     { .val_i = 4 }, \
+    .val_default = GAVL_VALUE_INIT_INT(0), \
+    .val_min =     GAVL_VALUE_INIT_INT(0), \
+    .val_max =     GAVL_VALUE_INIT_INT(4), \
   }
 
 #define PARAM_BRD_SCALE  \
@@ -759,21 +759,13 @@ RC buffer size") \
     .name = "ff_brd_scale", \
     .long_name = TRS("BRD scale"),    \
     .type = BG_PARAMETER_SLIDER_INT,             \
-    .val_default = { .val_i = 0 }, \
-    .val_min =     { .val_i = 0 }, \
-    .val_max =     { .val_i = 10 }, \
+    .val_default = GAVL_VALUE_INIT_INT(0), \
+    .val_min =     GAVL_VALUE_INIT_INT(0), \
+    .val_max =     GAVL_VALUE_INIT_INT(10), \
   }
 
 
 /** Frame types */
-#define PARAM_SCENECHANGE_FACTOR  \
-  { \
-    .name = "ff_scenechange_factor", \
-    .long_name = TRS("Scenechange factor"),    \
-    .type = BG_PARAMETER_INT,             \
-    .val_default = { .val_i = 0 }, \
-    .help_string = TRS("Multiplied by qscale for each frame and added to scene_change_score") \
-  }
 
 /** Quantizer */
 #define PARAM_QSCALE \
@@ -781,9 +773,9 @@ RC buffer size") \
     .name =        "ff_qscale", \
     .long_name =   "Fixed quantizer",              \
     .type =        BG_PARAMETER_SLIDER_INT, \
-    .val_default = { .val_i = 10 },    \
-    .val_min =     { .val_i = 1 },    \
-    .val_max =     { .val_i = 31 },    \
+    .val_default = GAVL_VALUE_INIT_INT(10),    \
+    .val_min =     GAVL_VALUE_INIT_INT(1),    \
+    .val_max =     GAVL_VALUE_INIT_INT(31),    \
     .help_string = TRS("Quantizer for fixed quality encoding. Lower means better, 1 is not recommended")\
   }
 
@@ -795,7 +787,7 @@ RC buffer size") \
     .name =        "ff_flag_qscale", \
     .long_name =   TRS("Use fixed quantizer"),              \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
     .help_string = TRS("Use fixed quality encoding"),\
   }
 
@@ -805,7 +797,7 @@ RC buffer size") \
     .name =        "ff_flag_4mv", \
     .long_name =   TRS("4 MV per MB allowed"),      \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
     .help_string = TRS("Allow 4 motion vectors per macroblock (slightly better quality). Works better if MB decision mode is \"Fewest bits\" or \"Rate distoration\".") \
   }
 
@@ -815,7 +807,7 @@ RC buffer size") \
     .name =        "ff_flag_qpel", \
     .long_name =   TRS("Use qpel MC"),      \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
     .help_string = TRS("Use 1/4 pixel motion compensation.  Warning: QPEL is not supported by all decoders.") \
   }
 
@@ -825,7 +817,7 @@ RC buffer size") \
     .name =        "ff_flag_gmc", \
     .long_name =   TRS("Use global motion compensation"),      \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
     .help_string = TRS("Warning: GMC is not supported by all decoders") \
   }
 
@@ -835,7 +827,7 @@ RC buffer size") \
     .name =        "ff_flag_mv0", \
     .long_name =   TRS("Always try a MB with MV=<0,0>"),       \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 }, \
+    .val_default = GAVL_VALUE_INIT_INT(0), \
   }
 
 #define PARAM_FLAG_PART \
@@ -843,7 +835,7 @@ RC buffer size") \
     .name =        "ff_flag_part", \
     .long_name =   TRS("Use data partitioning"),      \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
     .help_string = TRS("Use data partitioning for more robustness if the video is "\
 "for transmitting over unreliable channels") \
   }
@@ -854,7 +846,7 @@ RC buffer size") \
     .name =        "ff_flag_gray", \
     .long_name =   TRS("Grayscale mode"),      \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
   }
 
 #define PARAM_FLAG_EMU_EGDE \
@@ -862,7 +854,7 @@ RC buffer size") \
     .name =        "ff_flag_emu_edge", \
     .long_name =   TRS("Don't draw edges"),      \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
   }
 
 /** Masking */
@@ -871,7 +863,7 @@ RC buffer size") \
     .name =        "ff_flag_normalize_aqp", \
     .long_name =   TRS("Normalize adaptive quantization"),      \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
     .help_string = TRS("When using masking, try to adjust the per "\
     "macroblock quantizers to maintain the desired average") \
   }
@@ -881,7 +873,7 @@ RC buffer size") \
     .name =        "ff_flag_alt_scan", \
     .long_name =   TRS("Use alternative scantable"),      \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
   }
 
 /** Quantizer */
@@ -891,7 +883,7 @@ RC buffer size") \
     .name =        "ff_flag_trellis_quant", \
     .long_name =   TRS("Use trellis quantization"),      \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
     .help_string = TRS("Use trellis quantization (improves quality)") \
   }
 #else
@@ -900,7 +892,7 @@ RC buffer size") \
     .name =        "ff_trellis", \
     .long_name =   TRS("Use trellis quantization"),      \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
     .help_string = TRS("Use trellis quantization (improves quality)") \
   }
 #endif
@@ -910,7 +902,7 @@ RC buffer size") \
     .name =        "ff_flag_bitexact", \
     .long_name =   TRS("Use only bitexact stuff"),      \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
     .help_string = TRS("Use only bitexact stuff (except (i)dct)") \
   }
 
@@ -919,7 +911,7 @@ RC buffer size") \
     .name =        "ff_flag_ac_pred", \
     .long_name =   TRS("Advanced intra coding"),  \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
   }
 
 #define PARAM_FLAG_AC_PRED_MPEG4   \
@@ -927,7 +919,7 @@ RC buffer size") \
     .name =        "ff_flag_ac_pred", \
     .long_name =   TRS("MPEG-4 AC prediction"),  \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
   }
 
 #define PARAM_FLAG_H263P_UMV   \
@@ -935,7 +927,7 @@ RC buffer size") \
     .name =        "ff_flag_h263p_umv", \
     .long_name =   TRS("Unlimited motion vector"),  \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
   }
 
 #define PARAM_FLAG_CBP_RD \
@@ -943,7 +935,7 @@ RC buffer size") \
     .name = "ff_flag_cbp_rd", \
     .long_name = TRS("CBP RD"), \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
     .help_string = TRS("Use rate distortion optimization for cbp"),\
   }
 
@@ -952,7 +944,7 @@ RC buffer size") \
     .name = "ff_flag_qp_rd", \
     .long_name = TRS("QP RD"), \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
     .help_string = TRS("Use rate distortion optimization for qp selection"),\
   }
 
@@ -961,7 +953,7 @@ RC buffer size") \
     .name = "ff_flag_h263p_aiv", \
     .long_name = TRS("Alternative inter vlc"), \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
   }
 
 /* H.263(+) */
@@ -970,7 +962,7 @@ RC buffer size") \
     .name = "ff_flag_obmc", \
     .long_name = TRS("OBMC"), \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
     .help_string = TRS("Overlapped block motion compensation (only supported with with simple MB decision)") \
   }
 
@@ -979,7 +971,7 @@ RC buffer size") \
     .name = "ff_flag_loop_filter", \
     .long_name = TRS("Loop filter"), \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
   }
 
 #define PARAM_FLAG_H263P_SLICE_STRUCT      \
@@ -987,7 +979,7 @@ RC buffer size") \
     .name = "ff_flag_h263p_slice_struct", \
     .long_name = TRS("H263P slice struct"), \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
   }
 
 /** Frame types */
@@ -996,7 +988,7 @@ RC buffer size") \
     .name = "ff_flag_closed_gop", \
     .long_name = TRS("Close all GOPs"), \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
   }
 
 #define PARAM_FLAG2_FAST \
@@ -1004,7 +996,7 @@ RC buffer size") \
     .name = "ff_flag2_fast", \
     .long_name = TRS("Allow fast encoding"), \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
     .help_string = TRS("Allow non spec compliant speedup tricks") \
 }
 
@@ -1014,7 +1006,7 @@ RC buffer size") \
     .name = "ff_flag2_strict_gop", \
     .long_name = TRS("Strictly enforce GOP size"), \
     .type =        BG_PARAMETER_CHECKBUTTON, \
-    .val_default = { .val_i = 0 },    \
+    .val_default = GAVL_VALUE_INIT_INT(0),    \
 }
 
 
@@ -1024,6 +1016,6 @@ RC buffer size") \
     .name = "ff_thread_count", \
     .long_name = TRS("Thread count"),    \
     .type = BG_PARAMETER_INT,             \
-    .val_default = { .val_i = 0 }, \
+    .val_default = GAVL_VALUE_INIT_INT(0), \
     .help_string = TRS("Number of threads to use") \
   }

@@ -188,14 +188,14 @@ void bg_ffmpeg_codec_set_parameter(bg_ffmpeg_codec_context_t * ctx,
   if(!strcmp(name, "codec"))
     {
     if(ctx->type == AVMEDIA_TYPE_VIDEO)
-      ctx->id = bg_ffmpeg_find_video_encoder(ctx->format, v->val_str);
+      ctx->id = bg_ffmpeg_find_video_encoder(ctx->format, v->v.str);
     else
-      ctx->id = bg_ffmpeg_find_audio_encoder(ctx->format, v->val_str);
+      ctx->id = bg_ffmpeg_find_audio_encoder(ctx->format, v->v.str);
     if(ctx->id == AV_CODEC_ID_NONE)
       {
       bg_log(BG_LOG_ERROR, LOG_DOMAIN,
              "Codec %s is not available in libavcodec or not supported in the container",
-             v->val_str);
+             v->v.str);
       return;
       }
     find_encoder(ctx);
