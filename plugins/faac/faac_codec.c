@@ -165,7 +165,7 @@ const bg_parameter_info_t * bg_faac_get_parameters(bg_faac_t * ctx)
   }
 
 void bg_faac_set_parameter(bg_faac_t * ctx, const char * name,
-                           const bg_parameter_value_t * v)
+                           const gavl_value_t * v)
   {
   if(!name)
     {
@@ -340,7 +340,7 @@ write_audio_func_faac(void * data, gavl_audio_frame_t * frame)
 gavl_audio_sink_t * bg_faac_open(bg_faac_t * ctx,
                                  gavl_compression_info_t * ci,
                                  gavl_audio_format_t * fmt,
-                                 gavl_metadata_t * m)
+                                 gavl_dictionary_t * m)
   {
   unsigned long input_samples;
   unsigned long output_bytes;
@@ -440,7 +440,7 @@ gavl_audio_sink_t * bg_faac_open(bg_faac_t * ctx,
                                   &SizeOfDecoderSpecificInfo);
     ci->global_header_len = SizeOfDecoderSpecificInfo;
     ci->pre_skip = FAAC_DELAY;
-    gavl_metadata_set_nocpy(m, GAVL_META_SOFTWARE,
+    gavl_dictionary_set_string_nocpy(m, GAVL_META_SOFTWARE,
                             bg_sprintf("libfaac %s", ctx->enc_config->name));
     
     }

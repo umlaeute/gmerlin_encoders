@@ -51,7 +51,7 @@ static const bg_parameter_info_t * get_parameters(void * priv)
   }
 
 static void set_parameter(void * priv, const char * name,
-                          const bg_parameter_value_t * val)
+                          const gavl_value_t * val)
   {
   bg_lame_set_parameter(priv, name, val);
   }
@@ -59,7 +59,7 @@ static void set_parameter(void * priv, const char * name,
 static gavl_audio_sink_t * open_audio(void * priv,
                                       gavl_compression_info_t * ci,
                                       gavl_audio_format_t * fmt,
-                                      gavl_metadata_t * m)
+                                      gavl_dictionary_t * m)
   {
   return bg_lame_open(priv, ci, fmt, m);
   }

@@ -20,11 +20,11 @@
  * *****************************************************************/
 
 
-int bg_vorbis_comment_bytes(const gavl_metadata_t * m_stream,
-                            const gavl_metadata_t * m_global,
+int bg_vorbis_comment_bytes(const gavl_dictionary_t * m_stream,
+                            const gavl_dictionary_t * m_global,
                             int framing);
   
 int bg_vorbis_comment_write(uint8_t * buf,
-                            const gavl_metadata_t * m_stream,
-                            const gavl_metadata_t * m_global,
+                            const gavl_dictionary_t * m_stream,
+                            const gavl_dictionary_t * m_global,
                             int framing);

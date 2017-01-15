@@ -138,7 +138,7 @@ static const bg_parameter_info_t * get_parameters_flacogg()
   }
 
 static void set_parameter_flacogg(void * data, const char * name,
-                                  const bg_parameter_value_t * v)
+                                  const gavl_value_t * v)
   {
   flacogg_t * flacogg;
   flacogg = data;
@@ -148,7 +148,7 @@ static void set_parameter_flacogg(void * data, const char * name,
 static gavl_audio_sink_t *
 init_flacogg(void * data, gavl_compression_info_t * ci,
              gavl_audio_format_t * format,
-             gavl_metadata_t * stream_metadata)
+             gavl_dictionary_t * stream_metadata)
   {
   flacogg_t * flacogg = data;
   return bg_flac_start_uncompressed(flacogg->enc, format, ci, stream_metadata);

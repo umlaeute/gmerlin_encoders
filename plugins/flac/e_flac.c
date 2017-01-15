@@ -80,8 +80,8 @@ typedef struct
   gavl_packet_sink_t * psink_int;
   gavl_packet_sink_t * psink_ext;
   
-  gavl_metadata_t m_stream;
-  const gavl_metadata_t * m_global;
+  gavl_dictionary_t m_stream;
+  const gavl_dictionary_t * m_global;
 
   int write_seektable;
   
@@ -205,7 +205,7 @@ static const bg_parameter_info_t * get_parameters_flac(void * data)
 
 static void set_parameter_flac(void * data,
                                const char * name,
-                               const bg_parameter_value_t * v)
+                               const gavl_value_t * v)
   {
   flac_t * flac;
   flac = data;
@@ -266,7 +266,7 @@ static int streaminfo_callback(void * data, uint8_t * si, int len)
   }
 
 static int open_io_flac(void * data, gavf_io_t * io,
-                        const gavl_metadata_t * m,
+                        const gavl_dictionary_t * m,
                         const gavl_chapter_list_t * chapter_list)
   {
   int result = 1;
@@ -302,7 +302,7 @@ static int open_io_flac(void * data, gavf_io_t * io,
   }
 
 static int open_flac(void * data, const char * filename,
-                     const gavl_metadata_t * m,
+                     const gavl_dictionary_t * m,
                      const gavl_chapter_list_t * chapter_list)
   {
   gavf_io_t * io;
@@ -333,7 +333,7 @@ static int open_flac(void * data, const char * filename,
   }
 
 static int add_audio_stream_flac(void * data,
-                                 const gavl_metadata_t * m,
+                                 const gavl_dictionary_t * m,
                                  const gavl_audio_format_t * format)
   {
   flac_t * flac;
@@ -342,7 +342,7 @@ static int add_audio_stream_flac(void * data,
   /* Copy and adjust format */
   
   gavl_audio_format_copy(&flac->format, format);
-  gavl_metadata_copy(&flac->m_stream, m);
+  gavl_dictionary_copy(&flac->m_stream, m);
   
   return 0;
   }
@@ -547,7 +547,7 @@ static int close_flac(void * data, int do_delete)
     flac->sink = NULL;
     }
 
-  gavl_metadata_free(&flac->m_stream);
+  gavl_dictionary_free(&flac->m_stream);
   
   return 1;
   }
@@ -562,7 +562,7 @@ static void destroy_flac(void * priv)
 
 static void set_audio_parameter_flac(void * data, int stream,
                                      const char * name,
-                                     const bg_parameter_value_t * val)
+                                     const gavl_value_t * val)
   {
   flac_t * flac;
   flac = data;
@@ -582,14 +582,14 @@ static int writes_compressed_audio_flac(void * priv,
 
 static int
 add_audio_stream_compressed_flac(void * priv,
-                                 const gavl_metadata_t * m,
+                                 const gavl_dictionary_t * m,
                                  const gavl_audio_format_t * format,
                                  const gavl_compression_info_t * info)
   {
   flac_t * flac = priv;
   gavl_compression_info_copy(&flac->ci, info);
   gavl_audio_format_copy(&flac->format, format);
-  gavl_metadata_copy(&flac->m_stream, m);
+  gavl_dictionary_copy(&flac->m_stream, m);
   flac->compressed = 1;
   return 0;
   }

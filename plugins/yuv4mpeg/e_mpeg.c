@@ -109,7 +109,7 @@ static void set_callbacks_mpeg(void * data, bg_encoder_callbacks_t * cb)
   }
 
 static int open_mpeg(void * data, const char * filename,
-                     const gavl_metadata_t * metadata,
+                     const gavl_dictionary_t * metadata,
                      const gavl_chapter_list_t * chapter_list)
   {
   e_mpeg_t * e = data;
@@ -141,7 +141,7 @@ static int open_mpeg(void * data, const char * filename,
   }
 
 static int add_audio_stream_mpeg(void * data,
-                                 const gavl_metadata_t * m,
+                                 const gavl_dictionary_t * m,
                                  const gavl_audio_format_t * format)
   {
   e_mpeg_t * e = data;
@@ -163,7 +163,7 @@ static int add_audio_stream_mpeg(void * data,
   }
 
 static int add_audio_stream_compressed_mpeg(void * data,
-                                            const gavl_metadata_t * m,
+                                            const gavl_dictionary_t * m,
                                             const gavl_audio_format_t * format,
                                             const gavl_compression_info_t * ci)
   {
@@ -187,7 +187,7 @@ static int add_audio_stream_compressed_mpeg(void * data,
 
 
 static int add_video_stream_mpeg(void * data,
-                                 const gavl_metadata_t * m,
+                                 const gavl_dictionary_t * m,
                                  const gavl_video_format_t* format)
   {
   e_mpeg_t * e = data;
@@ -208,7 +208,7 @@ static int add_video_stream_mpeg(void * data,
 
 static int
 add_video_stream_compressed_mpeg(void * data,
-                                 const gavl_metadata_t * m,
+                                 const gavl_dictionary_t * m,
                                  const gavl_video_format_t* format,
                                  const gavl_compression_info_t * ci)
   {
@@ -745,7 +745,7 @@ static const bg_parameter_info_t * get_parameters_mpeg(void * data)
 #define SET_STRING(key) if(!strcmp(# key, name)) e->key = gavl_strrep(e->key, val->v.str);
 
 static void set_parameter_mpeg(void * data, const char * name,
-                               const bg_parameter_value_t * val)
+                               const gavl_value_t * val)
   {
   e_mpeg_t * e = data;
   if(!name)
@@ -780,7 +780,7 @@ static const bg_parameter_info_t * get_video_parameters_mpeg(void * data)
 
 static void set_audio_parameter_mpeg(void * data, int stream,
                                      const char * name,
-                                     const bg_parameter_value_t * val)
+                                     const gavl_value_t * val)
   {
   e_mpeg_t * e = data;
   
@@ -793,7 +793,7 @@ static void set_audio_parameter_mpeg(void * data, int stream,
 
 static void set_video_parameter_mpeg(void * data, int stream,
                                      const char * name,
-                                     const bg_parameter_value_t * val)
+                                     const gavl_value_t * val)
   {
   e_mpeg_t * e = data;
   if(!name)

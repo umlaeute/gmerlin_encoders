@@ -55,16 +55,16 @@ tags[] =
     { /* End */ }
   };
 
-static const char * get_vendor(const gavl_metadata_t * m)
+static const char * get_vendor(const gavl_dictionary_t * m)
   {
-  const char * ret = gavl_metadata_get(m, GAVL_META_SOFTWARE);
+  const char * ret = gavl_dictionary_get_string(m, GAVL_META_SOFTWARE);
   if(!ret)
     ret = PACKAGE"-"VERSION;
   return ret;
   }
   
-int bg_vorbis_comment_bytes(const gavl_metadata_t * m_stream,
-                            const gavl_metadata_t * m_global,
+int bg_vorbis_comment_bytes(const gavl_dictionary_t * m_stream,
+                            const gavl_dictionary_t * m_global,
                             int framing)
   {
   int ret = 0;
@@ -85,7 +85,7 @@ int bg_vorbis_comment_bytes(const gavl_metadata_t * m_stream,
   
   while(tags[i].gavl_name)
     {
-    str = gavl_metadata_get(m_global, tags[i].gavl_name);
+    str = gavl_dictionary_get_string(m_global, tags[i].gavl_name);
     if(str)
       {
       ret += 4 + strlen(tags[i].vorbis_name) + 1 + strlen(str);
@@ -93,8 +93,8 @@ int bg_vorbis_comment_bytes(const gavl_metadata_t * m_stream,
     i++;
     }
 
-  if((str = gavl_metadata_get(m_global, GAVL_META_DATE)) ||
-     (str = gavl_metadata_get(m_global, GAVL_META_YEAR)))
+  if((str = gavl_dictionary_get_string(m_global, GAVL_META_DATE)) ||
+     (str = gavl_dictionary_get_string(m_global, GAVL_META_YEAR)))
     ret += 4 + 5 + strlen(str);
   
   if(framing)
@@ -104,8 +104,8 @@ int bg_vorbis_comment_bytes(const gavl_metadata_t * m_stream,
   }
 
 int bg_vorbis_comment_write(uint8_t * buf,
-                            const gavl_metadata_t * m_stream,
-                            const gavl_metadata_t * m_global,
+                            const gavl_dictionary_t * m_stream,
+                            const gavl_dictionary_t * m_global,
                             int framing)
   {
   int len1;
@@ -137,7 +137,7 @@ int bg_vorbis_comment_write(uint8_t * buf,
 
   while(tags[i].gavl_name)
     {
-    str = gavl_metadata_get(m_global, tags[i].gavl_name);
+    str = gavl_dictionary_get_string(m_global, tags[i].gavl_name);
     if(str)
       {
       len1 = strlen(tags[i].vorbis_name);
@@ -156,8 +156,8 @@ int bg_vorbis_comment_write(uint8_t * buf,
     }
 
   /* Date needs special attention */
-  if((str = gavl_metadata_get(m_global, GAVL_META_DATE)) ||
-     (str = gavl_metadata_get(m_global, GAVL_META_YEAR)))
+  if((str = gavl_dictionary_get_string(m_global, GAVL_META_DATE)) ||
+     (str = gavl_dictionary_get_string(m_global, GAVL_META_YEAR)))
     {
     len1 = 5; // DATE=
     len2 = strlen(str);

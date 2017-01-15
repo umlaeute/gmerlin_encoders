@@ -70,7 +70,7 @@ static void set_callbacks_mpa(void * data, bg_encoder_callbacks_t * cb)
 
 
 static void set_parameter_mpa(void * data, const char * name,
-                              const bg_parameter_value_t * v)
+                              const gavl_value_t * v)
   {
   e_mpa_t * mpa;
   mpa = data;
@@ -82,7 +82,7 @@ static void set_parameter_mpa(void * data, const char * name,
   }
 
 static int open_mpa(void * data, const char * filename,
-                    const gavl_metadata_t * metadata,
+                    const gavl_dictionary_t * metadata,
                     const gavl_chapter_list_t * chapter_list)
   {
   e_mpa_t * mpa;
@@ -99,7 +99,7 @@ static int open_mpa(void * data, const char * filename,
   }
 
 static int add_audio_stream_mpa(void * data,
-                                const gavl_metadata_t * m,
+                                const gavl_dictionary_t * m,
                                 const gavl_audio_format_t * format)
   {
   e_mpa_t * mpa;
@@ -110,7 +110,7 @@ static int add_audio_stream_mpa(void * data,
   }
 
 static int add_audio_stream_compressed_mpa(void * data,
-                                           const gavl_metadata_t * m,
+                                           const gavl_dictionary_t * m,
                                            const gavl_audio_format_t * format,
                                            const gavl_compression_info_t * ci)
   {

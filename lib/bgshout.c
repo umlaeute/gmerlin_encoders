@@ -122,7 +122,7 @@ const bg_parameter_info_t * bg_shout_get_parameters(void)
   }
 
 void bg_shout_set_parameter(void * data, const char * name,
-                            const bg_parameter_value_t * val)
+                            const gavl_value_t * val)
   {
   bg_shout_t * s = data;
   if(!name)
@@ -180,10 +180,10 @@ int bg_shout_open(bg_shout_t * s)
   return 1;
   }
 
-void bg_shout_set_metadata(bg_shout_t * s, const gavl_metadata_t * m)
+void bg_shout_set_metadata(bg_shout_t * s, const gavl_dictionary_t * m)
   {
   const char * genre;
-  if((genre = gavl_metadata_get(m, GAVL_META_GENRE)))
+  if((genre = gavl_dictionary_get_string(m, GAVL_META_GENRE)))
     shout_set_genre(s->s, genre);
   }
 
@@ -242,7 +242,7 @@ static void metadata_add(bg_shout_t * s,
   }
 
 void bg_shout_update_metadata(bg_shout_t * s,
-                              const gavl_metadata_t * m)
+                              const gavl_dictionary_t * m)
   {
   const char * artist = NULL;
   const char * title = NULL;
@@ -255,9 +255,9 @@ void bg_shout_update_metadata(bg_shout_t * s,
 
   if(m)
     {
-    artist = gavl_metadata_get(m, GAVL_META_ARTIST);
-    title = gavl_metadata_get(m, GAVL_META_TITLE);
-    label = gavl_metadata_get(m, GAVL_META_LABEL);
+    artist = gavl_dictionary_get_string(m, GAVL_META_ARTIST);
+    title = gavl_dictionary_get_string(m, GAVL_META_TITLE);
+    label = gavl_dictionary_get_string(m, GAVL_META_LABEL);
     }
   
   if(artist && title)

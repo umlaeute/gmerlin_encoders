@@ -80,7 +80,7 @@ void
 bg_ffmpeg_set_codec_parameter(AVCodecContext * ctx,
                               AVDictionary ** options,
                               const char * name,
-                              const bg_parameter_value_t * val);
+                              const gavl_value_t * val);
 
 enum AVCodecID
 bg_ffmpeg_find_audio_encoder(const ffmpeg_format_info_t * format,
@@ -132,7 +132,7 @@ const bg_parameter_info_t * bg_ffmpeg_codec_get_parameters(bg_ffmpeg_codec_conte
 
 void bg_ffmpeg_codec_set_parameter(bg_ffmpeg_codec_context_t * ctx,
                                    const char * name,
-                                   const bg_parameter_value_t * val);
+                                   const gavl_value_t * val);
 
 int bg_ffmpeg_codec_set_video_pass(bg_ffmpeg_codec_context_t * ctx,
                                    int pass,
@@ -143,12 +143,12 @@ int bg_ffmpeg_codec_set_video_pass(bg_ffmpeg_codec_context_t * ctx,
 gavl_audio_sink_t * bg_ffmpeg_codec_open_audio(bg_ffmpeg_codec_context_t * ctx,
                                                gavl_compression_info_t * ci,
                                                gavl_audio_format_t * fmt,
-                                               gavl_metadata_t * m);
+                                               gavl_dictionary_t * m);
 
 gavl_video_sink_t * bg_ffmpeg_codec_open_video(bg_ffmpeg_codec_context_t * ctx,
                                                gavl_compression_info_t * ci,
                                                gavl_video_format_t * fmt,
-                                               gavl_metadata_t * m);
+                                               gavl_dictionary_t * m);
 
 
 void bg_ffmpeg_codec_destroy(bg_ffmpeg_codec_context_t * ctx);
@@ -181,7 +181,7 @@ typedef struct
 
   AVDictionary * options;
   
-  gavl_metadata_t m;
+  gavl_dictionary_t m;
   } bg_ffmpeg_stream_common_t;
 
 typedef struct
@@ -249,14 +249,14 @@ void bg_ffmpeg_set_callbacks(void * data,
 const bg_parameter_info_t * bg_ffmpeg_get_parameters(void * data);
 
 void bg_ffmpeg_set_parameter(void * data, const char * name,
-                             const bg_parameter_value_t * v);
+                             const gavl_value_t * v);
 
 int bg_ffmpeg_open(void * data, const char * filename,
-                   const gavl_metadata_t * metadata,
+                   const gavl_dictionary_t * metadata,
                    const gavl_chapter_list_t * chapter_list);
 
 int bg_ffmpeg_open_io(void * data, gavf_io_t * io,
-                      const gavl_metadata_t * metadata,
+                      const gavl_dictionary_t * metadata,
                       const gavl_chapter_list_t * chapter_list);
 
 
@@ -264,22 +264,22 @@ const bg_parameter_info_t * bg_ffmpeg_get_audio_parameters(void * data);
 const bg_parameter_info_t * bg_ffmpeg_get_video_parameters(void * data);
 
 int bg_ffmpeg_add_audio_stream(void * data,
-                               const gavl_metadata_t * metadata,
+                               const gavl_dictionary_t * metadata,
                                const gavl_audio_format_t * format);
 
 int bg_ffmpeg_add_video_stream(void * data,
-                               const gavl_metadata_t * metadata,
+                               const gavl_dictionary_t * metadata,
                                const gavl_video_format_t * format);
 
 int bg_ffmpeg_add_text_stream(void * data,
-                              const gavl_metadata_t * metadata,
+                              const gavl_dictionary_t * metadata,
                               uint32_t * timescale);
 
 void bg_ffmpeg_set_audio_parameter(void * data, int stream, const char * name,
-                                   const bg_parameter_value_t * v);
+                                   const gavl_value_t * v);
 
 void bg_ffmpeg_set_video_parameter(void * data, int stream, const char * name,
-                                  const bg_parameter_value_t * v);
+                                  const gavl_value_t * v);
 
 
 int bg_ffmpeg_set_video_pass(void * data, int stream, int pass,
@@ -341,11 +341,11 @@ int bg_ffmpeg_writes_compressed_video(void * priv,
                                       const gavl_compression_info_t * info);
 
 int bg_ffmpeg_add_audio_stream_compressed(void * priv,
-                                          const gavl_metadata_t * metadata,
+                                          const gavl_dictionary_t * metadata,
                                           const gavl_audio_format_t * format,
                                           const gavl_compression_info_t * info);
 
 int bg_ffmpeg_add_video_stream_compressed(void * priv,
-                                          const gavl_metadata_t * metadata,
+                                          const gavl_dictionary_t * metadata,
                                           const gavl_video_format_t * format,
                                           const gavl_compression_info_t * info);

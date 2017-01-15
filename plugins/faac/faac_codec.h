@@ -28,12 +28,12 @@ bg_faac_t * bg_faac_create(void);
 const bg_parameter_info_t * bg_faac_get_parameters(bg_faac_t*);
 
 void bg_faac_set_parameter(bg_faac_t * ctx, const char * name,
-                           const bg_parameter_value_t * val);
+                           const gavl_value_t * val);
 
 gavl_audio_sink_t * bg_faac_open(bg_faac_t * ctx,
                                  gavl_compression_info_t * ci,
                                  gavl_audio_format_t * fmt,
-                                 gavl_metadata_t * m);
+                                 gavl_dictionary_t * m);
 
 void bg_faac_set_packet_sink(bg_faac_t * ctx,
                              gavl_packet_sink_t * psink);

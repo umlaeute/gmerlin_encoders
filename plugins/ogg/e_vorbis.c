@@ -40,7 +40,7 @@ static const bg_parameter_info_t * get_audio_parameters_vorbis(void * data)
   return bg_vorbis_codec.get_parameters();
   }
 
-static int add_audio_stream_vorbis(void * data, const gavl_metadata_t *m,
+static int add_audio_stream_vorbis(void * data, const gavl_dictionary_t *m,
                                    const gavl_audio_format_t * format)
   {
   bg_ogg_stream_t * s;
@@ -51,7 +51,7 @@ static int add_audio_stream_vorbis(void * data, const gavl_metadata_t *m,
 
 static int
 open_vorbis(void * data, const char * file,
-            const gavl_metadata_t * metadata,
+            const gavl_dictionary_t * metadata,
             const gavl_chapter_list_t * chapter_list)
   {
   return bg_ogg_encoder_open(data, file, NULL, metadata, chapter_list,
@@ -60,7 +60,7 @@ open_vorbis(void * data, const char * file,
 
 static int
 open_io_vorbis(void * data, gavf_io_t * io,
-               const gavl_metadata_t * metadata,
+               const gavl_dictionary_t * metadata,
                const gavl_chapter_list_t * chapter_list)
   {
   return bg_ogg_encoder_open(data, NULL, io, metadata, chapter_list,
@@ -78,7 +78,7 @@ static int writes_compressed_audio_vorbis(void* data,
   }
 
 static int add_audio_stream_compressed_vorbis(void * data,
-                                              const gavl_metadata_t * m,
+                                              const gavl_dictionary_t * m,
                                               const gavl_audio_format_t * format,
                                               const gavl_compression_info_t * ci)
   {

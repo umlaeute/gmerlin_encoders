@@ -41,7 +41,7 @@ static const bg_parameter_info_t * get_audio_parameters_opus(void * data)
 
 
 static int add_audio_stream_opus(void * data,
-                                  const gavl_metadata_t * m,
+                                  const gavl_dictionary_t * m,
                                   const gavl_audio_format_t * format)
   {
   bg_ogg_stream_t * ret;
@@ -52,7 +52,7 @@ static int add_audio_stream_opus(void * data,
 
 static int
 open_opus(void * data, const char * file,
-           const gavl_metadata_t * metadata,
+           const gavl_dictionary_t * metadata,
            const gavl_chapter_list_t * chapter_list)
   {
   return bg_ogg_encoder_open(data, file, NULL, metadata, chapter_list,
@@ -61,7 +61,7 @@ open_opus(void * data, const char * file,
 
 static int
 open_io_opus(void * data, gavf_io_t * io,
-             const gavl_metadata_t * metadata,
+             const gavl_dictionary_t * metadata,
              const gavl_chapter_list_t * chapter_list)
   {
   return bg_ogg_encoder_open(data, NULL, io, metadata, chapter_list,
@@ -80,7 +80,7 @@ static int writes_compressed_audio_opus(void* data,
 
 static int
 add_audio_stream_compressed_opus(void * data,
-                                 const gavl_metadata_t * m,
+                                 const gavl_dictionary_t * m,
                                  const gavl_audio_format_t * format,
                                  const gavl_compression_info_t * ci)
   {

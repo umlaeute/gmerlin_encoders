@@ -91,7 +91,7 @@ static const bg_parameter_info_t * get_video_parameters_oggvideo(void * data)
   }
 
 static int add_audio_stream_oggvideo(void * data,
-                                   const gavl_metadata_t * m,
+                                   const gavl_dictionary_t * m,
                                    const gavl_audio_format_t * format)
   {
   bg_ogg_stream_t * s;
@@ -101,7 +101,7 @@ static int add_audio_stream_oggvideo(void * data,
 
 static int
 add_audio_stream_compressed_oggvideo(void * data,
-                                   const gavl_metadata_t * m,
+                                   const gavl_dictionary_t * m,
                                    const gavl_audio_format_t * format,
                                    const gavl_compression_info_t * ci)
   {
@@ -128,7 +128,7 @@ add_audio_stream_compressed_oggvideo(void * data,
 
 static int
 add_video_stream_oggvideo(void * data,
-                        const gavl_metadata_t * m,
+                        const gavl_dictionary_t * m,
                         const gavl_video_format_t * format)
   {
   bg_ogg_stream_t * s;
@@ -138,7 +138,7 @@ add_video_stream_oggvideo(void * data,
 
 static int
 add_video_stream_compressed_oggvideo(void * data,
-                                   const gavl_metadata_t * m,
+                                   const gavl_dictionary_t * m,
                                    const gavl_video_format_t * format,
                                    const gavl_compression_info_t * ci)
   {
@@ -162,7 +162,7 @@ add_video_stream_compressed_oggvideo(void * data,
 
 static void
 set_audio_parameter_oggvideo(void * data, int stream,
-                           const char * name, const bg_parameter_value_t * val)
+                           const char * name, const gavl_value_t * val)
   {
   int i;
   bg_ogg_encoder_t * enc = data;
@@ -189,7 +189,7 @@ set_audio_parameter_oggvideo(void * data, int stream,
 
 static void
 set_video_parameter_oggvideo(void * data, int stream,
-                           const char * name, const bg_parameter_value_t * val)
+                           const char * name, const gavl_value_t * val)
   {
   int i;
   bg_ogg_encoder_t * enc = data;
@@ -216,7 +216,7 @@ set_video_parameter_oggvideo(void * data, int stream,
 
 static int
 open_oggvideo(void * data, const char * file,
-            const gavl_metadata_t * metadata,
+            const gavl_dictionary_t * metadata,
             const gavl_chapter_list_t * chapter_list)
   {
   return bg_ogg_encoder_open(data, file, NULL, metadata, chapter_list,
@@ -225,7 +225,7 @@ open_oggvideo(void * data, const char * file,
 
 static int
 open_io_oggvideo(void * data, gavf_io_t * io,
-                 const gavl_metadata_t * metadata,
+                 const gavl_dictionary_t * metadata,
                  const gavl_chapter_list_t * chapter_list)
   {
   return bg_ogg_encoder_open(data, NULL, io, metadata, chapter_list,

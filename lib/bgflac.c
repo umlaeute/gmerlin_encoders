@@ -153,7 +153,7 @@ const bg_parameter_info_t * bg_flac_get_parameters()
   }
 
 void bg_flac_set_parameter(void * data, const char * name,
-                           const bg_parameter_value_t * val)
+                           const gavl_value_t * val)
   {
   bg_flac_t * flac;
   flac = data;
@@ -328,7 +328,7 @@ gavl_packet_sink_t *
 bg_flac_start_compressed(bg_flac_t * flac,
                          gavl_audio_format_t * fmt,
                          gavl_compression_info_t * ci,
-                         gavl_metadata_t * stream_metadata)
+                         gavl_dictionary_t * stream_metadata)
   {
   uint16_t i_tmp;
   uint8_t * ptr;
@@ -397,7 +397,7 @@ gavl_audio_sink_t *
 bg_flac_start_uncompressed(bg_flac_t * flac,
                            gavl_audio_format_t * fmt,
                            gavl_compression_info_t * ci,
-                           gavl_metadata_t * stream_metadata)
+                           gavl_dictionary_t * stream_metadata)
   {
   flac->format = fmt;
   
@@ -446,7 +446,7 @@ bg_flac_start_uncompressed(bg_flac_t * flac,
   /* Initialize */
 
   /* Set vendor string: Must be done early because it's needed in the streaminfo callback */
-  gavl_metadata_set(stream_metadata, GAVL_META_SOFTWARE, FLAC__VENDOR_STRING);
+  gavl_dictionary_set_string(stream_metadata, GAVL_META_SOFTWARE, FLAC__VENDOR_STRING);
   
   flac->ci.id = GAVL_CODEC_ID_FLAC;
   
@@ -491,7 +491,7 @@ void bg_flac_free(bg_flac_t * flac)
 /* Metadata -> vorbis comment */
 
 #define STR_COMMENT(gavl_name, key)         \
-  if((val = gavl_metadata_get(m, gavl_name)))    \
+  if((val = gavl_dictionary_get_string(m, gavl_name)))    \
     { \
     memset(&entry, 0, sizeof(entry)); \
     entry.entry = (uint8_t*)bg_sprintf("%s=%s", key, val);   \

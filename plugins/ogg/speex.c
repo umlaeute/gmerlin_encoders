@@ -167,7 +167,7 @@ static const bg_parameter_info_t * get_parameters_speex()
   }
 
 static void set_parameter_speex(void * data, const char * name,
-                                 const bg_parameter_value_t * v)
+                                 const gavl_value_t * v)
   {
   speex_t * speex;
   speex = data;
@@ -375,7 +375,7 @@ write_audio_frame_speex(void * data, gavl_audio_frame_t * frame)
 static gavl_audio_sink_t * init_speex(void * data,
                                       gavl_compression_info_t * ci,
                                       gavl_audio_format_t * format,
-                                      gavl_metadata_t * stream_metadata)
+                                      gavl_dictionary_t * stream_metadata)
   {
   float quality_f;
   const SpeexMode *mode=NULL;
@@ -481,7 +481,7 @@ static gavl_audio_sink_t * init_speex(void * data,
   
   speex_lib_ctl(SPEEX_LIB_GET_VERSION_STRING, &version);
   vendor_string = bg_sprintf("Speex %s", version);
-  gavl_metadata_set_nocpy(stream_metadata, GAVL_META_SOFTWARE,
+  gavl_dictionary_set_string_nocpy(stream_metadata, GAVL_META_SOFTWARE,
                           vendor_string);
   
   return gavl_audio_sink_create(NULL, write_audio_frame_speex, speex,

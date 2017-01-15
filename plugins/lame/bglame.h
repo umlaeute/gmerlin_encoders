@@ -30,12 +30,12 @@ void bg_lame_destroy(bg_lame_t *);
 
 void bg_lame_set_parameter(bg_lame_t *,
                            const char * name,
-                           const bg_parameter_value_t * v);
+                           const gavl_value_t * v);
 
 gavl_audio_sink_t * bg_lame_open(bg_lame_t * lame,
                                  gavl_compression_info_t * ci,
                                  gavl_audio_format_t * fmt,
-                                 gavl_metadata_t * m);
+                                 gavl_dictionary_t * m);
 
 void bg_lame_set_packet_sink(bg_lame_t * lame,
                              gavl_packet_sink_t * sink);

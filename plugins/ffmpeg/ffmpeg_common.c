@@ -138,7 +138,7 @@ const bg_parameter_info_t * bg_ffmpeg_get_video_parameters(void * data)
   }
 
 void bg_ffmpeg_set_parameter(void * data, const char * name,
-                             const bg_parameter_value_t * v)
+                             const gavl_value_t * v)
   {
   int i;
   ffmpeg_priv_t * priv;
@@ -165,38 +165,38 @@ void bg_ffmpeg_set_parameter(void * data, const char * name,
   }
 
 static void set_metadata(ffmpeg_priv_t * priv,
-                         const gavl_metadata_t * m)
+                         const gavl_dictionary_t * m)
   {
   const char * val;
   
-  if((val = gavl_metadata_get(m, GAVL_META_TITLE)))
+  if((val = gavl_dictionary_get_string(m, GAVL_META_TITLE)))
     av_dict_set(&priv->ctx->metadata, "title", val, 0);
   
-  if((val = gavl_metadata_get(m, GAVL_META_AUTHOR)))
+  if((val = gavl_dictionary_get_string(m, GAVL_META_AUTHOR)))
     av_dict_set(&priv->ctx->metadata, "composer", val, 0);
   
-  if((val = gavl_metadata_get(m, GAVL_META_ALBUM)))
+  if((val = gavl_dictionary_get_string(m, GAVL_META_ALBUM)))
     av_dict_set(&priv->ctx->metadata, "album", val, 0);
 
-  if((val = gavl_metadata_get(m, GAVL_META_COPYRIGHT)))
+  if((val = gavl_dictionary_get_string(m, GAVL_META_COPYRIGHT)))
     av_dict_set(&priv->ctx->metadata, "copyright", val, 0);
 
-  if((val = gavl_metadata_get(m, GAVL_META_COMMENT)))
+  if((val = gavl_dictionary_get_string(m, GAVL_META_COMMENT)))
     av_dict_set(&priv->ctx->metadata, "comment", val, 0);
   
-  if((val = gavl_metadata_get(m, GAVL_META_GENRE)))
+  if((val = gavl_dictionary_get_string(m, GAVL_META_GENRE)))
     av_dict_set(&priv->ctx->metadata, "genre", val, 0);
   
-  if((val = gavl_metadata_get(m, GAVL_META_DATE)))
+  if((val = gavl_dictionary_get_string(m, GAVL_META_DATE)))
     av_dict_set(&priv->ctx->metadata, "date", val, 0);
 
-  if((val = gavl_metadata_get(m, GAVL_META_TRACKNUMBER)))
+  if((val = gavl_dictionary_get_string(m, GAVL_META_TRACKNUMBER)))
     av_dict_set(&priv->ctx->metadata, "track", val, 0);
   }
 
 static void set_chapters(AVFormatContext * ctx,
                          const gavl_chapter_list_t * chapter_list,
-                         const gavl_metadata_t * m)
+                         const gavl_dictionary_t * m)
   {
 #if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(51,5,0)
   int i;
@@ -219,7 +219,7 @@ static void set_chapters(AVFormatContext * ctx,
       ctx->chapters[i]->end = chapter_list->chapters[i+1].time;
     else
       {
-      if(gavl_metadata_get_long(m, GAVL_META_APPROX_DURATION, &dur))
+      if(gavl_dictionary_get_string_long(m, GAVL_META_APPROX_DURATION, &dur))
         ctx->chapters[i]->end = gavl_time_scale(chapter_list->timescale, dur);
       }
     if(chapter_list->chapters[i].name)
@@ -236,7 +236,7 @@ static void set_chapters(AVFormatContext * ctx,
 
 static int ffmpeg_open(void * data, const char * filename,
                        gavf_io_t * io,
-                       const gavl_metadata_t * metadata,
+                       const gavl_dictionary_t * metadata,
                        const gavl_chapter_list_t * chapter_list)
   {
   ffmpeg_priv_t * priv;
@@ -313,14 +313,14 @@ static int ffmpeg_open(void * data, const char * filename,
   }
 
 int bg_ffmpeg_open(void * data, const char * filename,
-                   const gavl_metadata_t * metadata,
+                   const gavl_dictionary_t * metadata,
                    const gavl_chapter_list_t * chapter_list)
   {
   return ffmpeg_open(data, filename, NULL, metadata, chapter_list);
   }
 
 int bg_ffmpeg_open_io(void * data, gavf_io_t * io,
-                      const gavl_metadata_t * metadata,
+                      const gavl_dictionary_t * metadata,
                       const gavl_chapter_list_t * chapter_list)
   {
   return ffmpeg_open(data, NULL, io, metadata, chapter_list);
@@ -328,7 +328,7 @@ int bg_ffmpeg_open_io(void * data, gavf_io_t * io,
 
 
 int bg_ffmpeg_add_audio_stream(void * data,
-                               const gavl_metadata_t * m,
+                               const gavl_dictionary_t * m,
                                const gavl_audio_format_t * format)
   {
   ffmpeg_priv_t * priv;
@@ -352,7 +352,7 @@ int bg_ffmpeg_add_audio_stream(void * data,
                                          priv->format);
   
   /* Set language */
-  lang = gavl_metadata_get(m, GAVL_META_LANGUAGE);
+  lang = gavl_dictionary_get_string(m, GAVL_META_LANGUAGE);
   if(lang)
     av_dict_set(&st->com.stream->metadata, "language", lang, 0);
 
@@ -363,7 +363,7 @@ int bg_ffmpeg_add_audio_stream(void * data,
   }
 
 int bg_ffmpeg_add_video_stream(void * data,
-                               const gavl_metadata_t * m,
+                               const gavl_dictionary_t * m,
                                const gavl_video_format_t * format)
   {
   ffmpeg_priv_t * priv;
@@ -437,7 +437,7 @@ write_text_packet_func(void * data, gavl_packet_t * p)
   }
 
 int bg_ffmpeg_add_text_stream(void * data,
-                              const gavl_metadata_t * m,
+                              const gavl_dictionary_t * m,
                               uint32_t * timescale)
   {
   ffmpeg_priv_t * priv;
@@ -454,7 +454,7 @@ int bg_ffmpeg_add_text_stream(void * data,
 
   st->com.stream = avformat_new_stream(priv->ctx, NULL);
 
-  lang = gavl_metadata_get(m, GAVL_META_LANGUAGE);
+  lang = gavl_dictionary_get_string(m, GAVL_META_LANGUAGE);
   if(lang)
     av_dict_set(&st->com.stream->metadata, "language", lang, 0);
 
@@ -474,7 +474,7 @@ int bg_ffmpeg_add_text_stream(void * data,
   }
 
 void bg_ffmpeg_set_audio_parameter(void * data, int stream, const char * name,
-                                   const bg_parameter_value_t * v)
+                                   const gavl_value_t * v)
   {
   bg_ffmpeg_audio_stream_t * st;
   ffmpeg_priv_t * priv = data;
@@ -483,7 +483,7 @@ void bg_ffmpeg_set_audio_parameter(void * data, int stream, const char * name,
   }
 
 void bg_ffmpeg_set_video_parameter(void * data, int stream, const char * name,
-                                   const bg_parameter_value_t * v)
+                                   const gavl_value_t * v)
   {
   bg_ffmpeg_video_stream_t * st;
   ffmpeg_priv_t * priv = data;
@@ -970,7 +970,7 @@ static void copy_extradata(AVCodecContext * avctx,
 
 int
 bg_ffmpeg_add_audio_stream_compressed(void * priv,
-                                      const gavl_metadata_t * m,
+                                      const gavl_dictionary_t * m,
                                       const gavl_audio_format_t * format,
                                       const gavl_compression_info_t * info)
   {
@@ -1003,7 +1003,7 @@ bg_ffmpeg_add_audio_stream_compressed(void * priv,
   }
 
 int bg_ffmpeg_add_video_stream_compressed(void * priv,
-                                          const gavl_metadata_t * m,
+                                          const gavl_dictionary_t * m,
                                           const gavl_video_format_t * format,
                                           const gavl_compression_info_t * info)
   {

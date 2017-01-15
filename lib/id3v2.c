@@ -116,14 +116,14 @@ static void add_frame(bgen_id3v2_t * tag, uint32_t fourcc,
 */
 
 #define TEXT_FRAME(str, key, fcc) \
-  val = gavl_metadata_get(m, key); \
+  val = gavl_dictionary_get_string(m, key); \
   if(val) \
     { \
     add_frame(ret, fcc, val); \
     }
 
 
-bgen_id3v2_t * bgen_id3v2_create(const gavl_metadata_t * m)
+bgen_id3v2_t * bgen_id3v2_create(const gavl_dictionary_t * m)
   {
   int year;
   char * tmp_string;

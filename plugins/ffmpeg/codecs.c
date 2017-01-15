@@ -1206,7 +1206,7 @@ void
 bg_ffmpeg_set_codec_parameter(AVCodecContext * ctx,
                               AVDictionary ** options,
                               const char * name,
-                              const bg_parameter_value_t * val)
+                              const gavl_value_t * val)
   {
   int i;
 /*

@@ -183,7 +183,7 @@ static const bg_parameter_info_t * get_parameters_theora()
   }
 
 static void set_parameter_theora(void * data, const char * name,
-                                 const bg_parameter_value_t * v)
+                                 const gavl_value_t * v)
   {
   theora_t * theora = data;
   
@@ -442,7 +442,7 @@ write_video_frame_theora(void * data, gavl_video_frame_t * frame)
 static gavl_video_sink_t *
 init_theora(void * data, gavl_compression_info_t * ci,
             gavl_video_format_t * format,
-            gavl_metadata_t * stream_metadata)
+            gavl_dictionary_t * stream_metadata)
   {
   int sub_h, sub_v;
   int arg_i1, arg_i2;
@@ -568,7 +568,7 @@ init_theora(void * data, gavl_compression_info_t * ci,
       vendor_len = GAVL_PTR_2_32LE(ptr); ptr += 4;
       vendor = calloc(1, vendor_len + 1);
       memcpy(vendor, ptr, vendor_len);
-      gavl_metadata_set_nocpy(stream_metadata, GAVL_META_SOFTWARE, vendor);
+      gavl_dictionary_set_string_nocpy(stream_metadata, GAVL_META_SOFTWARE, vendor);
       }
     header_packets++;
     }

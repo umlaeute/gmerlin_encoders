@@ -48,7 +48,7 @@ static const bg_parameter_info_t * get_parameters(void * priv)
   return c->codec->get_parameters();
   }
 
-static void set_parameter(void * priv, const char * name, const bg_parameter_value_t * val)
+static void set_parameter(void * priv, const char * name, const gavl_value_t * val)
   {
   stream_codec_t * c = priv;
   c->codec->set_parameter(c->priv, name, val);
@@ -58,7 +58,7 @@ static void set_parameter(void * priv, const char * name, const bg_parameter_val
 static gavl_audio_sink_t * open_audio(void * priv,
                                       gavl_compression_info_t * ci,
                                       gavl_audio_format_t * fmt,
-                                      gavl_metadata_t * m)
+                                      gavl_dictionary_t * m)
   {
   stream_codec_t * c = priv;
   return c->codec->init_audio(c->priv, ci, fmt, m);
@@ -67,7 +67,7 @@ static gavl_audio_sink_t * open_audio(void * priv,
 static gavl_video_sink_t * open_video(void * priv,
                                       gavl_compression_info_t * ci,
                                       gavl_video_format_t * fmt,
-                                      gavl_metadata_t * m)
+                                      gavl_dictionary_t * m)
   {
   stream_codec_t * c = priv;
   return c->codec->init_video(c->priv, ci, fmt, m);

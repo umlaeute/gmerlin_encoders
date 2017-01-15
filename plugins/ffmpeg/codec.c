@@ -180,7 +180,7 @@ const bg_parameter_info_t * bg_ffmpeg_codec_get_parameters(bg_ffmpeg_codec_conte
 
 void bg_ffmpeg_codec_set_parameter(bg_ffmpeg_codec_context_t * ctx,
                                    const char * name,
-                                   const bg_parameter_value_t * v)
+                                   const gavl_value_t * v)
   {
   if(!name)
     return;
@@ -211,7 +211,7 @@ void bg_ffmpeg_codec_set_parameter(bg_ffmpeg_codec_context_t * ctx,
 
 static int set_compression_info(bg_ffmpeg_codec_context_t * ctx,
                                 gavl_compression_info_t * ci,
-                                gavl_metadata_t * m)
+                                gavl_dictionary_t * m)
   {
   if(ci)
     {
@@ -230,7 +230,7 @@ static int set_compression_info(bg_ffmpeg_codec_context_t * ctx,
       }
     }
   if(m)
-    gavl_metadata_set(m, GAVL_META_SOFTWARE, LIBAVCODEC_IDENT);
+    gavl_dictionary_set_string(m, GAVL_META_SOFTWARE, LIBAVCODEC_IDENT);
   return 1;
   }
 
@@ -357,7 +357,7 @@ void bg_ffmpeg_set_audio_format(AVCodecContext * avctx,
 gavl_audio_sink_t * bg_ffmpeg_codec_open_audio(bg_ffmpeg_codec_context_t * ctx,
                                                gavl_compression_info_t * ci,
                                                gavl_audio_format_t * fmt,
-                                               gavl_metadata_t * m)
+                                               gavl_dictionary_t * m)
   {
   AVOutputFormat * ofmt;
   //  if(!find_encoder(ctx))
@@ -633,7 +633,7 @@ void bg_ffmpeg_set_video_dimensions(AVCodecContext * avctx,
 gavl_video_sink_t * bg_ffmpeg_codec_open_video(bg_ffmpeg_codec_context_t * ctx,
                                                gavl_compression_info_t * ci,
                                                gavl_video_format_t * fmt,
-                                               gavl_metadata_t * m)
+                                               gavl_dictionary_t * m)
   {
   int do_convert = 0;
   const ffmpeg_codec_info_t * info;

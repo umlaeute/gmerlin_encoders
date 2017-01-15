@@ -545,7 +545,7 @@ static const bg_parameter_info_t * get_parameters_schro()
   }
 
 static void set_parameter_schro(void * data, const char * name,
-                                const bg_parameter_value_t * v)
+                                const gavl_value_t * v)
   {
   int i;
   schro_t * s = data;
@@ -801,7 +801,7 @@ static gavl_sink_status_t put_frame(void * data, gavl_video_frame_t * f)
 static gavl_video_sink_t *
 init_schro(void * data, gavl_compression_info_t * ci,
            gavl_video_format_t * format,
-           gavl_metadata_t * stream_metadata)
+           gavl_dictionary_t * stream_metadata)
   {
   int gop_structure;
   int idx;
@@ -891,13 +891,13 @@ init_schro(void * data, gavl_compression_info_t * ci,
     return NULL;
 
 #ifdef HAVE_SCHROEDINGER_SCHROVERSION_H
-  gavl_metadata_set_nocpy(stream_metadata, GAVL_META_SOFTWARE,
+  gavl_dictionary_set_string_nocpy(stream_metadata, GAVL_META_SOFTWARE,
                           bg_sprintf("libschroedinger-%d.%d.%d",
                           SCHRO_VERSION_MAJOR,
                           SCHRO_VERSION_MINOR,
                                      SCHRO_VERSION_MICRO));
 #else
-  gavl_metadata_set_nocpy(stream_metadata, GAVL_META_SOFTWARE,
+  gavl_dictionary_set_string_nocpy(stream_metadata, GAVL_META_SOFTWARE,
                           bg_sprintf("libschroedinger"));
 #endif
   s->started = 1;

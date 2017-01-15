@@ -39,15 +39,15 @@ typedef struct
   
   const bg_parameter_info_t * (*get_parameters)(void);
   void (*set_parameter)(void*, const char * name,
-                        const bg_parameter_value_t * v);
+                        const gavl_value_t * v);
 
   gavl_audio_sink_t * (*init_audio)(void*, gavl_compression_info_t * ci_ret,
                                     gavl_audio_format_t * format,
-                                    gavl_metadata_t * stream_metadata);
+                                    gavl_dictionary_t * stream_metadata);
 
   gavl_video_sink_t * (*init_video)(void*, gavl_compression_info_t * ci_ret,
                                     gavl_video_format_t * format,
-                                    gavl_metadata_t * stream_metadata);
+                                    gavl_dictionary_t * stream_metadata);
 
   int (*init_audio_compressed)(bg_ogg_stream_t * s);
   int (*init_video_compressed)(bg_ogg_stream_t * s);
@@ -104,8 +104,8 @@ struct bg_ogg_stream_s
 
   /* Metadata */
 
-  const gavl_metadata_t * m_global;
-  gavl_metadata_t m_stream;
+  const gavl_dictionary_t * m_global;
+  gavl_dictionary_t m_stream;
 
   };
 
@@ -128,7 +128,7 @@ void bg_ogg_packet_from_gavl(bg_ogg_stream_t * s,
 /* Chaining support */
 void bg_ogg_stream_reset(bg_ogg_stream_t * s, long serialno);
 
-void bg_ogg_encoder_update_metadata(void * priv, const gavl_metadata_t * new_metadata);
+void bg_ogg_encoder_update_metadata(void * priv, const gavl_dictionary_t * new_metadata);
 
 struct bg_ogg_encoder_s
   {
@@ -142,7 +142,7 @@ struct bg_ogg_encoder_s
 
   long serialno;
   
-  gavl_metadata_t metadata;
+  gavl_dictionary_t metadata;
   char * filename;
   
   bg_parameter_info_t * audio_parameters;
@@ -166,7 +166,7 @@ void bg_ogg_encoder_set_callbacks(void *, bg_encoder_callbacks_t * cb);
 
 int bg_ogg_encoder_open(void *, const char * file,
                         gavf_io_t * io,
-                        const gavl_metadata_t * metadata,
+                        const gavl_dictionary_t * metadata,
                         const gavl_chapter_list_t * chapter_list,
                         const char * ext);
 
@@ -176,20 +176,20 @@ void bg_ogg_encoder_destroy(void*);
 int bg_ogg_flush(ogg_stream_state * os, bg_ogg_encoder_t * output, int force);
 
 bg_ogg_stream_t *
-bg_ogg_encoder_add_audio_stream(void*, const gavl_metadata_t * m,
+bg_ogg_encoder_add_audio_stream(void*, const gavl_dictionary_t * m,
                                 const gavl_audio_format_t * format);
 
 bg_ogg_stream_t *
-bg_ogg_encoder_add_video_stream(void*, const gavl_metadata_t * m,
+bg_ogg_encoder_add_video_stream(void*, const gavl_dictionary_t * m,
                                 const gavl_video_format_t * format);
 
 bg_ogg_stream_t * 
-bg_ogg_encoder_add_audio_stream_compressed(void*, const gavl_metadata_t * m,
+bg_ogg_encoder_add_audio_stream_compressed(void*, const gavl_dictionary_t * m,
                                            const gavl_audio_format_t * format,
                                            const gavl_compression_info_t * ci);
 
 bg_ogg_stream_t * 
-bg_ogg_encoder_add_video_stream_compressed(void*, const gavl_metadata_t * m,
+bg_ogg_encoder_add_video_stream_compressed(void*, const gavl_dictionary_t * m,
                                            const gavl_video_format_t * format,
                                            const gavl_compression_info_t * ci);
 
@@ -199,11 +199,11 @@ bg_ogg_encoder_init_stream(void*, bg_ogg_stream_t * s,
 
 void bg_ogg_encoder_set_audio_parameter(void*, int stream,
                                         const char * name,
-                                        const bg_parameter_value_t * val);
+                                        const gavl_value_t * val);
 
 void bg_ogg_encoder_set_video_parameter(void*, int stream,
                                         const char * name,
-                                        const bg_parameter_value_t * val);
+                                        const gavl_value_t * val);
 
 int bg_ogg_encoder_set_video_pass(void*, int stream,
                                   int pass, int total_passes,
@@ -243,8 +243,8 @@ bg_ogg_encoder_get_video_parameters(bg_ogg_encoder_t * e,
 void
 bg_ogg_create_comment_packet(const uint8_t * prefix,
                              int prefix_len,
-                             const gavl_metadata_t * m_stream,
-                             const gavl_metadata_t * m_global,
+                             const gavl_dictionary_t * m_stream,
+                             const gavl_dictionary_t * m_global,
                              int framing, ogg_packet * op);
 
 void bg_ogg_free_comment_packet(ogg_packet * op);

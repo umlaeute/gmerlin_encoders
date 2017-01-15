@@ -59,7 +59,7 @@ static void set_callbacks_y4m(void * data, bg_encoder_callbacks_t * cb)
 
 
 static int open_y4m(void * data, const char * filename,
-                    const gavl_metadata_t * metadata,
+                    const gavl_dictionary_t * metadata,
                     const gavl_chapter_list_t * chapter_list)
   {
   e_y4m_t * e = data;
@@ -85,7 +85,7 @@ static int open_y4m(void * data, const char * filename,
   }
 
 static int add_video_stream_y4m(void * data,
-                                const gavl_metadata_t * m,
+                                const gavl_dictionary_t * m,
                                 const gavl_video_format_t* format)
   {
   e_y4m_t * e = data;
@@ -177,7 +177,7 @@ static const bg_parameter_info_t * get_video_parameters_y4m(void * data)
 #define SET_ENUM(str, dst, v) if(!strcmp(val->v.str, str)) dst = v
 
 static void set_video_parameter_y4m(void * data, int stream, const char * name,
-                                    const bg_parameter_value_t * val)
+                                    const gavl_value_t * val)
   {
   int sub_h, sub_v;
   e_y4m_t * e = data;

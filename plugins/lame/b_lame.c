@@ -70,7 +70,7 @@ static const bg_parameter_info_t * get_parameters_b_lame(void * data)
   }
 
 static void set_parameter_b_lame(void * data, const char * name,
-                                 const bg_parameter_value_t * val)
+                                 const gavl_value_t * val)
   {
   b_lame_t * enc = data;
   bg_shout_set_parameter(enc->shout, name, val);
@@ -83,14 +83,14 @@ static const bg_parameter_info_t * get_audio_parameters_lame(void * data)
 
 
 static void update_metadata(void * data,
-                            const gavl_metadata_t * m)
+                            const gavl_dictionary_t * m)
   {
   b_lame_t * enc = data;
   bg_shout_update_metadata(enc->shout, m);
   }
 
 static int open_lame(void * data, const char * filename,
-                     const gavl_metadata_t * metadata,
+                     const gavl_dictionary_t * metadata,
                      const gavl_chapter_list_t * chapter_list)
   {
   //  b_lame_t * lame;
@@ -101,7 +101,7 @@ static int open_lame(void * data, const char * filename,
 
 static int
 add_audio_stream_lame(void * data,
-                      const gavl_metadata_t * m,
+                      const gavl_dictionary_t * m,
                       const gavl_audio_format_t * format)
   {
   b_lame_t * lame = data;
@@ -111,7 +111,7 @@ add_audio_stream_lame(void * data,
 
 static int
 add_audio_stream_compressed_lame(void * data,
-                                 const gavl_metadata_t * m,
+                                 const gavl_dictionary_t * m,
                                  const gavl_audio_format_t * format,
                                  const gavl_compression_info_t * ci)
   {
@@ -124,7 +124,7 @@ add_audio_stream_compressed_lame(void * data,
   }
 
 static void set_audio_parameter_lame(void * data, int stream, const char * name,
-                                     const bg_parameter_value_t * val)
+                                     const gavl_value_t * val)
   {
   b_lame_t * lame = data;
   bg_lame_set_parameter(lame->com, name, val);

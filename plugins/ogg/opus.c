@@ -231,7 +231,7 @@ static void set_packet_sink(void * data, gavl_packet_sink_t * psink)
   }
 
 static void set_parameter_opus(void * data, const char * name,
-                               const bg_parameter_value_t * v)
+                               const gavl_value_t * v)
   {
   opus_t * opus = data;
   
@@ -417,7 +417,7 @@ write_audio_frame_opus(void * data, gavl_audio_frame_t * frame)
 static gavl_audio_sink_t *
 init_opus(void * data, gavl_compression_info_t * ci,
           gavl_audio_format_t * format,
-          gavl_metadata_t * stream_metadata)
+          gavl_dictionary_t * stream_metadata)
   {
   int err;
   opus_t * opus = data;
@@ -527,7 +527,7 @@ init_opus(void * data, gavl_compression_info_t * ci,
   opus->pts = -((int64_t)ci->pre_skip);
   
   
-  gavl_metadata_set(stream_metadata, GAVL_META_SOFTWARE,
+  gavl_dictionary_set_string(stream_metadata, GAVL_META_SOFTWARE,
                     opus_get_version_string());
   
   /* Allocate encoder buffer */
@@ -561,7 +561,7 @@ static int init_compressed_opus(bg_ogg_stream_t * s)
   
   /* Build comment */
 
-  vendor = gavl_metadata_get(&s->m_stream, GAVL_META_SOFTWARE);
+  vendor = gavl_dictionary_get_string(&s->m_stream, GAVL_META_SOFTWARE);
 
   if(!vendor)
     {

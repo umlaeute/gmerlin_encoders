@@ -408,7 +408,7 @@ void bg_lame_set_packet_sink(bg_lame_t * lame,
 
 void bg_lame_set_parameter(bg_lame_t * lame,
                            const char * name,
-                           const bg_parameter_value_t * v)
+                           const gavl_value_t * v)
   {
   int i;
   
@@ -573,7 +573,7 @@ write_audio_func(void * data, gavl_audio_frame_t * frame)
 gavl_audio_sink_t * bg_lame_open(bg_lame_t * lame,
                                  gavl_compression_info_t * ci,
                                  gavl_audio_format_t * fmt,
-                                 gavl_metadata_t * m)
+                                 gavl_dictionary_t * m)
   {
   /* Copy and adjust format */
   
@@ -676,7 +676,7 @@ gavl_audio_sink_t * bg_lame_open(bg_lame_t * lame,
   if(m)
     {
     /* Set software */
-    gavl_metadata_set_nocpy(m, GAVL_META_SOFTWARE,
+    gavl_dictionary_set_string_nocpy(m, GAVL_META_SOFTWARE,
                             bg_sprintf("lame %s", get_lame_version()));
     }
   

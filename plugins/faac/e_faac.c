@@ -91,7 +91,7 @@ static const bg_parameter_info_t * get_audio_parameters_faac(void * data)
   }
 
 static void set_audio_parameter_faac(void * data, int stream, const char * name,
-                                     const bg_parameter_value_t * v)
+                                     const gavl_value_t * v)
   {
   faac_t * faac;
   faac = data;
@@ -135,7 +135,7 @@ static const bg_parameter_info_t * get_parameters_faac(void * data)
 
 
 static void set_parameter_faac(void * data, const char * name,
-                               const bg_parameter_value_t * v)
+                               const gavl_value_t * v)
   {
   faac_t * faac;
   faac = data;
@@ -151,7 +151,7 @@ static void set_parameter_faac(void * data, const char * name,
   }
 
 static int open_io_faac(void * data, gavf_io_t * io,
-                        const gavl_metadata_t * metadata,
+                        const gavl_dictionary_t * metadata,
                        const gavl_chapter_list_t * chapter_list)
   {
   faac_t * faac;
@@ -186,7 +186,7 @@ static int open_io_faac(void * data, gavf_io_t * io,
   }
 
 static int open_faac(void * data, const char * filename,
-                     const gavl_metadata_t * metadata,
+                     const gavl_dictionary_t * metadata,
                      const gavl_chapter_list_t * chapter_list)
   {
   gavf_io_t * io;
@@ -227,7 +227,7 @@ static gavl_sink_status_t write_packet(void * data, gavl_packet_t * p)
 
 
 static int add_audio_stream_faac(void * data,
-                                 const gavl_metadata_t * m,
+                                 const gavl_dictionary_t * m,
                                  const gavl_audio_format_t * format)
   {
   faac_t * faac = data;

@@ -77,7 +77,7 @@ static const bg_parameter_info_t * get_video_parameters_b_ogg(void * data)
   }
 
 static int add_audio_stream_b_ogg(void * data,
-                                  const gavl_metadata_t * m,
+                                  const gavl_dictionary_t * m,
                                   const gavl_audio_format_t * format)
   {
   bg_ogg_stream_t * ret;
@@ -86,7 +86,7 @@ static int add_audio_stream_b_ogg(void * data,
   }
 
 static int add_video_stream_b_ogg(void * data,
-                                  const gavl_metadata_t * m,
+                                  const gavl_dictionary_t * m,
                                   const gavl_video_format_t * format)
   {
   bg_ogg_stream_t * ret;
@@ -97,7 +97,7 @@ static int add_video_stream_b_ogg(void * data,
 
 static void set_audio_parameter_b_ogg(void * data, int stream,
                                       const char * name,
-                                      const bg_parameter_value_t * val)
+                                      const gavl_value_t * val)
   {
   int i;
   if(!name)
@@ -138,7 +138,7 @@ static int open_callback(void * data)
   }
 
 static void update_metadata(void * data,
-                            const gavl_metadata_t * m)
+                            const gavl_dictionary_t * m)
   {
   bg_ogg_encoder_t * enc = data;
   bg_shout_update_metadata(enc->open_callback_data, m);
@@ -165,7 +165,7 @@ static const bg_parameter_info_t * get_parameters_b_ogg(void * data)
   }
 
 static void set_parameter_b_ogg(void * data, const char * name,
-                                const bg_parameter_value_t * val)
+                                const gavl_value_t * val)
   {
   bg_ogg_encoder_t * enc = data;
   bg_shout_set_parameter(enc->open_callback_data, name, val);
@@ -173,7 +173,7 @@ static void set_parameter_b_ogg(void * data, const char * name,
 
 static int
 open_b_ogg(void * data, const char * file,
-           const gavl_metadata_t * metadata,
+           const gavl_dictionary_t * metadata,
            const gavl_chapter_list_t * chapter_list)
   {
   bg_ogg_encoder_t * enc = data;

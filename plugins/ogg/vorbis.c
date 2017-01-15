@@ -289,7 +289,7 @@ write_audio_frame_vorbis(void * data, gavl_audio_frame_t * frame)
 static gavl_audio_sink_t * init_vorbis(void * data,
                                        gavl_compression_info_t * ci_ret,
                                        gavl_audio_format_t * format,
-                                       gavl_metadata_t * stream_metadata)
+                                       gavl_dictionary_t * stream_metadata)
   {
   ogg_packet header_main;
   ogg_packet header_comments;
@@ -351,7 +351,7 @@ static gavl_audio_sink_t * init_vorbis(void * data,
   vendor_len = GAVL_PTR_2_32LE(ptr); ptr += 4;
   vendor = calloc(1, vendor_len + 1);
   memcpy(vendor, ptr, vendor_len);
-  gavl_metadata_set_nocpy(stream_metadata, GAVL_META_SOFTWARE, vendor);
+  gavl_dictionary_set_string_nocpy(stream_metadata, GAVL_META_SOFTWARE, vendor);
   /* And stream them out */
 
   gavl_append_xiph_header(&ci_ret->global_header,
@@ -372,7 +372,7 @@ static gavl_audio_sink_t * init_vorbis(void * data,
   }
 
 static void set_parameter_vorbis(void * data, const char * name,
-                                 const bg_parameter_value_t * v)
+                                 const gavl_value_t * v)
   {
   vorbis_t * vorbis;
   vorbis = data;

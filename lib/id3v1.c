@@ -100,7 +100,7 @@ struct bgen_id3v1_s
   char data[128];
   };
 
-static void set_string(char * dst, const gavl_metadata_t * m,
+static void set_string(char * dst, const gavl_dictionary_t * m,
                        const char * key, int max_len,
                        bg_charset_converter_t * cnv)
   {
@@ -108,7 +108,7 @@ static void set_string(char * dst, const gavl_metadata_t * m,
 
   char * tmp_string;
 
-  const char * src = gavl_metadata_get(m, key);
+  const char * src = gavl_dictionary_get_string(m, key);
   
   if(!src)
     return;
@@ -126,7 +126,7 @@ static void set_string(char * dst, const gavl_metadata_t * m,
   free(tmp_string);
   }
 
-bgen_id3v1_t * bgen_id3v1_create(const gavl_metadata_t * m)
+bgen_id3v1_t * bgen_id3v1_create(const gavl_dictionary_t * m)
   {
   int track;
   int i;
@@ -166,7 +166,7 @@ bgen_id3v1_t * bgen_id3v1_create(const gavl_metadata_t * m)
 
   /* Track */
 
-  if(gavl_metadata_get_int(m, GAVL_META_TRACKNUMBER, &track) &&
+  if(gavl_dictionary_get_string_int(m, GAVL_META_TRACKNUMBER, &track) &&
      (track > 0) && (track < 255))
     ret->data[TRACK_POS] = track;
   
@@ -174,7 +174,7 @@ bgen_id3v1_t * bgen_id3v1_create(const gavl_metadata_t * m)
   
   ret->data[GENRE_POS] = 0xff;
 
-  genre = gavl_metadata_get(m, GAVL_META_GENRE);
+  genre = gavl_dictionary_get_string(m, GAVL_META_GENRE);
     
   if(genre)
     {
