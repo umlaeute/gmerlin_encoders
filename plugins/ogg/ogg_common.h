@@ -167,7 +167,6 @@ void bg_ogg_encoder_set_callbacks(void *, bg_encoder_callbacks_t * cb);
 int bg_ogg_encoder_open(void *, const char * file,
                         gavf_io_t * io,
                         const gavl_dictionary_t * metadata,
-                        const gavl_chapter_list_t * chapter_list,
                         const char * ext);
 
 void bg_ogg_encoder_destroy(void*);

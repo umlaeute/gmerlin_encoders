@@ -440,7 +440,7 @@ gavl_audio_sink_t * bg_faac_open(bg_faac_t * ctx,
                                   &SizeOfDecoderSpecificInfo);
     ci->global_header_len = SizeOfDecoderSpecificInfo;
     ci->pre_skip = FAAC_DELAY;
-    gavl_dictionary_set_string_nocpy(m, GAVL_META_SOFTWARE,
+    gavl_dictionary_set_string_nocopy(m, GAVL_META_SOFTWARE,
                             bg_sprintf("libfaac %s", ctx->enc_config->name));
     
     }

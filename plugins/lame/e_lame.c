@@ -153,8 +153,7 @@ static void set_parameter_lame(void * data, const char * name,
   }
 
 static int open_io_lame(void * data, gavf_io_t * io,
-                        const gavl_dictionary_t * metadata,
-                        const gavl_chapter_list_t * chapter_list)
+                        const gavl_dictionary_t * metadata)
   {
   lame_priv_t * lame;
   bgen_id3v2_t * id3v2;
@@ -188,8 +187,7 @@ static int open_io_lame(void * data, gavf_io_t * io,
 
 static int open_lame(void * data,
                      const char * filename,
-                     const gavl_dictionary_t * metadata,
-                     const gavl_chapter_list_t * chapter_list)
+                     const gavl_dictionary_t * metadata)
   {
   lame_priv_t * lame;
   gavf_io_t * io;
@@ -220,7 +218,7 @@ static int open_lame(void * data,
     io = gavf_io_create_file(f, 1, 1, 1);
     }
  
-  return open_io_lame(data, io, metadata, chapter_list);
+  return open_io_lame(data, io, metadata);
   }
 
 static int

@@ -166,7 +166,7 @@ bgen_id3v1_t * bgen_id3v1_create(const gavl_dictionary_t * m)
 
   /* Track */
 
-  if(gavl_dictionary_get_string_int(m, GAVL_META_TRACKNUMBER, &track) &&
+  if(gavl_dictionary_get_int(m, GAVL_META_TRACKNUMBER, &track) &&
      (track > 0) && (track < 255))
     ret->data[TRACK_POS] = track;
   

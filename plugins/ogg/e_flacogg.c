@@ -65,19 +65,17 @@ static int add_audio_stream_compressed_flacogg(void * data,
 
 static int
 open_flacogg(void * data, const char * file,
-             const gavl_dictionary_t * metadata,
-             const gavl_chapter_list_t * chapter_list)
+             const gavl_dictionary_t * metadata)
   {
-  return bg_ogg_encoder_open(data, file, NULL, metadata, chapter_list,
+  return bg_ogg_encoder_open(data, file, NULL, metadata,
                              "ogg");
   }
 
 static int
 open_io_flacogg(void * data, gavf_io_t * io,
-                const gavl_dictionary_t * metadata,
-                const gavl_chapter_list_t * chapter_list)
+                const gavl_dictionary_t * metadata)
   {
-  return bg_ogg_encoder_open(data, NULL, io, metadata, chapter_list,
+  return bg_ogg_encoder_open(data, NULL, io, metadata,
                              "ogg");
   }
 

@@ -151,8 +151,7 @@ static void set_parameter_faac(void * data, const char * name,
   }
 
 static int open_io_faac(void * data, gavf_io_t * io,
-                        const gavl_dictionary_t * metadata,
-                       const gavl_chapter_list_t * chapter_list)
+                        const gavl_dictionary_t * metadata)
   {
   faac_t * faac;
   bgen_id3v2_t * id3v2;
@@ -186,8 +185,7 @@ static int open_io_faac(void * data, gavf_io_t * io,
   }
 
 static int open_faac(void * data, const char * filename,
-                     const gavl_dictionary_t * metadata,
-                     const gavl_chapter_list_t * chapter_list)
+                     const gavl_dictionary_t * metadata)
   {
   gavf_io_t * io;
   faac_t * faac;
@@ -214,7 +212,7 @@ static int open_faac(void * data, const char * filename,
       }
     io = gavf_io_create_file(f, 1, 1, 1);
     }
-  return open_io_faac(data, io, metadata, chapter_list);
+  return open_io_faac(data, io, metadata);
   }
 
 static gavl_sink_status_t write_packet(void * data, gavl_packet_t * p)

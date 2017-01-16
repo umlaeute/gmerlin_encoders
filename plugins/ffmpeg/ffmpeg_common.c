@@ -201,30 +201,35 @@ static void set_chapters(AVFormatContext * ctx,
 #if LIBAVUTIL_VERSION_INT >= AV_VERSION_INT(51,5,0)
   int i;
   gavl_time_t dur;
+  int num_chapters;
+  int timescale;
+  const char * name;
   
-  if(!chapter_list || !chapter_list->num_chapters)
+  if(!chapter_list || !gavl_chapter_list_is_valid(chapter_list))
     return;
+
+  num_chapters = gavl_chapter_list_get_num(chapter_list);
+  timescale = gavl_chapter_list_get_timescale(chapter_list);
   
   ctx->chapters =
-    av_malloc(chapter_list->num_chapters * sizeof(*ctx->chapters));
-  ctx->nb_chapters = chapter_list->num_chapters;
+    av_malloc(num_chapters * sizeof(*ctx->chapters));
+  ctx->nb_chapters = num_chapters;
   
-  for(i = 0; i < chapter_list->num_chapters; i++)
+  for(i = 0; i < num_chapters; i++)
     {
     ctx->chapters[i] = av_mallocz(sizeof(*(ctx->chapters[i])));
     ctx->chapters[i]->time_base.num = 1;
-    ctx->chapters[i]->time_base.den = chapter_list->timescale;
-    ctx->chapters[i]->start = chapter_list->chapters[i].time;
-    if(i < chapter_list->num_chapters - 1)
-      ctx->chapters[i]->end = chapter_list->chapters[i+1].time;
+    ctx->chapters[i]->time_base.den = timescale;
+    ctx->chapters[i]->start = gavl_chapter_list_get_time(chapter_list, i);
+    if(i < num_chapters - 1)
+      ctx->chapters[i]->end = gavl_chapter_list_get_time(chapter_list, i+1);
     else
       {
-      if(gavl_dictionary_get_string_long(m, GAVL_META_APPROX_DURATION, &dur))
-        ctx->chapters[i]->end = gavl_time_scale(chapter_list->timescale, dur);
+      if(gavl_dictionary_get_long(m, GAVL_META_APPROX_DURATION, &dur))
+        ctx->chapters[i]->end = gavl_time_scale(timescale, dur);
       }
-    if(chapter_list->chapters[i].name)
-      av_dict_set(&ctx->chapters[i]->metadata,
-                  "title", chapter_list->chapters[i].name, 0);
+    if((name = gavl_chapter_list_get_label(chapter_list, i)))
+      av_dict_set(&ctx->chapters[i]->metadata, "title", name, 0);
     }
 #else
   if(!chapter_list || !chapter_list->num_chapters)
@@ -236,9 +241,9 @@ static void set_chapters(AVFormatContext * ctx,
 
 static int ffmpeg_open(void * data, const char * filename,
                        gavf_io_t * io,
-                       const gavl_dictionary_t * metadata,
-                       const gavl_chapter_list_t * chapter_list)
+                       const gavl_dictionary_t * metadata)
   {
+  const gavl_dictionary_t * cl;
   ffmpeg_priv_t * priv;
   AVOutputFormat *fmt;
   
@@ -304,26 +309,26 @@ static int ffmpeg_open(void * data, const char * filename,
   /* Add metadata */
 
   if(metadata)
+    {
     set_metadata(priv, metadata);
 
-  if(metadata && chapter_list)
-    set_chapters(priv->ctx, chapter_list, metadata);
+    if((cl = gavl_dictionary_get_chapter_list_c(metadata)))
+      set_chapters(priv->ctx, cl, metadata);
+    }
   
   return 1;
   }
 
 int bg_ffmpeg_open(void * data, const char * filename,
-                   const gavl_dictionary_t * metadata,
-                   const gavl_chapter_list_t * chapter_list)
+                   const gavl_dictionary_t * metadata)
   {
-  return ffmpeg_open(data, filename, NULL, metadata, chapter_list);
+  return ffmpeg_open(data, filename, NULL, metadata);
   }
 
 int bg_ffmpeg_open_io(void * data, gavf_io_t * io,
-                      const gavl_dictionary_t * metadata,
-                      const gavl_chapter_list_t * chapter_list)
+                      const gavl_dictionary_t * metadata)
   {
-  return ffmpeg_open(data, NULL, io, metadata, chapter_list);
+  return ffmpeg_open(data, NULL, io, metadata);
   }
 
 

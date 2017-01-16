@@ -103,7 +103,6 @@ int
 bg_ogg_encoder_open(void * data, const char * file,
                     gavf_io_t * io,
                     const gavl_dictionary_t * metadata,
-                    const gavl_chapter_list_t * chapter_list,
                     const char * ext)
   {
   bg_ogg_encoder_t * e = data;

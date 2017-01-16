@@ -676,7 +676,7 @@ gavl_audio_sink_t * bg_lame_open(bg_lame_t * lame,
   if(m)
     {
     /* Set software */
-    gavl_dictionary_set_string_nocpy(m, GAVL_META_SOFTWARE,
+    gavl_dictionary_set_string_nocopy(m, GAVL_META_SOFTWARE,
                             bg_sprintf("lame %s", get_lame_version()));
     }
   

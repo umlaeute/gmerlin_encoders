@@ -568,7 +568,7 @@ init_theora(void * data, gavl_compression_info_t * ci,
       vendor_len = GAVL_PTR_2_32LE(ptr); ptr += 4;
       vendor = calloc(1, vendor_len + 1);
       memcpy(vendor, ptr, vendor_len);
-      gavl_dictionary_set_string_nocpy(stream_metadata, GAVL_META_SOFTWARE, vendor);
+      gavl_dictionary_set_string_nocopy(stream_metadata, GAVL_META_SOFTWARE, vendor);
       }
     header_packets++;
     }

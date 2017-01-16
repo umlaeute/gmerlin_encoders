@@ -351,7 +351,7 @@ static gavl_audio_sink_t * init_vorbis(void * data,
   vendor_len = GAVL_PTR_2_32LE(ptr); ptr += 4;
   vendor = calloc(1, vendor_len + 1);
   memcpy(vendor, ptr, vendor_len);
-  gavl_dictionary_set_string_nocpy(stream_metadata, GAVL_META_SOFTWARE, vendor);
+  gavl_dictionary_set_string_nocopy(stream_metadata, GAVL_META_SOFTWARE, vendor);
   /* And stream them out */
 
   gavl_append_xiph_header(&ci_ret->global_header,

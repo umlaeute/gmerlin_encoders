@@ -891,7 +891,7 @@ init_schro(void * data, gavl_compression_info_t * ci,
     return NULL;
 
 #ifdef HAVE_SCHROEDINGER_SCHROVERSION_H
-  gavl_dictionary_set_string_nocpy(stream_metadata, GAVL_META_SOFTWARE,
+  gavl_dictionary_set_string_nocopy(stream_metadata, GAVL_META_SOFTWARE,
                           bg_sprintf("libschroedinger-%d.%d.%d",
                           SCHRO_VERSION_MAJOR,
                           SCHRO_VERSION_MINOR,

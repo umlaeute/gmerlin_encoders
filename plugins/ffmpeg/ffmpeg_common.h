@@ -252,12 +252,10 @@ void bg_ffmpeg_set_parameter(void * data, const char * name,
                              const gavl_value_t * v);
 
 int bg_ffmpeg_open(void * data, const char * filename,
-                   const gavl_dictionary_t * metadata,
-                   const gavl_chapter_list_t * chapter_list);
+                   const gavl_dictionary_t * metadata);
 
 int bg_ffmpeg_open_io(void * data, gavf_io_t * io,
-                      const gavl_dictionary_t * metadata,
-                      const gavl_chapter_list_t * chapter_list);
+                      const gavl_dictionary_t * metadata);
 
 
 const bg_parameter_info_t * bg_ffmpeg_get_audio_parameters(void * data);

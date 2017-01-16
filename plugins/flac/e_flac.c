@@ -266,8 +266,7 @@ static int streaminfo_callback(void * data, uint8_t * si, int len)
   }
 
 static int open_io_flac(void * data, gavf_io_t * io,
-                        const gavl_dictionary_t * m,
-                        const gavl_chapter_list_t * chapter_list)
+                        const gavl_dictionary_t * m)
   {
   int result = 1;
   flac_t * flac = data;
@@ -302,8 +301,7 @@ static int open_io_flac(void * data, gavf_io_t * io,
   }
 
 static int open_flac(void * data, const char * filename,
-                     const gavl_dictionary_t * m,
-                     const gavl_chapter_list_t * chapter_list)
+                     const gavl_dictionary_t * m)
   {
   gavf_io_t * io;
   
@@ -328,7 +326,7 @@ static int open_flac(void * data, const char * filename,
     io = gavf_io_create_file(out, 1, 1, 1);
     }
 
-  return open_io_flac(data, io, m, chapter_list);
+  return open_io_flac(data, io, m);
   
   }
 

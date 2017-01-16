@@ -481,8 +481,8 @@ static gavl_audio_sink_t * init_speex(void * data,
   
   speex_lib_ctl(SPEEX_LIB_GET_VERSION_STRING, &version);
   vendor_string = bg_sprintf("Speex %s", version);
-  gavl_dictionary_set_string_nocpy(stream_metadata, GAVL_META_SOFTWARE,
-                          vendor_string);
+  gavl_dictionary_set_string_nocopy(stream_metadata, GAVL_META_SOFTWARE,
+                                   vendor_string);
   
   return gavl_audio_sink_create(NULL, write_audio_frame_speex, speex,
                                 speex->format);
