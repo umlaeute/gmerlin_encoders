@@ -29,6 +29,7 @@
 #include <gmerlin/plugin.h>
 #include <gmerlin/utils.h>
 #include <gmerlin/translation.h>
+#include <gmerlin/cfg_registry.h>
 
 #include <theora/theora.h>
 
@@ -100,26 +101,32 @@ static void set_audio_parameter_b_ogg(void * data, int stream,
                                       const gavl_value_t * val)
   {
   int i;
+  bg_ogg_encoder_t * e = data;
+  bg_ogg_stream_t * s = &e->audio_streams[stream];
+
   if(!name)
     return;
   if(!strcmp(name, "codec"))
     {
+    const char * codec_name;
     i = 0;
+
+    codec_name = bg_multi_menu_get_selected_name(val);
+    
     while(audio_codecs[i])
       {
-      if(!strcmp(audio_codecs[i]->name, val->v.str))
+      if(!strcmp(audio_codecs[i]->name, codec_name))
         {
-        bg_ogg_encoder_t * e = data;
-        bg_ogg_encoder_init_stream(data,
-                                   &e->audio_streams[stream],
-                                   audio_codecs[i]);
+        bg_ogg_encoder_init_stream(data, s, audio_codecs[i]);
         break;
         }
       i++;
       }
+    bg_cfg_section_apply(bg_multi_menu_get_selected(val),
+                         NULL,
+                         s->codec->set_parameter,
+                         s->codec_priv);
     }
-  else
-    bg_ogg_encoder_set_audio_parameter(data, stream, name, val);
   }
 
 static int write_callback(void * priv, const uint8_t * data, int len)

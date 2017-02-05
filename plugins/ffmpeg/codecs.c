@@ -1221,7 +1221,6 @@ bg_ffmpeg_set_codec_parameter(AVCodecContext * ctx,
   PARAM_STR_INT_SCALE("ff_bit_rate_str", bit_rate, 1000);
 
   PARAM_INT_SCALE("ff_bit_rate_tolerance",bit_rate_tolerance,1000);
-  PARAM_ENUM("ff_me_method",me_method,me_method);
   PARAM_INT("ff_gop_size",gop_size);
   PARAM_FLOAT("ff_qcompress",qcompress);
   PARAM_FLOAT("ff_qblur",qblur);
@@ -1230,7 +1229,6 @@ bg_ffmpeg_set_codec_parameter(AVCodecContext * ctx,
   PARAM_INT("ff_max_qdiff",max_qdiff);
   PARAM_INT("ff_max_b_frames",max_b_frames);
   PARAM_FLOAT("ff_b_quant_factor",b_quant_factor);
-  PARAM_INT("ff_b_frame_strategy",b_frame_strategy);
   PARAM_INT("ff_strict_std_compliance",strict_std_compliance);
   PARAM_QP2LAMBDA("ff_b_quant_offset",b_quant_offset);
   PARAM_INT("ff_rc_min_rate",rc_min_rate);
@@ -1243,7 +1241,6 @@ bg_ffmpeg_set_codec_parameter(AVCodecContext * ctx,
   PARAM_FLOAT("ff_spatial_cplx_masking",spatial_cplx_masking);
   PARAM_FLOAT("ff_p_masking",p_masking);
   PARAM_FLOAT("ff_dark_masking",dark_masking);
-  PARAM_ENUM("ff_prediction_method",prediction_method,prediction_method);
   PARAM_ENUM("ff_me_cmp",me_cmp,compare_func);
   PARAM_CMP_CHROMA("ff_me_cmp_chroma",me_cmp);
   PARAM_ENUM("ff_me_sub_cmp",me_sub_cmp,compare_func);
@@ -1254,22 +1251,17 @@ bg_ffmpeg_set_codec_parameter(AVCodecContext * ctx,
   PARAM_CMP_CHROMA("ff_ildct_cmp_chroma",ildct_cmp);
   PARAM_INT("ff_dia_size",dia_size);
   PARAM_INT("ff_last_predictor_count",last_predictor_count);
-  PARAM_INT("ff_pre_me",pre_me);
   PARAM_ENUM("ff_me_pre_cmp",me_pre_cmp,compare_func);
   PARAM_CMP_CHROMA("ff_pre_me_cmp_chroma",me_pre_cmp);
   PARAM_INT("ff_pre_dia_size",pre_dia_size);
   PARAM_INT("ff_me_subpel_quality",me_subpel_quality);
   PARAM_INT("ff_me_range",me_range);
   PARAM_ENUM("ff_mb_decision",mb_decision,mb_decision);
-  PARAM_INT("ff_scenechange_threshold",scenechange_threshold);
-  PARAM_INT("ff_noise_reduction",noise_reduction);
   PARAM_INT_SCALE("ff_rc_initial_buffer_occupancy",rc_initial_buffer_occupancy,1000);
   PARAM_INT("ff_nsse_weight",nsse_weight);
   PARAM_QP2LAMBDA("ff_mb_lmin", mb_lmin);
   PARAM_QP2LAMBDA("ff_mb_lmax", mb_lmax);
-  PARAM_INT("ff_me_penalty_compensation",me_penalty_compensation);
   PARAM_INT("ff_bidir_refine",bidir_refine);
-  PARAM_INT("ff_brd_scale",brd_scale);
   PARAM_INT("ff_keyint_min",keyint_min);
   PARAM_FLAG("ff_flag_qscale",CODEC_FLAG_QSCALE);
   PARAM_FLAG("ff_flag_4mv",CODEC_FLAG_4MV);
@@ -1350,46 +1342,46 @@ const bg_encoder_framerate_t bg_ffmpeg_mpeg_framerates[] =
 
 static const struct
   {
-  enum PixelFormat  ffmpeg_csp;
+  enum AVPixelFormat  ffmpeg_csp;
   gavl_pixelformat_t gavl_csp;
   int convert_flags;
   }
 pixelformats[] =
   {
-    { PIX_FMT_YUV420P,  GAVL_YUV_420_P },  ///< Planar YUV 4:2:0 (1 Cr & Cb sample per 2x2 Y samples)
-    { PIX_FMT_YUYV422,  GAVL_YUY2      },
-    { PIX_FMT_YUV422P,  GAVL_YUV_422_P },  ///< Planar YUV 4:2:2 (1 Cr & Cb sample per 2x1 Y samples)
-    { PIX_FMT_YUV444P,  GAVL_YUV_444_P }, ///< Planar YUV 4:4:4 (1 Cr & Cb sample per 1x1 Y samples)
-    { PIX_FMT_YUV411P,  GAVL_YUV_411_P }, ///< Planar YUV 4:1:1 (1 Cr & Cb sample per 4x1 Y samples)
-    { PIX_FMT_YUVJ420P, GAVL_YUVJ_420_P }, ///< Planar YUV 4:2:0 full scale (jpeg)
-    { PIX_FMT_YUVJ422P, GAVL_YUVJ_422_P }, ///< Planar YUV 4:2:2 full scale (jpeg)
-    { PIX_FMT_YUVJ444P, GAVL_YUVJ_444_P }, ///< Planar YUV 4:4:4 full scale (jpeg)
-    { PIX_FMT_GRAY8,    GAVL_GRAY_8 },
+    { AV_PIX_FMT_YUV420P,  GAVL_YUV_420_P },  ///< Planar YUV 4:2:0 (1 Cr & Cb sample per 2x2 Y samples)
+    { AV_PIX_FMT_YUYV422,  GAVL_YUY2      },
+    { AV_PIX_FMT_YUV422P,  GAVL_YUV_422_P },  ///< Planar YUV 4:2:2 (1 Cr & Cb sample per 2x1 Y samples)
+    { AV_PIX_FMT_YUV444P,  GAVL_YUV_444_P }, ///< Planar YUV 4:4:4 (1 Cr & Cb sample per 1x1 Y samples)
+    { AV_PIX_FMT_YUV411P,  GAVL_YUV_411_P }, ///< Planar YUV 4:1:1 (1 Cr & Cb sample per 4x1 Y samples)
+    { AV_PIX_FMT_YUVJ420P, GAVL_YUVJ_420_P }, ///< Planar YUV 4:2:0 full scale (jpeg)
+    { AV_PIX_FMT_YUVJ422P, GAVL_YUVJ_422_P }, ///< Planar YUV 4:2:2 full scale (jpeg)
+    { AV_PIX_FMT_YUVJ444P, GAVL_YUVJ_444_P }, ///< Planar YUV 4:4:4 full scale (jpeg)
+    { AV_PIX_FMT_GRAY8,    GAVL_GRAY_8 },
 
-    { PIX_FMT_RGB565BE, GAVL_RGB_16, PIX_FMT_BE }, ///< packed RGB 5:6:5, 16bpp, (msb)   5R 6G 5B(lsb), big-endian
-    { PIX_FMT_RGB565LE, GAVL_RGB_16, PIX_FMT_LE }, ///< packed RGB 5:6:5, 16bpp, (msb)   5R 6G 5B(lsb), little-endian
-    { PIX_FMT_RGB555BE, GAVL_RGB_15, PIX_FMT_BE }, ///< packed RGB 5:5:5, 16bpp, (msb)1A 5R 5G 5B(lsb), big-endian, most significant bit to 0
-    { PIX_FMT_RGB555LE, GAVL_RGB_15, PIX_FMT_LE }, ///< packed RGB 5:5:5, 16bpp, (msb)1A 5R 5G 5B(lsb), little-endian, most significant bit to 0
+    { AV_PIX_FMT_RGB565BE, GAVL_RGB_16, PIX_FMT_BE }, ///< packed RGB 5:6:5, 16bpp, (msb)   5R 6G 5B(lsb), big-endian
+    { AV_PIX_FMT_RGB565LE, GAVL_RGB_16, PIX_FMT_LE }, ///< packed RGB 5:6:5, 16bpp, (msb)   5R 6G 5B(lsb), little-endian
+    { AV_PIX_FMT_RGB555BE, GAVL_RGB_15, PIX_FMT_BE }, ///< packed RGB 5:5:5, 16bpp, (msb)1A 5R 5G 5B(lsb), big-endian, most significant bit to 0
+    { AV_PIX_FMT_RGB555LE, GAVL_RGB_15, PIX_FMT_LE }, ///< packed RGB 5:5:5, 16bpp, (msb)1A 5R 5G 5B(lsb), little-endian, most significant bit to 0
 
-    { PIX_FMT_BGR565BE, GAVL_BGR_16, PIX_FMT_BE }, ///< packed BGR 5:6:5, 16bpp, (msb)   5B 6G 5R(lsb), big-endian
-    { PIX_FMT_BGR565LE, GAVL_BGR_16, PIX_FMT_LE }, ///< packed BGR 5:6:5, 16bpp, (msb)   5B 6G 5R(lsb), little-endian
-    { PIX_FMT_BGR555BE, GAVL_BGR_15, PIX_FMT_BE }, ///< packed BGR 5:5:5, 16bpp, (msb)1A 5B 5G 5R(lsb), big-endian, most significant bit to 1
-    { PIX_FMT_BGR555LE, GAVL_BGR_15, PIX_FMT_LE }, ///< packed BGR 5:5:5, 16bpp, (msb)1A 5B 5G 5R(lsb), little-endian, most significant bit to 1
-    { PIX_FMT_RGB24,    GAVL_RGB_24    },  ///< Packed pixel, 3 bytes per pixel, RGBRGB...
-    { PIX_FMT_BGR24,    GAVL_BGR_24    },  ///< Packed pixel, 3 bytes per pixel, BGRBGR...
-    { PIX_FMT_BGRA,     GAVL_RGBA_32, CONVERT_OTHER },
+    { AV_PIX_FMT_BGR565BE, GAVL_BGR_16, PIX_FMT_BE }, ///< packed BGR 5:6:5, 16bpp, (msb)   5B 6G 5R(lsb), big-endian
+    { AV_PIX_FMT_BGR565LE, GAVL_BGR_16, PIX_FMT_LE }, ///< packed BGR 5:6:5, 16bpp, (msb)   5B 6G 5R(lsb), little-endian
+    { AV_PIX_FMT_BGR555BE, GAVL_BGR_15, PIX_FMT_BE }, ///< packed BGR 5:5:5, 16bpp, (msb)1A 5B 5G 5R(lsb), big-endian, most significant bit to 1
+    { AV_PIX_FMT_BGR555LE, GAVL_BGR_15, PIX_FMT_LE }, ///< packed BGR 5:5:5, 16bpp, (msb)1A 5B 5G 5R(lsb), little-endian, most significant bit to 1
+    { AV_PIX_FMT_RGB24,    GAVL_RGB_24    },  ///< Packed pixel, 3 bytes per pixel, RGBRGB...
+    { AV_PIX_FMT_BGR24,    GAVL_BGR_24    },  ///< Packed pixel, 3 bytes per pixel, BGRBGR...
+    { AV_PIX_FMT_BGRA,     GAVL_RGBA_32, CONVERT_OTHER },
     
 #if 0 // Not needed in the forseeable future    
 #if LIBAVUTIL_VERSION_INT < (50<<16)
-    { PIX_FMT_RGBA32,        GAVL_RGBA_32   },  ///< Packed pixel, 4 bytes per pixel, BGRABGRA..., stored in cpu endianness
+    { AV_PIX_FMT_RGBA32,        GAVL_RGBA_32   },  ///< Packed pixel, 4 bytes per pixel, BGRABGRA..., stored in cpu endianness
 #else
-    { PIX_FMT_RGB32,         GAVL_RGBA_32   },  ///< Packed pixel, 4 bytes per pixel, BGRABGRA..., stored in cpu endianness
+    { AV_PIX_FMT_RGB32,         GAVL_RGBA_32   },  ///< Packed pixel, 4 bytes per pixel, BGRABGRA..., stored in cpu endianness
 #endif
-    { PIX_FMT_YUV410P,       GAVL_YUV_410_P }, ///< Planar YUV 4:1:0 (1 Cr & Cb sample per 4x4 Y samples)
+    { AV_PIX_FMT_YUV410P,       GAVL_YUV_410_P }, ///< Planar YUV 4:1:0 (1 Cr & Cb sample per 4x4 Y samples)
 #endif // Not needed
 };
 
-static gavl_pixelformat_t bg_pixelformat_ffmpeg_2_gavl(enum PixelFormat p)
+static gavl_pixelformat_t bg_pixelformat_ffmpeg_2_gavl(enum AVPixelFormat p)
   {
   int i;
   for(i = 0; i < sizeof(pixelformats)/sizeof(pixelformats[0]); i++)
@@ -1400,8 +1392,8 @@ static gavl_pixelformat_t bg_pixelformat_ffmpeg_2_gavl(enum PixelFormat p)
   return GAVL_PIXELFORMAT_NONE;
   }
 
-static enum PixelFormat bg_pixelformat_gavl_2_ffmpeg(gavl_pixelformat_t p, int * do_convert,
-                                                     const enum PixelFormat * supported)
+static enum AVPixelFormat bg_pixelformat_gavl_2_ffmpeg(gavl_pixelformat_t p, int * do_convert,
+                                                     const enum AVPixelFormat * supported)
   {
   int i, j;
   for(i = 0; i < sizeof(pixelformats)/sizeof(pixelformats[0]); i++)
@@ -1410,7 +1402,7 @@ static enum PixelFormat bg_pixelformat_gavl_2_ffmpeg(gavl_pixelformat_t p, int *
       {
       j = 0;
 
-      while(supported[j] != PIX_FMT_NONE)
+      while(supported[j] != AV_PIX_FMT_NONE)
         {
         if(pixelformats[i].ffmpeg_csp == supported[j])
           {
@@ -1422,11 +1414,11 @@ static enum PixelFormat bg_pixelformat_gavl_2_ffmpeg(gavl_pixelformat_t p, int *
         }
       }
     }
-  return PIX_FMT_NONE;
+  return AV_PIX_FMT_NONE;
   }
 
-void bg_ffmpeg_choose_pixelformat(const enum PixelFormat * supported,
-                                  enum PixelFormat * ffmpeg_fmt,
+void bg_ffmpeg_choose_pixelformat(const enum AVPixelFormat * supported,
+                                  enum AVPixelFormat * ffmpeg_fmt,
                                   gavl_pixelformat_t * gavl_fmt, int * do_convert)
   {
   int i, num;
@@ -1436,7 +1428,7 @@ void bg_ffmpeg_choose_pixelformat(const enum PixelFormat * supported,
   i = 0;
   num = 0;
 
-  while(supported[i] != PIX_FMT_NONE)
+  while(supported[i] != AV_PIX_FMT_NONE)
     {
     if(bg_pixelformat_ffmpeg_2_gavl(supported[i]) != GAVL_PIXELFORMAT_NONE)
       num++;
@@ -1448,7 +1440,7 @@ void bg_ffmpeg_choose_pixelformat(const enum PixelFormat * supported,
   i = 0;
   num = 0;
   
-  while(supported[i] != PIX_FMT_NONE)
+  while(supported[i] != AV_PIX_FMT_NONE)
     {
     if((gavl_fmts[num] = bg_pixelformat_ffmpeg_2_gavl(supported[i])) != GAVL_PIXELFORMAT_NONE)
       num++;
@@ -1548,7 +1540,7 @@ enum AVCodecID bg_codec_id_gavl_2_ffmpeg(gavl_codec_id_t gavl)
       return codec_ids[i].ffmpeg;
     i++;
     }
-  return CODEC_ID_NONE;
+  return AV_CODEC_ID_NONE;
   }
 
 gavl_codec_id_t bg_codec_id_ffmpeg_2_gavl(enum AVCodecID ffmpeg)

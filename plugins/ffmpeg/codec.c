@@ -100,7 +100,7 @@ struct bg_ffmpeg_codec_context_s
   };
 
 static void 
-get_pixelformat_converter(bg_ffmpeg_codec_context_t * ctx, enum PixelFormat fmt,
+get_pixelformat_converter(bg_ffmpeg_codec_context_t * ctx, enum AVPixelFormat fmt,
                           int do_convert);
 
 static int find_encoder(bg_ffmpeg_codec_context_t * ctx)
@@ -166,7 +166,7 @@ bg_ffmpeg_codec_context_t * bg_ffmpeg_codec_create(int type,
     }
 
   ret->avctx->codec_type = type;
-  ret->frame = avcodec_alloc_frame();
+  ret->frame = av_frame_alloc();
   
   return ret;
   }
@@ -178,6 +178,20 @@ const bg_parameter_info_t * bg_ffmpeg_codec_get_parameters(bg_ffmpeg_codec_conte
   return bg_ffmpeg_get_codec_parameters(ctx->id, ctx->type);  
   }
 
+static void apply_func(void * priv, const char * name, const gavl_value_t * val)
+  {
+  bg_ffmpeg_codec_context_t * ctx;
+  
+  if(!name || !strcmp(name, BG_CFG_TAG_NAME))
+    return;
+
+  ctx = priv;
+  
+  bg_ffmpeg_set_codec_parameter(ctx->avctx,
+                                &ctx->options,
+                                name, val);
+  }
+
 void bg_ffmpeg_codec_set_parameter(bg_ffmpeg_codec_context_t * ctx,
                                    const char * name,
                                    const gavl_value_t * v)
@@ -187,10 +201,12 @@ void bg_ffmpeg_codec_set_parameter(bg_ffmpeg_codec_context_t * ctx,
   
   if(!strcmp(name, "codec"))
     {
+    const char * name = bg_multi_menu_get_selected_name(v);
+
     if(ctx->type == AVMEDIA_TYPE_VIDEO)
-      ctx->id = bg_ffmpeg_find_video_encoder(ctx->format, v->v.str);
+      ctx->id = bg_ffmpeg_find_video_encoder(ctx->format, name);
     else
-      ctx->id = bg_ffmpeg_find_audio_encoder(ctx->format, v->v.str);
+      ctx->id = bg_ffmpeg_find_audio_encoder(ctx->format, name);
     if(ctx->id == AV_CODEC_ID_NONE)
       {
       bg_log(BG_LOG_ERROR, LOG_DOMAIN,
@@ -199,13 +215,15 @@ void bg_ffmpeg_codec_set_parameter(bg_ffmpeg_codec_context_t * ctx,
       return;
       }
     find_encoder(ctx);
+
+    bg_cfg_section_apply(bg_multi_menu_get_selected(v),
+                         NULL,
+                         apply_func,
+                         ctx);
+    
     }
   else if(bg_encoder_set_framerate_parameter(&ctx->fr, name, v))
     return;
-  else
-    bg_ffmpeg_set_codec_parameter(ctx->avctx,
-                                  &ctx->options,
-                                  name, v);
   
   }
 
@@ -893,11 +911,11 @@ static void convert_frame_bgra(bg_ffmpeg_codec_context_t * ctx, gavl_video_frame
 
 static void 
 get_pixelformat_converter(bg_ffmpeg_codec_context_t * ctx,
-                          enum PixelFormat fmt, int do_convert)
+                          enum AVPixelFormat fmt, int do_convert)
   {
   if(do_convert & CONVERT_OTHER)
     {
-    if(fmt == PIX_FMT_BGRA)
+    if(fmt == AV_PIX_FMT_BGRA)
       {
       ctx->convert_frame = convert_frame_bgra;
       }

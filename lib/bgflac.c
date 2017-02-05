@@ -455,7 +455,7 @@ bg_flac_start_uncompressed(bg_flac_t * flac,
                                       NULL,
                                       NULL,
                                       metadata_callback,
-                                      flac) != FLAC__STREAM_ENCODER_OK)
+                                      flac) != FLAC__STREAM_ENCODER_INIT_STATUS_OK)
     {
     bg_log(BG_LOG_ERROR, LOG_DOMAIN,  "FLAC__stream_encoder_init_stream failed");
     return NULL;

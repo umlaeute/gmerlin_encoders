@@ -27,6 +27,7 @@
 #include <gmerlin/plugin.h>
 #include <gmerlin/utils.h>
 #include <gmerlin/translation.h>
+#include <gmerlin/cfg_registry.h>
 
 #include <theora/theora.h>
 
@@ -165,26 +166,31 @@ set_audio_parameter_oggvideo(void * data, int stream,
                            const char * name, const gavl_value_t * val)
   {
   int i;
+  const char * codec_name;
   bg_ogg_encoder_t * enc = data;
+  bg_ogg_stream_t * s = &enc->audio_streams[stream];
   
   if(!name)
     return;
   if(!strcmp(name, "codec"))
     {
     i = 0;
+    codec_name = bg_multi_menu_get_selected_name(val);
     
     while(audio_codecs[i])
       {
-      if(!strcmp(audio_codecs[i]->name, val->v.str))
+      if(!strcmp(audio_codecs[i]->name, codec_name))
         {
         bg_ogg_encoder_init_stream(data, enc->audio_streams + stream, audio_codecs[i]);
         break;
         }
       i++;
       }
+    bg_cfg_section_apply(bg_multi_menu_get_selected(val),
+                         NULL,
+                         s->codec->set_parameter,
+                         s->codec_priv);
     }
-  else
-    bg_ogg_encoder_set_audio_parameter(data, stream, name, val);
   }
 
 static void
@@ -192,23 +198,31 @@ set_video_parameter_oggvideo(void * data, int stream,
                            const char * name, const gavl_value_t * val)
   {
   int i;
+  const char * codec_name;
   bg_ogg_encoder_t * enc = data;
+  bg_ogg_stream_t * s = &enc->video_streams[stream];
   
   if(!name)
     return;
   if(!strcmp(name, "codec"))
     {
     i = 0;
+
+    codec_name = bg_multi_menu_get_selected_name(val);
     
     while(video_codecs[i])
       {
-      if(!strcmp(video_codecs[i]->name, val->v.str))
+      if(!strcmp(video_codecs[i]->name, codec_name))
         {
         bg_ogg_encoder_init_stream(data, enc->video_streams + stream, video_codecs[i]);
         break;
         }
       i++;
       }
+    bg_cfg_section_apply(bg_multi_menu_get_selected(val),
+                         NULL,
+                         s->codec->set_parameter,
+                         s->codec_priv);
     }
   else
     bg_ogg_encoder_set_video_parameter(data, stream, name, val);
