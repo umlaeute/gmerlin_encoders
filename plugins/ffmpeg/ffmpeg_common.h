@@ -115,15 +115,20 @@ bg_ffmpeg_get_codec_info(enum AVCodecID id, int type);
 
 typedef struct bg_ffmpeg_codec_context_s bg_ffmpeg_codec_context_t;
 
-void bg_ffmpeg_set_video_dimensions(AVCodecContext * avctx,
-                                    const gavl_video_format_t * fmt);
+void bg_ffmpeg_set_video_dimensions_avctx(AVCodecContext * avctx,
+                                          const gavl_video_format_t * fmt);
 
-void bg_ffmpeg_set_audio_format(AVCodecContext * avctx,
-                                const gavl_audio_format_t * fmt);
+void bg_ffmpeg_set_video_dimensions_params(AVCodecParameters * avctx,
+                                             const gavl_video_format_t * fmt);
 
+void bg_ffmpeg_set_audio_format_avctx(AVCodecContext * avctx,
+                                      const gavl_audio_format_t * fmt);
+
+void bg_ffmpeg_set_audio_format_params(AVCodecParameters * avctx,
+                                       const gavl_audio_format_t * fmt);
 
 bg_ffmpeg_codec_context_t * bg_ffmpeg_codec_create(int type,
-                                                   AVCodecContext * avctx,
+                                                   AVCodecParameters * avctx,
                                                    enum AVCodecID id,
                                                    const ffmpeg_format_info_t * format);
 
@@ -202,6 +207,7 @@ typedef struct
 typedef struct
   {
   bg_ffmpeg_stream_common_t com;
+  AVRational time_base;
   } bg_ffmpeg_text_stream_t;
 
 struct ffmpeg_priv_s

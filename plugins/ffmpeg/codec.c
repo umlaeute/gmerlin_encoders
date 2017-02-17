@@ -22,6 +22,8 @@
 #include "ffmpeg_common.h"
 
 #include <gmerlin/utils.h>
+#include <gmerlin/cfg_registry.h>
+
 #include <gmerlin/translation.h>
 #include <gmerlin/log.h>
 #define LOG_DOMAIN "ffmpeg_encoder"
@@ -131,7 +133,7 @@ static int find_encoder(bg_ffmpeg_codec_context_t * ctx)
  */
 
 bg_ffmpeg_codec_context_t * bg_ffmpeg_codec_create(int type,
-                                                   AVCodecContext * avctx,
+                                                   AVCodecParameters * params,
                                                    enum AVCodecID id,
                                                    const ffmpeg_format_info_t * format)
   {
@@ -145,26 +147,23 @@ bg_ffmpeg_codec_context_t * bg_ffmpeg_codec_create(int type,
   ret->id = id;
   ret->type = type;
   
-  /* Get codec context from format context */
-  if(avctx)
-    ret->avctx = avctx;
-  
   /* Create private codec context */
-  else
+  ret->avctx_priv = avcodec_alloc_context3(NULL);
+  ret->avctx = ret->avctx_priv;
+  
+  if(!find_encoder(ret))
     {
-    ret->avctx_priv = avcodec_alloc_context3(NULL);
-    ret->avctx = ret->avctx_priv;
-    
-    if(!find_encoder(ret))
-      {
-      av_free(ret->avctx_priv);
-      free(ret);
-      return NULL;
-      }
-    
-    ret->avctx->codec_id = ret->id;
+    av_free(ret->avctx_priv);
+    free(ret);
+    return NULL;
     }
 
+  /* Get codec context from format context */
+  if(params)
+    avcodec_parameters_to_context(ret->avctx, params);
+  
+  ret->avctx->codec_id = ret->id;
+  
   ret->avctx->codec_type = type;
   ret->frame = av_frame_alloc();
   
@@ -285,7 +284,6 @@ static int flush_audio(bg_ffmpeg_codec_context_t * ctx)
       return 0;
     }
   
-  
   if(avcodec_encode_audio2(ctx->avctx, &pkt, f, &got_packet) < 0)
     {
     ctx->flags |= FLAG_ERROR;
@@ -362,8 +360,18 @@ write_audio_func(void * data, gavl_audio_frame_t * frame)
   }
 
 
-void bg_ffmpeg_set_audio_format(AVCodecContext * avctx,
-                                const gavl_audio_format_t * fmt)
+void bg_ffmpeg_set_audio_format_avctx(AVCodecContext * avctx,
+                                      const gavl_audio_format_t * fmt)
+  {
+  /* Set format for codec */
+  avctx->sample_rate = fmt->samplerate;
+  
+  /* Channel setup */
+  avctx->channels    = fmt->num_channels;
+  }
+
+void bg_ffmpeg_set_audio_format_params(AVCodecParameters * avctx,
+                                       const gavl_audio_format_t * fmt)
   {
   /* Set format for codec */
   avctx->sample_rate = fmt->samplerate;
@@ -386,7 +394,7 @@ gavl_audio_sink_t * bg_ffmpeg_codec_open_audio(bg_ffmpeg_codec_context_t * ctx,
   if(!ctx->codec)
     return NULL;
 
-  bg_ffmpeg_set_audio_format(ctx->avctx, fmt);
+  bg_ffmpeg_set_audio_format_avctx(ctx->avctx, fmt);
 
   
   ctx->avctx->channel_layout =
@@ -637,8 +645,18 @@ static gavl_video_frame_t * get_video_func(void * data)
   return ctx->vframe;
   }
 
-void bg_ffmpeg_set_video_dimensions(AVCodecContext * avctx,
-                                    const gavl_video_format_t * fmt)
+void bg_ffmpeg_set_video_dimensions_avctx(AVCodecContext * avctx,
+                                          const gavl_video_format_t * fmt)
+  {
+  avctx->width  = fmt->image_width;
+  avctx->height = fmt->image_height;
+  
+  avctx->sample_aspect_ratio.num = fmt->pixel_width;
+  avctx->sample_aspect_ratio.den = fmt->pixel_height;
+  }
+
+void bg_ffmpeg_set_video_dimensions_params(AVCodecParameters * avctx,
+                                             const gavl_video_format_t * fmt)
   {
   avctx->width  = fmt->image_width;
   avctx->height = fmt->image_height;
@@ -669,7 +687,7 @@ gavl_video_sink_t * bg_ffmpeg_codec_open_video(bg_ffmpeg_codec_context_t * ctx,
   
   /* Set format for codec */
 
-  bg_ffmpeg_set_video_dimensions(ctx->avctx, fmt);
+  bg_ffmpeg_set_video_dimensions_avctx(ctx->avctx, fmt);
   
   
   ctx->avctx->codec_type = AVMEDIA_TYPE_VIDEO;
