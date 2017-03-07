@@ -545,7 +545,7 @@ static int close_flac(void * data, int do_delete)
     flac->sink = NULL;
     }
 
-  gavl_dictionary_free(&flac->m_stream);
+  gavl_dictionary_reset(&flac->m_stream);
   
   return 1;
   }
