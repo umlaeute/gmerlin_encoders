@@ -351,12 +351,11 @@ int bg_ffmpeg_add_audio_stream(void * data,
   gavl_audio_format_copy(&st->format, format);
   
   st->com.stream = avformat_new_stream(priv->ctx, NULL);
-  st->com.stream->codecpar->codec_type = AVMEDIA_TYPE_AUDIO;
+
+  bg_ffmpeg_set_audio_format_params(st->com.stream->codecpar,
+                                    &st->format);
   
-  st->com.codec = bg_ffmpeg_codec_create(AVMEDIA_TYPE_AUDIO,
-                                         st->com.stream->codecpar,
-                                         AV_CODEC_ID_NONE,
-                                         priv->format);
+  st->com.stream->codecpar->codec_type = AVMEDIA_TYPE_AUDIO;
   
   /* Set language */
   lang = gavl_dictionary_get_string(m, GAVL_META_LANGUAGE);
@@ -388,11 +387,7 @@ int bg_ffmpeg_add_video_stream(void * data,
 
   st->com.stream = avformat_new_stream(priv->ctx, NULL);
   st->com.stream->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
-
-  st->com.codec = bg_ffmpeg_codec_create(AVMEDIA_TYPE_VIDEO,
-                                         st->com.stream->codecpar,
-                                         AV_CODEC_ID_NONE,
-                                         priv->format);
+  
   st->com.ffmpeg = priv;
   st->dts = GAVL_TIME_UNDEFINED;
   
@@ -492,6 +487,20 @@ void bg_ffmpeg_set_audio_parameter(void * data, int stream, const char * name,
   bg_ffmpeg_audio_stream_t * st;
   ffmpeg_priv_t * priv = data;
   st = priv->audio_streams + stream;
+
+  if(name && !strcmp(name, "codec") && !st->com.codec)
+    {
+    enum AVCodecID id;
+    const char * codec_name = bg_multi_menu_get_selected_name(v);
+
+    if((id = bg_ffmpeg_find_audio_encoder(st->com.ffmpeg->format, codec_name)))
+      {
+      st->com.codec = bg_ffmpeg_codec_create(AVMEDIA_TYPE_AUDIO,
+                                             st->com.stream->codecpar,
+                                             id, st->com.ffmpeg->format);
+      }
+    }
+  
   bg_ffmpeg_codec_set_parameter(st->com.codec, name, v);
   }
 
@@ -501,6 +510,20 @@ void bg_ffmpeg_set_video_parameter(void * data, int stream, const char * name,
   bg_ffmpeg_video_stream_t * st;
   ffmpeg_priv_t * priv = data;
   st = priv->video_streams + stream;
+  
+  if(name && !strcmp(name, "codec") && !st->com.codec)
+    {
+    enum AVCodecID id;
+    const char * codec_name = bg_multi_menu_get_selected_name(v);
+
+    if((id = bg_ffmpeg_find_video_encoder(st->com.ffmpeg->format, codec_name)))
+      {
+      st->com.codec = bg_ffmpeg_codec_create(AVMEDIA_TYPE_VIDEO,
+                                             st->com.stream->codecpar,
+                                             id, st->com.ffmpeg->format);
+      }
+    }
+  
   bg_ffmpeg_codec_set_parameter(st->com.codec, name, v);
   }
 
