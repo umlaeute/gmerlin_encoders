@@ -35,7 +35,7 @@
 
 // #define DUMP_AUDIO_PACKETS
 // #define DUMP_VIDEO_PACKETS
-#define DUMP_TEXT_PACKETS
+// #define DUMP_TEXT_PACKETS
 
 static bg_parameter_info_t *
 create_format_parameters(const ffmpeg_format_info_t * formats)
