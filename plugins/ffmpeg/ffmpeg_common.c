@@ -549,17 +549,21 @@ static int64_t rescale_video_timestamp(bg_ffmpeg_video_stream_t * st,
   {
   AVRational framerate;
 
-  framerate.num = st->format.frame_duration;
-  framerate.den = st->format.timescale;
   
   if(st->format.framerate_mode == GAVL_FRAMERATE_CONSTANT)
     {
+    framerate.num = st->format.frame_duration;
+    framerate.den = st->format.timescale;
+
     return av_rescale_q(ts / st->format.frame_duration,
                         framerate,
                         st->com.stream->time_base);
     }
   else
     {
+    framerate.num = 1;
+    framerate.den = st->format.timescale;
+    
     return av_rescale_q(ts,
                         framerate,
                         st->com.stream->time_base);
