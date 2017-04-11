@@ -312,7 +312,7 @@ static int ffmpeg_open(void * data, const char * filename,
     {
     set_metadata(priv, metadata);
 
-    if((cl = gavl_dictionary_get_chapter_list_c(metadata)))
+    if((cl = gavl_dictionary_get_chapter_list(metadata)))
       set_chapters(priv->ctx, cl, metadata);
     }
   
