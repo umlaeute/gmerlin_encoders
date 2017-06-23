@@ -70,9 +70,12 @@ typedef struct
   int pass;
   FILE * stats_file;
   
-  char * stats_buf;
+  //  char * stats_buf;
+  //  int stats_size;
+
+  gavl_buffer_t stats;
+  
   char * stats_ptr;
-  int stats_size;
   int rate_flags;
 #endif
   
@@ -361,14 +364,14 @@ write_video_frame_theora(void * data, gavl_video_frame_t * frame)
     /* Input pass data */
     int ret;
     
-    while(theora->stats_ptr - theora->stats_buf < theora->stats_size)
+    while(theora->stats_ptr - (char*)theora->stats.buf < theora->stats.len)
       {
       
       ret = th_encode_ctl(theora->ts,
                           TH_ENCCTL_2PASS_IN,
                           theora->stats_ptr,
-                          theora->stats_size -
-                          (theora->stats_ptr - theora->stats_buf));
+                          theora->stats.len -
+                          (theora->stats_ptr - (char*)theora->stats.buf));
 
       if(ret < 0)
         {
@@ -629,13 +632,13 @@ static int set_video_pass_theora(void * data, int pass, int total_passes,
     }
   else
     {
-    if(!(theora->stats_buf = bg_read_file(stats_file, &theora->stats_size)))
+    if(!(bg_read_file(stats_file, &theora->stats)))
       {
       bg_log(BG_LOG_ERROR, LOG_DOMAIN,
              "couldn't open stats file %s", stats_file);
       return 0;
       }
-    theora->stats_ptr = theora->stats_buf;
+    theora->stats_ptr = (char*)theora->stats.buf;
     }
   return 1;
   }
@@ -739,8 +742,8 @@ static int close_theora(void * data)
 #ifdef THEORA_1_1
   if(theora->stats_file)
     fclose(theora->stats_file);
-  if(theora->stats_buf)
-    free(theora->stats_buf);
+
+  gavl_buffer_free(&theora->stats);
 #endif
   
   th_comment_clear(&theora->tc);

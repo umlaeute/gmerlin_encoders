@@ -115,12 +115,20 @@ static void add_frame(bgen_id3v2_t * tag, uint32_t fourcc,
   char * copyright;
 */
 
-#define TEXT_FRAME(str, key, fcc) \
+#define TEXT_FRAME(key, fcc) \
   val = gavl_dictionary_get_string(m, key); \
   if(val) \
     { \
     add_frame(ret, fcc, val); \
     }
+
+#define INT_FRAME(key, fcc) \
+  if(gavl_dictionary_get_int(m, key, &val_i)) \
+    { \
+    snprintf(int_buf, 32, "%d", val_i); \
+    add_frame(ret, fcc, int_buf); \
+    }
+    
 
 
 bgen_id3v2_t * bgen_id3v2_create(const gavl_dictionary_t * m)
@@ -130,31 +138,34 @@ bgen_id3v2_t * bgen_id3v2_create(const gavl_dictionary_t * m)
   
   bgen_id3v2_t * ret;
   const char * val;
+  int val_i;
+  char int_buf[32];
+  
   ret = calloc(1, sizeof(*ret));
 
   ret->header.major_version = 4;
   ret->header.minor_version = 4;
   ret->header.flags = 0;
 
-  TEXT_FRAME(artist,      GAVL_META_ARTIST,      MK_FOURCC('T', 'P', 'E', '1'));
-  TEXT_FRAME(albumartist, GAVL_META_ALBUMARTIST, MK_FOURCC('T', 'P', 'E', '2'));
+  TEXT_FRAME(GAVL_META_ARTIST,      MK_FOURCC('T', 'P', 'E', '1'));
+  TEXT_FRAME(GAVL_META_ALBUMARTIST, MK_FOURCC('T', 'P', 'E', '2'));
 
-  TEXT_FRAME(title,     GAVL_META_TITLE,       MK_FOURCC('T', 'I', 'T', '2'));
-  TEXT_FRAME(album,     GAVL_META_ALBUM,       MK_FOURCC('T', 'A', 'L', 'B'));
-  TEXT_FRAME(track,     GAVL_META_TRACKNUMBER, MK_FOURCC('T', 'R', 'C', 'K'));
-  TEXT_FRAME(genre,     GAVL_META_GENRE,       MK_FOURCC('T', 'C', 'O', 'N'));
-  TEXT_FRAME(author,    GAVL_META_AUTHOR,      MK_FOURCC('T', 'C', 'O', 'M'));
-  TEXT_FRAME(copyright, GAVL_META_COPYRIGHT,   MK_FOURCC('T', 'C', 'O', 'P'));
+  TEXT_FRAME(GAVL_META_TITLE,       MK_FOURCC('T', 'I', 'T', '2'));
+  TEXT_FRAME(GAVL_META_ALBUM,       MK_FOURCC('T', 'A', 'L', 'B'));
+  INT_FRAME(GAVL_META_TRACKNUMBER, MK_FOURCC('T', 'R', 'C', 'K'));
+  TEXT_FRAME(GAVL_META_GENRE,       MK_FOURCC('T', 'C', 'O', 'N'));
+  TEXT_FRAME(GAVL_META_AUTHOR,      MK_FOURCC('T', 'C', 'O', 'M'));
+  TEXT_FRAME(GAVL_META_COPYRIGHT,   MK_FOURCC('T', 'C', 'O', 'P'));
 
   year = bg_metadata_get_year(m);
   if(year)
     {
-    tmp_string = bg_sprintf("%d", year);\
-    add_frame(ret, MK_FOURCC('T', 'Y', 'E', 'R'), tmp_string);\
-    free(tmp_string); \
+    tmp_string = bg_sprintf("%d", year);
+    add_frame(ret, MK_FOURCC('T', 'Y', 'E', 'R'), tmp_string);
+    free(tmp_string);
     }
 
-  TEXT_FRAME(comment,   GAVL_META_COMMENT, MK_FOURCC('C', 'O', 'M', 'M'));
+  TEXT_FRAME(GAVL_META_COMMENT, MK_FOURCC('C', 'O', 'M', 'M'));
   return ret;
   }
 
