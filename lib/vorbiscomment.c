@@ -137,8 +137,9 @@ int bg_vorbis_comment_write(uint8_t * buf,
 
   while(tags[i].gavl_name)
     {
-    str = gavl_dictionary_get_string(m_global, tags[i].gavl_name);
-    if(str)
+    int j = 0;
+
+    while((str = gavl_dictionary_get_string_array(m_global, tags[i].gavl_name, j)))
       {
       len1 = strlen(tags[i].vorbis_name);
       len2 = strlen(str);
@@ -151,6 +152,7 @@ int bg_vorbis_comment_write(uint8_t * buf,
       memcpy(ptr, str, len2); ptr += len2;
       
       num_tags++;
+      j++;
       }
     i++;
     }
