@@ -31,8 +31,6 @@ bgen_id3v1_t * bgen_id3v1_create(const gavl_dictionary_t*);
 bgen_id3v2_t * bgen_id3v2_create(const gavl_dictionary_t*);
 
 #define ID3_ENCODING_LATIN1    0x00
-#define ID3_ENCODING_UTF16_BOM 0x01
-#define ID3_ENCODING_UTF16_BE  0x02
 #define ID3_ENCODING_UTF8      0x03
 
 int bgen_id3v1_write(gavf_io_t * output, const bgen_id3v1_t *);

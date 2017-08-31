@@ -66,7 +66,9 @@ static int write_fourcc(gavf_io_t * output, uint32_t fourcc)
 typedef struct
   {
   uint32_t fourcc;
-  char * str;
+//  char * str;
+
+  gavl_value_t val;
   } id3v2_frame_t;
 
 /* Flags for ID3V2 Tag header */
@@ -92,12 +94,12 @@ struct bgen_id3v2_s
   };
 
 static void add_frame(bgen_id3v2_t * tag, uint32_t fourcc,
-                      const char * string)
+                      const gavl_value_t * val)
   {
   tag->frames = realloc(tag->frames,
                         (tag->num_frames+1)*sizeof(*(tag->frames)));
   tag->frames[tag->num_frames].fourcc = fourcc;
-  tag->frames[tag->num_frames].str = gavl_strdup(string);
+  gavl_value_copy(&tag->frames[tag->num_frames].val, val);
   tag->num_frames++;
   }
 
@@ -115,8 +117,8 @@ static void add_frame(bgen_id3v2_t * tag, uint32_t fourcc,
   char * copyright;
 */
 
-#define TEXT_FRAME(key, fcc) \
-  val = gavl_dictionary_get_string(m, key); \
+#define ADD_FRAME(key, fcc) \
+  val = gavl_dictionary_get(m, key); \
   if(val) \
     { \
     add_frame(ret, fcc, val); \
@@ -134,12 +136,9 @@ static void add_frame(bgen_id3v2_t * tag, uint32_t fourcc,
 bgen_id3v2_t * bgen_id3v2_create(const gavl_dictionary_t * m)
   {
   int year;
-  char * tmp_string;
   
   bgen_id3v2_t * ret;
-  const char * val;
-  int val_i;
-  char int_buf[32];
+  const gavl_value_t * val;
   
   ret = calloc(1, sizeof(*ret));
 
@@ -147,25 +146,27 @@ bgen_id3v2_t * bgen_id3v2_create(const gavl_dictionary_t * m)
   ret->header.minor_version = 4;
   ret->header.flags = 0;
 
-  TEXT_FRAME(GAVL_META_ARTIST,      MK_FOURCC('T', 'P', 'E', '1'));
-  TEXT_FRAME(GAVL_META_ALBUMARTIST, MK_FOURCC('T', 'P', 'E', '2'));
+  ADD_FRAME(GAVL_META_ARTIST,      MK_FOURCC('T', 'P', 'E', '1'));
+  ADD_FRAME(GAVL_META_ALBUMARTIST, MK_FOURCC('T', 'P', 'E', '2'));
 
-  TEXT_FRAME(GAVL_META_TITLE,       MK_FOURCC('T', 'I', 'T', '2'));
-  TEXT_FRAME(GAVL_META_ALBUM,       MK_FOURCC('T', 'A', 'L', 'B'));
-  INT_FRAME(GAVL_META_TRACKNUMBER, MK_FOURCC('T', 'R', 'C', 'K'));
-  TEXT_FRAME(GAVL_META_GENRE,       MK_FOURCC('T', 'C', 'O', 'N'));
-  TEXT_FRAME(GAVL_META_AUTHOR,      MK_FOURCC('T', 'C', 'O', 'M'));
-  TEXT_FRAME(GAVL_META_COPYRIGHT,   MK_FOURCC('T', 'C', 'O', 'P'));
+  ADD_FRAME(GAVL_META_TITLE,       MK_FOURCC('T', 'I', 'T', '2'));
+  ADD_FRAME(GAVL_META_ALBUM,       MK_FOURCC('T', 'A', 'L', 'B'));
+  ADD_FRAME(GAVL_META_TRACKNUMBER, MK_FOURCC('T', 'R', 'C', 'K'));
+  ADD_FRAME(GAVL_META_GENRE,       MK_FOURCC('T', 'C', 'O', 'N'));
+  ADD_FRAME(GAVL_META_AUTHOR,      MK_FOURCC('T', 'C', 'O', 'M'));
+  ADD_FRAME(GAVL_META_COPYRIGHT,   MK_FOURCC('T', 'C', 'O', 'P'));
 
   year = bg_metadata_get_year(m);
   if(year)
     {
-    tmp_string = bg_sprintf("%d", year);
-    add_frame(ret, MK_FOURCC('T', 'Y', 'E', 'R'), tmp_string);
-    free(tmp_string);
+    gavl_value_t v1;
+    gavl_value_init(&v1);
+    gavl_value_set_int(&v1, year);
+    add_frame(ret, MK_FOURCC('T', 'Y', 'E', 'R'), &v1);
+    gavl_value_free(&v1);
     }
 
-  TEXT_FRAME(GAVL_META_COMMENT, MK_FOURCC('C', 'O', 'M', 'M'));
+  ADD_FRAME(GAVL_META_COMMENT, MK_FOURCC('C', 'O', 'M', 'M'));
   return ret;
   }
 
@@ -237,44 +238,6 @@ static int write_frame(gavf_io_t * output, id3v2_frame_t * frame,
       str = bg_convert_string(cnv, frame->str, -1, NULL );
       len = strlen(str)+1;
       if(gavf_io_write_data(output, (uint8_t*)str, len) < len)
-        return 0;
-      bg_charset_converter_destroy(cnv);
-      free(str);
-      break;
-    case ID3_ENCODING_UTF16_BOM:
-      /* Short Comment */
-      if(is_comment)
-        {
-        if(gavf_io_write_data(output, bom, 2) < 2)
-          return 0;
-        if(gavf_io_write_data(output, terminator, 2) < 2)
-          return 0;
-        }
-      /* Long Comment */
-      if(gavf_io_write_data(output, bom, 2) < 2)
-        return 0;
-      cnv = bg_charset_converter_create("UTF-8", "UTF-16LE");
-      str = bg_convert_string(cnv, frame->str, -1, &len);
-      if(gavf_io_write_data(output, (uint8_t*)str, len) < len)
-        return 0;
-      if(gavf_io_write_data(output, terminator, 2) < 2)
-        return 0;
-      bg_charset_converter_destroy(cnv);
-      free(str);
-      break;
-    case ID3_ENCODING_UTF16_BE:
-      if(is_comment)
-        {
-        /* Short Comment */
-        if(gavf_io_write_data(output, terminator, 2) < 2)
-          return 0;
-        }
-      /* Long Comment */
-      cnv = bg_charset_converter_create("UTF-8", "UTF-16BE");
-      str = bg_convert_string(cnv, frame->str, -1, &len);
-      if(gavf_io_write_data(output, (uint8_t*)str, len) < len)
-        return 0;
-      if(gavf_io_write_data(output, terminator, 2) < 2)
         return 0;
       bg_charset_converter_destroy(cnv);
       free(str);

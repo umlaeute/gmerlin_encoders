@@ -123,10 +123,12 @@ static const bg_parameter_info_t parameters[] =
       .long_name =   TRS("ID3V2 Encoding"),
       .type =        BG_PARAMETER_STRINGLIST,
       .val_default = GAVL_VALUE_INIT_STRING("3"),
-      .multi_names = (char const *[]){ "0", "1",
-                               "2", "3", NULL },
-      .multi_labels = (char const *[]){ TRS("ISO-8859-1"), TRS("UTF-16 LE"),
-                               TRS("UTF-16 BE"), TRS("UTF-8"), NULL },
+      .multi_names = (char const *[]){ "0",
+                                       "3", 
+                                       NULL },
+      .multi_labels = (char const *[]){ TRS("ISO-8859-1"), 
+                                        TRS("UTF-8"), 
+                                        NULL },
     },
     { /* End of parameters */ }
   };
