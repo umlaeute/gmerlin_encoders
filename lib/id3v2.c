@@ -182,36 +182,53 @@ static int write_32_syncsave(gavf_io_t * output, uint32_t num)
   return 1;
   }
 
+
+static int write_string(gavf_io_t * output, const char * str,
+                        bg_charset_converter_t * cnv)
+  {
+  int len;
+
+  if(cnv)
+    {
+    char * str1;
+    str1 = bg_convert_string(cnv, str, -1, NULL );
+    len = strlen(str1)+1;
+    if(gavf_io_write_data(output, (uint8_t*)str1, len) < len)
+      return 0;
+    free(str1);
+    }
+  else
+    {
+    len = strlen(str)+1;
+    if(gavf_io_write_data(output, (uint8_t*)str, len) < len)
+      return 0;
+    }
+  return 1;
+  }
+
 static int write_frame(gavf_io_t * output, id3v2_frame_t * frame,
                        uint8_t encoding)
   {
   uint8_t flags[2] = { 0x00, 0x00 };
-  uint8_t comm_header[3] = { 'X', 'X', 'X' };
-  uint8_t bom[2] = { 0xff, 0xfe };
-  uint8_t terminator[2] = { 0x00, 0x00 };
-  int is_comment = 0;
-  // uint8_t encoding = 0x03; /* We do everything in UTF-8 */
-  int len;
+  uint8_t comm_header[4] = { 'X', 'X', 'X', 0x00 };
   uint32_t size_pos, end_pos, size;
-  
-  char * str;
-
-  bg_charset_converter_t * cnv;
+  bg_charset_converter_t * cnv = NULL;
+  int ret = 0;
   
   /* Write 10 bytes header */
 
   if(!write_fourcc(output, frame->fourcc))
-    return 0;
+    goto fail;
   
   size_pos = gavf_io_position(output);
 
   if(!write_32_syncsave(output, 0))
-    return 0;
+    goto fail;
   
   /* Frame flags are zero */
 
   if(gavf_io_write_data(output, flags, 2) < 2)
-    return 0;
+    goto fail;
   
   /* Encoding */
   if(gavf_io_write_data(output, &encoding, 1) < 1)
@@ -219,42 +236,51 @@ static int write_frame(gavf_io_t * output, id3v2_frame_t * frame,
   
   /* For COMM frames, we need to set the language as well */
 
-  if(frame->fourcc == MK_FOURCC('C','O','M','M'))  
+  if((frame->fourcc == MK_FOURCC('C','O','M','M')) &&
+     (gavf_io_write_data(output, comm_header, 4) < 4))
+    goto fail;
+  
+  switch(frame->val.type)
     {
-    is_comment = 1;
-    if(gavf_io_write_data(output, comm_header, 3) < 3)
-      return 0;
-    }
-
-  switch(encoding)
-    {
-    case ID3_ENCODING_LATIN1:
-      if(is_comment)
-        {
-        if(gavf_io_write_data(output, terminator, 1) < 1)
-          return 0;
-        }
-      cnv = bg_charset_converter_create("UTF-8", "ISO-8859-1");
-      str = bg_convert_string(cnv, frame->str, -1, NULL );
-      len = strlen(str)+1;
-      if(gavf_io_write_data(output, (uint8_t*)str, len) < len)
-        return 0;
-      bg_charset_converter_destroy(cnv);
-      free(str);
+    case GAVL_TYPE_INT:
+      {
+      char int_buf[32];
+      snprintf(int_buf, 32, "%d", frame->val.v.i);
+      if(!write_string(output, int_buf, NULL))
+        goto fail;
+      }
       break;
-    case ID3_ENCODING_UTF8:
-      if(is_comment)
-        {
-        if(gavf_io_write_data(output, terminator, 1) < 1)
-          return 0;
-        }
-      /* Then, write the string including terminating 0x00 character */
-      len = strlen(frame->str)+1;
+    case GAVL_TYPE_STRING:
+      if(encoding == ID3_ENCODING_LATIN1)
+        cnv = bg_charset_converter_create("UTF-8", "ISO-8859-1");
       
-      if(gavf_io_write_data(output, (uint8_t*)frame->str, len) < len)
-        return 0;
+      if(!write_string(output, gavl_value_get_string(&frame->val), cnv))
+        goto fail;
       break;
+    case GAVL_TYPE_ARRAY:
+      {
+      const gavl_value_t * v;
+      const char * s;
+      int i = 0;
+      
+      if(encoding == ID3_ENCODING_LATIN1)
+        cnv = bg_charset_converter_create("UTF-8", "ISO-8859-1");
+
+      while((v = gavl_value_get_item(&frame->val, i)) &&
+            (s = gavl_value_get_string(v)))
+        {
+        if(!write_string(output, s, cnv))
+          goto fail;
+        i++;
+        }
+      }
+      break;
+    default:
+        goto fail;
     }
+  
+  if(!cnv)
+    bg_charset_converter_destroy(cnv);
   
 
   end_pos = gavf_io_position(output);
@@ -262,9 +288,17 @@ static int write_frame(gavf_io_t * output, id3v2_frame_t * frame,
   
   gavf_io_seek(output, size_pos, SEEK_SET);
   if(!write_32_syncsave(output, size))
-    return 0;
+    goto fail;
+  
   gavf_io_seek(output, end_pos, SEEK_SET);
-  return 1;
+  
+  ret = 1;
+  fail:
+
+  if(cnv)
+    bg_charset_converter_destroy(cnv);
+  
+  return ret;
   }
 
 int bgen_id3v2_write(gavf_io_t * output, const bgen_id3v2_t * tag,
@@ -314,7 +348,7 @@ void bgen_id3v2_destroy(bgen_id3v2_t * tag)
   if(tag->frames)
     {
     for(i = 0; i < tag->num_frames; i++)
-      free(tag->frames[i].str);
+      gavl_value_free(&tag->frames[i].val);
     free(tag->frames);
     }
   free(tag);
