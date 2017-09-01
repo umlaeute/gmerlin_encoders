@@ -103,8 +103,14 @@ static int write_comment(flac_t * f, int last)
   int ret = 0;
   uint8_t * buf;
   uint8_t * ptr;
+  uint8_t * comment_ptr;
+  gavf_io_t * io;
   
-  int len = bg_vorbis_comment_bytes(&f->m_stream, f->m_global, 0);
+  int len;
+
+  io = gavf_io_create_mem_write();
+  bg_vorbis_comment_write(io, &f->m_stream, f->m_global, 0);
+  comment_ptr = gavf_io_mem_get_buf(io, &len);
   
   buf = malloc(4 + len);
   ptr = buf;
@@ -115,9 +121,13 @@ static int write_comment(flac_t * f, int last)
   ptr++;
 
   GAVL_24BE_2_PTR(len, ptr); ptr += 3;
-  bg_vorbis_comment_write(ptr, &f->m_stream, f->m_global, 0);
+  
+  memcpy(ptr, comment_ptr, len);
+  
   write_data(f, buf, len+4);
   free(buf);
+  free(comment_ptr);
+  gavf_io_destroy(io);
   return ret;
   }
 

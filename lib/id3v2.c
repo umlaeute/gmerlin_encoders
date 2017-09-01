@@ -214,9 +214,13 @@ static int write_frame(gavf_io_t * output, id3v2_frame_t * frame,
   uint32_t size_pos, end_pos, size;
   bg_charset_converter_t * cnv = NULL;
   int ret = 0;
+
+  if((frame->val.type == GAVL_TYPE_STRING) &&
+     !gavl_value_get_string(&frame->val))
+    return;
   
   /* Write 10 bytes header */
-
+  
   if(!write_fourcc(output, frame->fourcc))
     goto fail;
   
@@ -251,11 +255,15 @@ static int write_frame(gavf_io_t * output, id3v2_frame_t * frame,
       }
       break;
     case GAVL_TYPE_STRING:
+      {
+      const char * val_str;
       if(encoding == ID3_ENCODING_LATIN1)
         cnv = bg_charset_converter_create("UTF-8", "ISO-8859-1");
       
-      if(!write_string(output, gavl_value_get_string(&frame->val), cnv))
+      if((val_str = gavl_value_get_string(&frame->val)) &&
+         !write_string(output, val_str, cnv))
         goto fail;
+      }
       break;
     case GAVL_TYPE_ARRAY:
       {

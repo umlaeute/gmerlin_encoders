@@ -69,6 +69,8 @@ static int init_compressed_flacogg(bg_ogg_stream_t * s)
   ogg_packet op;
   int len;
   uint8_t * ptr;
+  uint8_t * comment_ptr;
+  gavf_io_t * io;
   
   uint8_t header_bytes[] =
     {
@@ -101,8 +103,11 @@ static int init_compressed_flacogg(bg_ogg_stream_t * s)
   free(op.packet);
   
   /* Vorbis comment */
-  len = bg_vorbis_comment_bytes(&s->m_stream, s->m_global, 0);
-
+  
+  io = gavf_io_create_mem_write();
+  bg_vorbis_comment_write(io, &s->m_stream, s->m_global, 0);
+  comment_ptr = gavf_io_mem_get_buf(io, &len);
+  
   op.packet = malloc(4 + len);
   ptr = op.packet;
   
@@ -110,8 +115,11 @@ static int init_compressed_flacogg(bg_ogg_stream_t * s)
   ptr++;
 
   GAVL_24BE_2_PTR(len, ptr); ptr += 3;
-  bg_vorbis_comment_write(ptr, &s->m_stream, s->m_global, 0);
+  memcpy(ptr, comment_ptr, len);
   op.bytes = len + 4;
+
+  free(comment_ptr);
+  gavf_io_destroy(io);
   
   if(!bg_ogg_stream_write_header_packet(s, &op))
     {
@@ -121,6 +129,7 @@ static int init_compressed_flacogg(bg_ogg_stream_t * s)
     }
   
   free(op.packet);
+  
   return 1;
   }
 

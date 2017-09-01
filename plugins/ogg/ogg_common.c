@@ -716,19 +716,25 @@ bg_ogg_create_comment_packet(const uint8_t * prefix,
                              int framing, ogg_packet * op)
   {
   int len;
-
+  gavf_io_t * io;
+  uint8_t * ptr;
+  
+  io = gavf_io_create_mem_write();
+  bg_vorbis_comment_write(io, m_stream, m_global, framing);
+  
+  ptr = gavf_io_mem_get_buf(io, &len);
+  
   /* Write mandatory fields */
-  len = prefix_len + bg_vorbis_comment_bytes(m_stream, m_global, framing);
-  op->packet = malloc(len);
+  
+  op->packet = malloc(len + prefix_len);
   op->bytes = len;
   
   if(prefix_len)
     memcpy(op->packet, prefix, prefix_len);
 
-  bg_vorbis_comment_write(op->packet + prefix_len,
-                          m_stream, m_global, framing);
-
-  // bg_log(BG_LOG_DEBUG, LOG_DOMAIN, "bg_ogg_create_comment_packet %d", m_global->num_tags);
+  memcpy(op->packet + prefix_len, ptr, len);
+  free(ptr);
+  gavf_io_destroy(io);
   }
 
 void bg_ogg_free_comment_packet(ogg_packet * op)

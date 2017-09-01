@@ -29,6 +29,7 @@
 #include <gavl/metadata.h>
 #include <gavl/metatags.h>
 #include <gavl/numptr.h>
+#include <gavl/gavf.h>
 
 #include <vorbiscomment.h>
 
@@ -36,22 +37,25 @@
 #include <gmerlin/log.h>
 #define LOG_DOMAIN "vorbiscomment"
 
+#include <gmerlin/utils.h>
+
 static const struct
   {
   const char * gavl_name;
   const char * vorbis_name;
+  gavl_type_t type;
   }
 tags[] =
   {
-    { GAVL_META_ARTIST,      "ARTIST"       },
-    { GAVL_META_TITLE,       "TITLE"        },
-    { GAVL_META_ALBUM,       "ALBUM"        },
-    { GAVL_META_ALBUMARTIST, "ALBUM ARTIST" },
-    { GAVL_META_ALBUMARTIST, "ALBUMARTIST"  },
-    { GAVL_META_GENRE,       "GENRE"        },
-    { GAVL_META_COPYRIGHT,   "COPYRIGHT"    },
-    { GAVL_META_TRACKNUMBER, "TRACKNUMBER"  },
-    { GAVL_META_COMMENT,     "COMMENT"      },
+    { GAVL_META_ARTIST,      "ARTIST",       GAVL_TYPE_STRING },
+    { GAVL_META_TITLE,       "TITLE",        GAVL_TYPE_STRING },
+    { GAVL_META_ALBUM,       "ALBUM",        GAVL_TYPE_STRING },
+    { GAVL_META_ALBUMARTIST, "ALBUM ARTIST", GAVL_TYPE_STRING },
+    { GAVL_META_ALBUMARTIST, "ALBUMARTIST",  GAVL_TYPE_STRING },
+    { GAVL_META_GENRE,       "GENRE",        GAVL_TYPE_STRING },
+    { GAVL_META_COPYRIGHT,   "COPYRIGHT",    GAVL_TYPE_STRING },
+    { GAVL_META_TRACKNUMBER, "TRACKNUMBER",  GAVL_TYPE_INT    },
+    { GAVL_META_COMMENT,     "COMMENT",      GAVL_TYPE_STRING },
     { /* End */ }
   };
 
@@ -62,51 +66,8 @@ static const char * get_vendor(const gavl_dictionary_t * m)
     ret = PACKAGE"-"VERSION;
   return ret;
   }
-  
-int bg_vorbis_comment_bytes(const gavl_dictionary_t * m_stream,
-                            const gavl_dictionary_t * m_global,
-                            int framing)
-  {
-  int ret = 0;
-  const char * str;
-  int i = 0;
-  int j;
 
-  /* Vendor string */
-  str = get_vendor(m_stream);
-  if(!str)
-    {
-    /* Vendor string missing */
-    bg_log(BG_LOG_ERROR, LOG_DOMAIN, "Couldn't build vorbis comment, vendor string missing");
-    return 0;
-    }
-
-  ret += 4 + strlen(str); // Vendor length + vendor
-  ret += 4; // Number of tags
-  
-  while(tags[i].gavl_name)
-    {
-    j = 0;
-
-    while((str = gavl_dictionary_get_string_array(m_global, tags[i].gavl_name, j)))
-      {
-      ret += 4 + strlen(tags[i].vorbis_name) + 1 + strlen(str);
-      j++;
-      }
-    i++;
-    }
-
-  if((str = gavl_dictionary_get_string(m_global, GAVL_META_DATE)) ||
-     (str = gavl_dictionary_get_string(m_global, GAVL_META_YEAR)))
-    ret += 4 + 5 + strlen(str);
-  
-  if(framing)
-    ret++;
-
-  return ret;
-  }
-
-int bg_vorbis_comment_write(uint8_t * buf,
+int bg_vorbis_comment_write(gavf_io_t * output,
                             const gavl_dictionary_t * m_stream,
                             const gavl_dictionary_t * m_global,
                             int framing)
@@ -114,15 +75,18 @@ int bg_vorbis_comment_write(uint8_t * buf,
   int len1;
   int len2;
   int len_total;
-  uint8_t * ptr;
   int num_tags = 0;
-  uint8_t * num_tags_pos;
+  int64_t num_tags_pos;
+  int64_t old_pos;
+  int64_t start_pos;
   int i = 0;
+  int year;
+  
   const char * str;
   
-  ptr = buf;
-
   /* Vendor string */
+
+  start_pos = gavf_io_position(output);
   
   str = get_vendor(m_stream);
   if(!str)
@@ -132,54 +96,107 @@ int bg_vorbis_comment_write(uint8_t * buf,
     }
 
   len1 = strlen(str);
-  GAVL_32LE_2_PTR(len1, ptr); ptr += 4;
-  memcpy(ptr, str, len1); ptr += len1;  
 
-  num_tags_pos = ptr;
-  ptr += 4;
-
+  gavf_io_write_32_le(output, len1);
+  gavf_io_write_data(output, (uint8_t*)str, len1);
+  
+  num_tags_pos = gavf_io_position(output);
+  gavf_io_write_32_le(output, 0); // Filled in later
+  
   while(tags[i].gavl_name)
     {
-    int j = 0;
-
-    while((str = gavl_dictionary_get_string_array(m_global, tags[i].gavl_name, j)))
+    
+    switch(tags[i].type)
       {
-      len1 = strlen(tags[i].vorbis_name);
-      len2 = strlen(str);
-      
-      len_total = len1 + 1 + len2;
+      case GAVL_TYPE_STRING:
+        {
+        int j = 0;
+        while((str = gavl_dictionary_get_string_array(m_global, tags[i].gavl_name, j)))
+          {
+          len1 = strlen(tags[i].vorbis_name);
+          len2 = strlen(str);
+          len_total = len1 + 1 + len2;
 
-      GAVL_32LE_2_PTR(len_total, ptr); ptr += 4;
-      memcpy(ptr, tags[i].vorbis_name, len1); ptr += len1;
-      *ptr = '='; ptr++;
-      memcpy(ptr, str, len2); ptr += len2;
+          gavf_io_write_32_le(output, len_total);
+          gavf_io_write_data(output, (uint8_t*)tags[i].vorbis_name, len1);
+          gavf_io_write_data(output, (uint8_t*)"=", 1);
+          gavf_io_write_data(output, (uint8_t*)str, len2);
       
-      num_tags++;
-      j++;
+          num_tags++;
+          j++;
+          }
+        }
+        break;
+      case GAVL_TYPE_INT:
+        {
+        int val_i;
+        if(gavl_dictionary_get_int(m_global, tags[i].gavl_name, &val_i))
+          {
+          char * tmp_string = bg_sprintf("%d", val_i);
+
+          len1 = strlen(tags[i].vorbis_name);
+          len2 = strlen(tmp_string);
+          len_total = len1 + 1 + len2;
+          
+          gavf_io_write_32_le(output, len_total);
+          gavf_io_write_data(output, (uint8_t*)tags[i].vorbis_name, len1);
+          gavf_io_write_data(output, (uint8_t*)"=", 1);
+          gavf_io_write_data(output, (uint8_t*)tmp_string, len2);
+          free(tmp_string);
+          num_tags++;
+          }
+        }
+        break;
+      default:
+        break;
       }
+    
     i++;
     }
 
   /* Date needs special attention */
-  if((str = gavl_dictionary_get_string(m_global, GAVL_META_DATE)) ||
-     (str = gavl_dictionary_get_string(m_global, GAVL_META_YEAR)))
+  if((str = gavl_dictionary_get_string(m_global, GAVL_META_DATE)) &&
+    !gavl_string_ends_with(str, "99-99"))
     {
     len1 = 5; // DATE=
     len2 = strlen(str);
+    
     len_total = len1 + len2;
-    GAVL_32LE_2_PTR(len_total, ptr); ptr += 4;
-    memcpy(ptr, "DATE=", len1); ptr += len1;
-    memcpy(ptr, str, len2); ptr += len2;
+    gavf_io_write_32_le(output, len_total);
+
+    gavf_io_write_data(output, (uint8_t*)"DATE=", 5);
+    gavf_io_write_data(output, (uint8_t*)str, len2);
     num_tags++;
     }
-  
-  GAVL_32LE_2_PTR(num_tags, num_tags_pos);
+  else if((year = gavl_dictionary_get_year(m_global, GAVL_META_YEAR)) ||
+          (year = gavl_dictionary_get_year(m_global, GAVL_META_DATE)))
+    {
+    char * tmp_string;
+    len1 = 5; // DATE=
+
+    tmp_string = bg_sprintf("%d", year);
+    
+    len2 = strlen(tmp_string);
+    
+    len_total = len1 + len2;
+
+    gavf_io_write_32_le(output, len_total);
+    gavf_io_write_data(output, (uint8_t*)"DATE=", 5);
+    gavf_io_write_data(output, (uint8_t*)tmp_string, len2);
+
+    free(tmp_string);
+    num_tags++;
+    }
+
+  old_pos = gavf_io_position(output);
+  gavf_io_seek(output, num_tags_pos, SEEK_SET);
+
+  gavf_io_write_32_le(output, num_tags); // Filled in later
+
+  gavf_io_seek(output, old_pos, SEEK_SET);
 
   if(framing)
-    {
-    *ptr = 0x01;
-    ptr++;
-    }
+    gavf_io_write_8(output, 0x01);
   
-  return ptr - buf;
+  return gavf_io_position(output) - start_pos;
   }
