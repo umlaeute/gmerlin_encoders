@@ -279,7 +279,7 @@ static int write_frame(gavf_io_t * output, id3v2_frame_t * frame,
         goto fail;
     }
   
-  if(!cnv)
+  if(cnv)
     bg_charset_converter_destroy(cnv);
   
 

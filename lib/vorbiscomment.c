@@ -70,6 +70,7 @@ int bg_vorbis_comment_bytes(const gavl_dictionary_t * m_stream,
   int ret = 0;
   const char * str;
   int i = 0;
+  int j;
 
   /* Vendor string */
   str = get_vendor(m_stream);
@@ -85,10 +86,12 @@ int bg_vorbis_comment_bytes(const gavl_dictionary_t * m_stream,
   
   while(tags[i].gavl_name)
     {
-    str = gavl_dictionary_get_string(m_global, tags[i].gavl_name);
-    if(str)
+    j = 0;
+
+    while((str = gavl_dictionary_get_string_array(m_global, tags[i].gavl_name, j)))
       {
       ret += 4 + strlen(tags[i].vorbis_name) + 1 + strlen(str);
+      j++;
       }
     i++;
     }
