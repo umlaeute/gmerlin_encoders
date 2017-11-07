@@ -98,6 +98,8 @@ static void add_frame(bgen_id3v2_t * tag, uint32_t fourcc,
   {
   tag->frames = realloc(tag->frames,
                         (tag->num_frames+1)*sizeof(*(tag->frames)));
+  memset(&tag->frames[tag->num_frames], 0,
+         sizeof(tag->frames[tag->num_frames]));
   tag->frames[tag->num_frames].fourcc = fourcc;
   gavl_value_copy(&tag->frames[tag->num_frames].val, val);
   tag->num_frames++;
@@ -217,7 +219,7 @@ static int write_frame(gavf_io_t * output, id3v2_frame_t * frame,
 
   if((frame->val.type == GAVL_TYPE_STRING) &&
      !gavl_value_get_string(&frame->val))
-    return;
+    return 1;
   
   /* Write 10 bytes header */
   

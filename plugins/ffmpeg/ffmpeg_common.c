@@ -37,6 +37,10 @@
 // #define DUMP_VIDEO_PACKETS
 // #define DUMP_TEXT_PACKETS
 
+static void copy_extradata(AVCodecParameters * avctx,
+                           const gavl_compression_info_t * ci);
+
+
 static bg_parameter_info_t *
 create_format_parameters(const ffmpeg_format_info_t * formats)
   {
@@ -387,6 +391,8 @@ int bg_ffmpeg_add_video_stream(void * data,
 
   st->com.stream = avformat_new_stream(priv->ctx, NULL);
   st->com.stream->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
+
+  bg_ffmpeg_set_video_dimensions_params(st->com.stream->codecpar, format);
   
   st->com.ffmpeg = priv;
   st->dts = GAVL_TIME_UNDEFINED;
@@ -696,6 +702,8 @@ static int open_audio_encoder(ffmpeg_priv_t * priv,
   st->sink = bg_ffmpeg_codec_open_audio(st->com.codec, &st->com.ci, &st->format, NULL);
   if(!st->sink)
     return 0;
+
+  copy_extradata(st->com.stream->codecpar, &st->com.ci);
   
   bg_ffmpeg_codec_set_packet_sink(st->com.codec, st->com.psink);
   
@@ -732,15 +740,20 @@ static int open_video_encoder(ffmpeg_priv_t * priv,
     return 1;
     }
 
+
   st->sink = bg_ffmpeg_codec_open_video(st->com.codec, &st->com.ci, &st->format, NULL);
   if(!st->sink)
     return 0;
+
+
+  copy_extradata(st->com.stream->codecpar, &st->com.ci);
+  st->com.stream->codecpar->codec_id = st->com.codec->id;
+  
   bg_ffmpeg_codec_set_packet_sink(st->com.codec, st->com.psink);
 
   st->com.stream->sample_aspect_ratio.num = st->com.stream->codecpar->sample_aspect_ratio.num;
   st->com.stream->sample_aspect_ratio.den = st->com.stream->codecpar->sample_aspect_ratio.den;
-
-
+  
   //  fprintf(stderr, "Opened video encoder\n");
   //  gavl_compression_info_dump(&st->com.ci);
   

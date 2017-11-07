@@ -38,68 +38,6 @@
 #define FLAG_ERROR       (1<<1)
 #define FLAG_FLUSHED     (1<<2)
 
-struct bg_ffmpeg_codec_context_s
-  {
-  AVCodec * codec;
-  
-  AVCodecContext * avctx_priv;
-  AVCodecContext * avctx;
-  
-  gavl_packet_sink_t * psink;
-  gavl_audio_sink_t  * asink;
-  gavl_video_sink_t  * vsink;
-  AVDictionary * options;
-
-  gavl_packet_t gp;
-
-  int type;
-  
-  /* Multipass stuff */
-
-  char * stats_filename;
-  int pass;
-  int total_passes;
-  FILE * stats_file;
-  
-  /* Only non-null within the format writer */
-  const ffmpeg_format_info_t * format;
-
-  enum AVCodecID id;
-
-  int flags;
-  
-  gavl_audio_format_t afmt;
-  gavl_video_format_t vfmt;
-
-  /*
-   * ffmpeg frame (same for audio and video)
-   */
-
-  AVFrame * frame;
-
-  /* Audio frame to encode */
-  gavl_audio_frame_t * aframe;
-  
-  /*
-   * Video frame to encode.
-   * Used only when we need to convert formats.
-   */
-  
-  gavl_video_frame_t * vframe;
-  
-  int64_t in_pts;
-  int64_t out_pts;
-
-  bg_encoder_framerate_t fr;
-  
-  bg_encoder_pts_cache_t * pc;
-
-  /* Trivial pixelformat conversions because
-     we are too lazy to support all variants in gavl */
-  
-  void (*convert_frame)(bg_ffmpeg_codec_context_t * ctx, gavl_video_frame_t * f);
-  
-  };
 
 static void 
 get_pixelformat_converter(bg_ffmpeg_codec_context_t * ctx, enum AVPixelFormat fmt,
@@ -261,7 +199,7 @@ static int flush_audio(bg_ffmpeg_codec_context_t * ctx)
   {
   AVPacket pkt;
   AVFrame * f;
-  int got_packet;
+  int result;
 
   av_init_packet(&pkt);
   gavl_packet_reset(&ctx->gp);
@@ -284,18 +222,40 @@ static int flush_audio(bg_ffmpeg_codec_context_t * ctx)
       return 0;
     }
   
+  if(avcodec_send_frame(ctx->avctx, f) < 0)
+    {
+    bg_log(BG_LOG_ERROR, LOG_DOMAIN,
+           "avcodec_send_frame failed");
+    ctx->flags |= FLAG_ERROR;
+    return -1;
+    }
+
+#if 0
   if(avcodec_encode_audio2(ctx->avctx, &pkt, f, &got_packet) < 0)
     {
     ctx->flags |= FLAG_ERROR;
     return 0;
     }
-
+#endif
+  
   /* Mute frame */
   gavl_audio_frame_mute(ctx->aframe, &ctx->afmt);
   ctx->aframe->valid_samples = 0;
-    
-  if(got_packet && pkt.size)
+
+  while(1)
     {
+    av_init_packet(&pkt);
+    result = avcodec_receive_packet(ctx->avctx, &pkt);
+
+    if((result == AVERROR(EAGAIN)) || (result == AVERROR_EOF))
+      break;
+    
+    else if(result)
+      {
+      /* Fail */
+      return 0;
+      }
+    
     ctx->gp.pts      = ctx->out_pts;
     ctx->gp.duration = ctx->afmt.samples_per_frame;
 
@@ -311,15 +271,16 @@ static int flush_audio(bg_ffmpeg_codec_context_t * ctx)
     ctx->gp.flags |= GAVL_PACKET_KEYFRAME;
     
     ctx->gp.data_len = pkt.size;
+    ctx->gp.data     = pkt.data;
     
     // fprintf(stderr, "Put audio packet\n");
     // gavl_packet_dump(&ctx->gp);
     
     if(gavl_packet_sink_put_packet(ctx->psink, &ctx->gp) != GAVL_SINK_OK)
       ctx->flags |= FLAG_ERROR;
+    
     }
-  
-  return pkt.size;
+  return 1;
   }
 
 static gavl_sink_status_t
@@ -520,41 +481,45 @@ int bg_ffmpeg_codec_set_video_pass(bg_ffmpeg_codec_context_t * ctx,
   return 1;
   }
 
-
 static int flush_video(bg_ffmpeg_codec_context_t * ctx,
                        AVFrame * frame)
   {
+  int result;
   AVPacket pkt;
-
-  int bytes_encoded = 0;
-  int got_packet = 0;
-
-  gavl_packet_reset(&ctx->gp);
-
-  av_init_packet(&pkt);
-
-  pkt.data = ctx->gp.data;
-  pkt.size = ctx->gp.data_alloc;
   
-  if(avcodec_encode_video2(ctx->avctx, &pkt, frame, &got_packet) < 0)
+  if(avcodec_send_frame(ctx->avctx, frame) < 0)
     {
     bg_log(BG_LOG_ERROR, LOG_DOMAIN,
-           "avcodec_encode_video2 failed");
-    
+           "avcodec_send_frame failed");
     ctx->flags |= FLAG_ERROR;
-    return -1;
+    return 0;
     }
-  if(got_packet)
-    bytes_encoded = pkt.size;
-
-  if(got_packet)
+  
+  while(1)
     {
+    av_init_packet(&pkt);
+    result = avcodec_receive_packet(ctx->avctx, &pkt);
+
+    if((result == AVERROR(EAGAIN)) || (result == AVERROR_EOF))
+      break;
+    
+    else if(result)
+      {
+      /* Fail */
+      return 0;
+      }
+    
+    /* Got packet */
+
+    gavl_packet_reset(&ctx->gp);
+
     ctx->gp.pts = pkt.pts;
 
     if(pkt.flags & AV_PKT_FLAG_KEY)
       ctx->gp.flags |= GAVL_PACKET_KEYFRAME;
     
     ctx->gp.data_len = pkt.size;
+    ctx->gp.data = pkt.data;
     
     if(ctx->vfmt.framerate_mode == GAVL_FRAMERATE_CONSTANT)
       ctx->gp.pts *= ctx->vfmt.frame_duration;
@@ -582,7 +547,10 @@ static int flush_video(bg_ffmpeg_codec_context_t * ctx,
         ctx->flags |= FLAG_ERROR;
         bg_log(BG_LOG_ERROR, LOG_DOMAIN,
                "Got no packet in cache for pts %"PRId64, ctx->gp.pts);
+        //     fprintf(stderr, "Got no packet in cache for pts %"PRId64"\n", ctx->gp.pts);
         }
+      //      else
+        //        fprintf(stderr, "pop packet: %"PRId64"\n", ctx->gp.pts);
       }
     /* Write frame */
 
@@ -596,11 +564,14 @@ static int flush_video(bg_ffmpeg_codec_context_t * ctx,
              "Writing packet failed");
       }
     /* Write stats */
-    
     if((ctx->pass == 1) && ctx->avctx->stats_out && ctx->stats_file)
       fprintf(ctx->stats_file, "%s", ctx->avctx->stats_out);
+
+    ctx->gp.data = NULL;
+    
     }
-  return bytes_encoded;
+  
+  return 1;
   }
 
 static gavl_sink_status_t
@@ -613,7 +584,9 @@ write_video_func(void * data, gavl_video_frame_t * frame)
     bg_log(BG_LOG_ERROR, LOG_DOMAIN, "PTS cache full");
     return GAVL_SINK_ERROR;
     }
-
+  
+  //  fprintf(stderr, "push frame: %"PRId64"\n", frame->timestamp);
+  
   if(ctx->convert_frame)
     ctx->convert_frame(ctx, frame);
 
@@ -770,7 +743,7 @@ gavl_video_sink_t * bg_ffmpeg_codec_open_video(bg_ffmpeg_codec_context_t * ctx,
   
   ctx->pc = bg_encoder_pts_cache_create();
   
-  gavl_packet_alloc(&ctx->gp, fmt->image_width * fmt->image_width * 4);
+  //  gavl_packet_alloc(&ctx->gp, fmt->image_width * fmt->image_width * 4);
   
   gavl_video_format_copy(&ctx->vfmt, fmt);
 
@@ -831,14 +804,7 @@ void bg_ffmpeg_codec_flush(bg_ffmpeg_codec_context_t * ctx)
     return;
 
   if(ctx->type == AVMEDIA_TYPE_VIDEO)
-    {
-    while(1)
-      {
-      result = flush_video(ctx, NULL);
-      if(result <= 0)
-        break;
-      }
-    }
+    flush_video(ctx, NULL);
   else // Audio
     {
     while(1)
@@ -855,7 +821,6 @@ void bg_ffmpeg_codec_flush(bg_ffmpeg_codec_context_t * ctx)
 
 void bg_ffmpeg_codec_destroy(bg_ffmpeg_codec_context_t * ctx)
   {
-  
   if(!(ctx->flags & FLAG_FLUSHED))
     bg_ffmpeg_codec_flush(ctx);
   

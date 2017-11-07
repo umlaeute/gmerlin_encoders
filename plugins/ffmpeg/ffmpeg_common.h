@@ -112,8 +112,71 @@ bg_ffmpeg_get_codec_info(enum AVCodecID id, int type);
  *  Type is one of CODEC_TYPE_VIDEO or CODEC_TYPE_AUDIO
  */
 
-
 typedef struct bg_ffmpeg_codec_context_s bg_ffmpeg_codec_context_t;
+
+struct bg_ffmpeg_codec_context_s
+  {
+  AVCodec * codec;
+  
+  AVCodecContext * avctx_priv;
+  AVCodecContext * avctx;
+  
+  gavl_packet_sink_t * psink;
+  gavl_audio_sink_t  * asink;
+  gavl_video_sink_t  * vsink;
+  AVDictionary * options;
+
+  gavl_packet_t gp;
+
+  int type;
+  
+  /* Multipass stuff */
+
+  char * stats_filename;
+  int pass;
+  int total_passes;
+  FILE * stats_file;
+  
+  /* Only non-null within the format writer */
+  const ffmpeg_format_info_t * format;
+
+  enum AVCodecID id;
+
+  int flags;
+  
+  gavl_audio_format_t afmt;
+  gavl_video_format_t vfmt;
+
+  /*
+   * ffmpeg frame (same for audio and video)
+   */
+
+  AVFrame * frame;
+
+  /* Audio frame to encode */
+  gavl_audio_frame_t * aframe;
+  
+  /*
+   * Video frame to encode.
+   * Used only when we need to convert formats.
+   */
+  
+  gavl_video_frame_t * vframe;
+  
+  int64_t in_pts;
+  int64_t out_pts;
+
+  bg_encoder_framerate_t fr;
+  
+  bg_encoder_pts_cache_t * pc;
+
+  /* Trivial pixelformat conversions because
+     we are too lazy to support all variants in gavl */
+  
+  void (*convert_frame)(bg_ffmpeg_codec_context_t * ctx, gavl_video_frame_t * f);
+  
+  };
+
 
 void bg_ffmpeg_set_video_dimensions_avctx(AVCodecContext * avctx,
                                           const gavl_video_format_t * fmt);
@@ -185,7 +248,7 @@ typedef struct
   gavl_compression_info_t ci;
 
   AVDictionary * options;
-  
+  enum AVCodecID codec_id; // Set after initializaiton
   gavl_dictionary_t m;
   } bg_ffmpeg_stream_common_t;
 
