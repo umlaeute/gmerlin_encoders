@@ -279,6 +279,7 @@ static int flush_audio(bg_ffmpeg_codec_context_t * ctx)
     if(gavl_packet_sink_put_packet(ctx->psink, &ctx->gp) != GAVL_SINK_OK)
       ctx->flags |= FLAG_ERROR;
     
+    av_packet_unref(&pkt);
     }
   return 1;
   }
@@ -569,6 +570,7 @@ static int flush_video(bg_ffmpeg_codec_context_t * ctx,
 
     ctx->gp.data = NULL;
     
+    av_packet_unref(&pkt);
     }
   
   return 1;
